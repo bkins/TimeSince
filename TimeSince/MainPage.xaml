@@ -3,39 +3,33 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              x:Class="TimeSince.MainPage">
 
-    <ScrollView>
-        <VerticalStackLayout
-            Spacing="25"
-            Padding="30,0"
-            VerticalOptions="Center">
+    <StackLayout Margin="5, 0, 5, 0">
 
-            <Image
-                Source="dotnet_bot.png"
-                SemanticProperties.Description="Cute dot net bot waving hi to you!"
-                HeightRequest="200"
-                HorizontalOptions="Center" />
+           <Label x:Name="ElapsedTimeLabel"
+                  FontSize="Medium"
+                  TextColor="{StaticResource Primary}"
+                  BackgroundColor="LightGray"
+                  HorizontalTextAlignment="Center"
+                  Margin="-5, 0, -5, 0"/>
 
-            <Label
-                Text="Hello, World!"
-                SemanticProperties.HeadingLevel="Level1"
-                FontSize="32"
-                HorizontalOptions="Center" />
+        <BoxView HeightRequest="1" Color="Gray" Margin="0, 5, 0, 15"/>
 
-            <Label
-                Text="Welcome to .NET Multi-platform App UI"
-                SemanticProperties.HeadingLevel="Level2"
-                SemanticProperties.Description="Welcome to dot net Multi platform App U I"
-                FontSize="18"
-                HorizontalOptions="Center" />
+        <Editor x:Name="BeginningDateNameEditor"
+                Placeholder="Name"
+                Margin="-5, 0, 0, 0"/>
+        <Label x:Name="BeginningDateLabel"
+               Text="Beginning Date:"/>
+        <DatePicker x:Name="BeginningDatePicker"
+                    Margin="5, 0, 0, 0"/>
 
-            <Button
-                x:Name="CounterBtn"
-                Text="Click me"
-                SemanticProperties.Hint="Counts the number of times you click"
-                Clicked="OnCounterClicked"
-                HorizontalOptions="Center" />
-
-        </VerticalStackLayout>
-    </ScrollView>
+        <Label x:Name="BeginningTimeLabel"
+               Text="Beginning Time:"/>
+        <TimePicker x:Name="BeginningTimePicker"
+                    Margin="5, 0, 0, 0"/>
+       <Button x:Name="SaveButton"
+               Text="Save"
+               FontAttributes="Bold"
+               Clicked="SaveButton_OnClicked"/>
+    </StackLayout>
 
 </ContentPage>

@@ -1,0 +1,45 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout	xmlns:android="http://schemas.android.com/apk/res/android"
+					  android:id="@+id/widgetBackground"
+					  android:layout_width="wrap_content"
+					  android:layout_height="wrap_content"
+					  android:orientation="vertical"
+					  >
+
+	<RelativeLayout android:layout_width="100dip"
+				    android:layout_height="100dip"
+		            >
+
+		<ImageView android:id="@+id/widgetIcon"
+				   android:src="@drawable/twotone_timelapse_white_18"
+				   android:layout_height="100dip"
+				   android:layout_width="100dip"
+			       />
+
+		<TextView android:id="@+id/widgetTitle"
+			      android:text="Title"
+			      android:layout_width="wrap_content"
+			      android:layout_height="wrap_content"
+			      android:layout_centerVertical="false"
+			      android:layout_centerHorizontal="true"
+			      />
+
+		<TextView android:id="@+id/widgetDays"
+				  android:layout_width="wrap_content"
+				  android:layout_height="wrap_content"
+				  android:text="999"
+			      android:layout_centerVertical="true"
+				  android:layout_centerHorizontal="true"
+				  />
+
+		<TextView android:id="@+id/widgetTime"
+				  android:layout_width="wrap_content"
+				  android:layout_height="wrap_content"
+				  android:text="10:34:56"
+				  android:layout_centerHorizontal="true"
+			      android:layout_alignBottom="@+id/widgetIcon"
+				  />
+
+	</RelativeLayout>
+
+</LinearLayout>
