@@ -1,0 +1,96 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             x:Class="TimeSince.MVVM.Views.AboutPage"
+             Title="About"
+             BackgroundColor="{DynamicResource Secondary}">
+    <ContentPage.Content>
+
+        <StackLayout x:Name="MainStackLayout">
+
+            <Label x:Name="AppNameLabel"
+                   Text="Time Since"
+                   TextColor="{DynamicResource Tertiary}"
+                   HorizontalTextAlignment="Center"
+                   FontSize="24"
+                   Margin="0, 0, 0, 10" />
+
+            <Grid x:Name="MainGrid"
+                  ColumnDefinitions="*, *"
+                  RowDefinitions="*, *">
+
+                <Label x:Name="CurrentVersionLabel"
+                       Grid.Column="0"
+                       Grid.Row="0"
+                       Text="Current Version:"
+                       FontSize="18"
+                       TextColor="{DynamicResource Tertiary}" />
+
+                <Label x:Name="CurrentVersionValue"
+                       Grid.Column="1"
+                       Grid.Row="0"
+                       Text="{Binding CurrentVersion}"
+                       FontSize="18"
+                       TextColor="{DynamicResource Tertiary}" />
+
+                <Label x:Name="CurrentBuildLabel"
+                       Grid.Column="0"
+                       Grid.Row="1"
+                       Text="Current Build:"
+                       FontSize="18"
+                       TextColor="{DynamicResource Tertiary}" />
+                <Label x:Name="CurrentBuildValue"
+                       Grid.Column="1"
+                       Grid.Row="1"
+                       Text="{Binding CurrentBuild}"
+                       FontSize="18"
+                       TextColor="{DynamicResource Tertiary}" />
+
+            </Grid>
+
+            <Label x:Name="SupportMeLabel"
+                   Text="You can support me by tapping on these buttons and watching a few ads"
+                   Margin="55, 15, 55, 5"
+                   HorizontalTextAlignment="Center" />
+
+            <Button x:Name="ShowInterstitialAdButton"
+                    Text="Show Interstitial Ad"
+                    Margin="5, 5, 5, 5"
+                    Clicked="ShowInterstitialAdButton_OnClicked" />
+
+            <!--These ads are not working... TODO: Look into why these are not working, when I care.-->
+            <!-- <Button x:Name="ShowInterstitialRewardAdButton" -->
+            <!--         Text="Show Interstitial Reward Ad" -->
+            <!--         Margin="5, 5, 5, 5" -->
+            <!--         Clicked="ShowInterstitialRewardAdButton_OnClicked"/> -->
+
+            <Button x:Name="ShowRewardAdButton"
+                    Text="Show Reward Ad"
+                    Margin="5, 5, 5, 5"
+                    Clicked="ShowRewardAdButton_OnClicked" />
+
+            <Label x:Name="AwesomePersonLabel"
+                   Text="You are already an awesome person!  This number just shows how awesomer you are."
+                   Margin="25, 15, 25, 5"
+                   HorizontalTextAlignment="Center" />
+
+            <Label x:Name="AwesomePersonScoreLabel"
+                   Text="Awesome Person Score:"
+                   Margin="75, 5, 5, 5" />
+
+            <Label x:Name="AwesomePersonScoreValueLabel"
+                   Text="{Binding CurrentAwesomeScore}"
+                   Margin="75, 5, 5, 5" />
+
+            <Button x:Name="ResetAwesomeScoreButton"
+                    Text="Reset Awesome Person Score"
+                    WidthRequest="250"
+                    HorizontalOptions="Start"
+                    Margin="75, 5, 5, 5"
+                    Clicked="ResetAwesomeScoreButton_OnClicked" />
+
+        </StackLayout>
+
+    </ContentPage.Content>
+</ContentPage>

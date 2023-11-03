@@ -3,12 +3,13 @@
     x:Class="TimeSince.AppShell"
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-    xmlns:local="clr-namespace:TimeSince"
-    Shell.FlyoutBehavior="Disabled">
+    xmlns:views="clr-namespace:TimeSince.MVVM.Views"
+    Shell.FlyoutBehavior="Disabled"
+    TitleColor="{DynamicResource Primary}">
 
     <ShellContent
         Title="TimeSince"
-        ContentTemplate="{DataTemplate local:MainPage}"
+        ContentTemplate="{DataTemplate views:MainPage}"
         Route="MainPage" />
 
 </Shell>

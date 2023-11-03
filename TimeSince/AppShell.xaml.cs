@@ -1,4 +1,5 @@
-﻿namespace TimeSince;
+﻿
+namespace TimeSince;
 
 public partial class AppShell : Shell
 {

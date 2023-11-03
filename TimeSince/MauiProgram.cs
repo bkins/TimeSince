@@ -1,4 +1,9 @@
-﻿using Microsoft.Extensions.Logging;
+﻿
+using Microsoft.Extensions.Logging;
+using Microsoft.Maui.LifecycleEvents;
+using Syncfusion.Maui.Core.Hosting;
+using Google.Apis;
+using Plugin.MauiMTAdmob;
 
 namespace TimeSince;
 
@@ -12,7 +17,11 @@ public static class MauiProgram
 		       {
 			       fonts.AddFont("OpenSans-Regular.ttf", "OpenSansRegular");
 			       fonts.AddFont("OpenSans-Semibold.ttf", "OpenSansSemibold");
-		       });
+		       })
+		       .UseMauiMTAdmob()
+		       ;
+
+		builder.ConfigureSyncfusionCore();
 
 #if DEBUG
 		builder.Logging.AddDebug();
@@ -20,4 +29,6 @@ public static class MauiProgram
 
 		return builder.Build();
 	}
+
+
 }

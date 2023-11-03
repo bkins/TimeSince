@@ -1,8 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
-		<TargetFrameworks>net7.0-android;net7.0-ios;net7.0-maccatalyst</TargetFrameworks>
-		<TargetFrameworks Condition="$([MSBuild]::IsOSPlatform('windows'))">$(TargetFrameworks);net7.0-windows10.0.19041.0</TargetFrameworks>
+		<TargetFrameworks>net7.0-android;net7.0-maccatalyst</TargetFrameworks>
 		<!-- Uncomment to also build the tizen app. You will need to install tizen by following this: https://github.com/Samsung/Tizen.NET -->
 		<!-- <TargetFrameworks>$(TargetFrameworks);net7.0-tizen</TargetFrameworks> -->
 		<OutputType>Exe</OutputType>
@@ -15,7 +14,7 @@
 		<ApplicationTitle>TimeSince</ApplicationTitle>
 
 		<!-- App Identifier -->
-		<ApplicationId>com.companyname.timesince</ApplicationId>
+		<ApplicationId>com.hopkins.timesince</ApplicationId>
 		<ApplicationIdGuid>915eaf05-fef0-4d20-8b7f-385bdbe31bfe</ApplicationIdGuid>
 
 		<!-- Versions -->
@@ -30,12 +29,17 @@
 		<SupportedOSPlatformVersion Condition="$([MSBuild]::GetTargetPlatformIdentifier('$(TargetFramework)')) == 'tizen'">6.5</SupportedOSPlatformVersion>
 	</PropertyGroup>
 
+	<PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
+	  <AndroidLinkMode>None</AndroidLinkMode>
+	</PropertyGroup>
+
 	<ItemGroup>
 		<!-- App Icon -->
 		<MauiIcon Include="Resources\AppIcon\appicon.svg" ForegroundFile="Resources\AppIcon\appiconfg.svg" Color="#512BD4" />
 
 		<!-- Splash Screen -->
-		<MauiSplashScreen Include="Resources\Splash\splash.svg" Color="#512BD4" BaseSize="128,128" />
+<!--		<MauiSplashScreen Include="Resources\Splash\splash.svg" Color="#512BD4" BaseSize="128,128" />-->
+		<MauiSplashScreen Include="Resources\Splash\clock.png" BaseSize="128,128" />
 
 		<!-- Images -->
 		<MauiImage Include="Resources\Images\*" />
@@ -49,11 +53,16 @@
 	</ItemGroup>
 
 	<ItemGroup>
-	  <None Remove="Platforms\Android\Resources\drawable\twotone_timelapse_white_18.png" />
-	</ItemGroup>
-
-	<ItemGroup>
+		<PackageReference Include="Google.Apis.AdMob.v1" Version="1.62.0.3036" />
+		<PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="7.0.11" />
 		<PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="7.0.0" />
+		<PackageReference Include="Plugin.InAppBilling" Version="7.0.5" />
+		<PackageReference Include="Plugin.MauiMTAdmob" Version="1.0.4" />
+		<PackageReference Include="sqlite-net-pcl" Version="1.8.116" />
+		<PackageReference Include="SQLiteNetExtensions" Version="2.1.0" />
+		<PackageReference Include="SQLitePCLRaw.bundle_green" Version="2.1.6" />
+		<PackageReference Include="Syncfusion.Maui.Picker" Version="23.1.36" />
+		<PackageReference Include="Syncfusion.Maui.Popup" Version="23.1.36" />
 	</ItemGroup>
 
 	<ItemGroup>
@@ -62,5 +71,49 @@
 	  </AndroidResource>
 	</ItemGroup>
 
+	<ItemGroup>
+		
+	  	<Compile Update="MVVM\Views\SettingsPage.code.cs">
+	    	<DependentUpon>SettingsPage.UI.cs</DependentUpon>
+	  	</Compile>
+		
+	  	<Compile Update="MVVM\Views\SettingsPage.Events.cs">
+	  	  <DependentUpon>SettingsPage.UI.cs</DependentUpon>
+	  	</Compile>
+		
+	  	<Compile Update="MVVM\Views\MainPage.xaml.cs">
+	  	  <DependentUpon>MainPage.xaml</DependentUpon>
+	  	  <SubType>Code</SubType>
+	  	</Compile>
+		
+	  	<Compile Update="MVVM\Views\MainPage.Events.cs">
+	  	  <DependentUpon>MainPage.xaml</DependentUpon>
+	  	</Compile>
+		
+	  	<Compile Update="Avails\AdManager.Events.cs">
+	  	  <DependentUpon>AdManager.cs</DependentUpon>
+	  	</Compile>
+		
+	</ItemGroup>
+
+
+	<ItemGroup>
+	  <Folder Include="Platforms\Android\Renderers\" />
+	</ItemGroup>
+
+
+	<ItemGroup>
+	  <MauiXaml Update="MVVM\Views\MainPage.xaml">
+	    <SubType>Designer</SubType>
+	  </MauiXaml>
+	</ItemGroup>
+
+
+	<ItemGroup>
+	  <None Remove="secrets.keys.json" />
+	  <EmbeddedResource Include="secrets.keys.json">
+	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+	  </EmbeddedResource>
+	</ItemGroup>
 
 </Project>
