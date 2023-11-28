@@ -1,5 +1,6 @@
 ﻿using System.Collections.ObjectModel;
 using System.ComponentModel;
+using TimeSince.Avails;
 using TimeSince.Avails.Extensions;
 using TimeSince.Data;
 using TimeSince.MVVM.BaseClasses;
@@ -122,7 +123,7 @@ public class TimeElapsedViewModel : BaseViewModel
         }
         catch (Exception e)
         {
-            Console.WriteLine(e);
+            App.Logger.LogError(e);
 
             return "Please set a date and time for the event";
         }
@@ -149,7 +150,7 @@ public class TimeElapsedViewModel : BaseViewModel
         }
         catch (Exception e)
         {
-            Console.WriteLine(e);
+            App.Logger.LogError(e);
 
             return "Please set a date and time for the event";
         }
@@ -199,6 +200,8 @@ public class TimeElapsedViewModel : BaseViewModel
 
     public void SortEvents(SortOptions sortBy)
     {
+        PreferencesDataStore.LastSortOption = (int)sortBy;
+
         switch (sortBy)
         {
             case SortOptions.None:

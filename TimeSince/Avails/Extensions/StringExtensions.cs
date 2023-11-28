@@ -1,4 +1,5 @@
 ﻿using System.Globalization;
+using System.Text.Json.Nodes;
 using System.Text.RegularExpressions;
 using static System.StringComparison;
 
@@ -36,14 +37,7 @@ public static class StringExtensions
         {
             value = value?.ToLower();
         }
-        return ti.ToTitleCase(value);
-    }
-
-    public static string ToTitleCase(this string value)
-    {
-        var textInfo = new CultureInfo("en-US"
-                                     , false).TextInfo;
-        return textInfo.ToTitleCase(nameof(value));
+        return ti.ToTitleCase(value ?? string.Empty);
     }
 
     /// <summary>
@@ -70,7 +64,8 @@ public static class StringExtensions
         }
 
         //Value is not in a time format (there is no ':' in string), throw error
-        if ( ! timeAsString.Contains(":"))
+        if ( timeAsString is null
+          || ! timeAsString.Contains(':'))
             throw new FormatException(BadTimeFormatMessage);
 
         var timeParts = timeAsString.Split(':');
@@ -113,17 +108,17 @@ public static class StringExtensions
     }
 
     /// <summary>
-    /// Converts a TimeSpan to a HH:MM:SS or MM:SS (if hours are zero) string.
+    /// Converts a TimeSpan to a HH:mm:ss or MM:SS (if hours are zero) string.
     /// </summary>
     /// <param name="timeSpan"></param>
-    /// <returns>A string representing the TimeSpan in HH:MM:SS or MM:SS (if hours are zero) format.</returns>
+    /// <returns>A string representing the TimeSpan in HH:mm:ss or mm:ss (if hours are zero) format.</returns>
     public static string ToShortForm(this TimeSpan timeSpan)
     {
         var shortForm = "";
 
         if (timeSpan.Hours > 0)
         {
-            shortForm += $"{timeSpan.Hours}:";
+            shortForm += $"{timeSpan.Hours.ToString().PadLeft(2, '0')}:";
         }
 
         //Add leading zeroes to minutes and seconds
@@ -134,6 +129,8 @@ public static class StringExtensions
 
     public static bool IsTrue(this string value)
     {
+        if (value is null or "0") return false;
+
         return value.Equals("yes",  CurrentCultureIgnoreCase)
             || value.Equals("y",    CurrentCultureIgnoreCase)
             || value.Equals("true", CurrentCultureIgnoreCase)
@@ -142,9 +139,12 @@ public static class StringExtensions
 
     public static int ToSafeInt(this string value)
     {
-        return int.TryParse(value, out var outInt) ?
-                        outInt
-                        : 0;
+        if (double.TryParse(value, out var doubleValue))
+        {
+            return (int)doubleValue;
+        }
+
+        return 0;
     }
 
     public static double ToSafeDouble(this string value)
@@ -154,32 +154,75 @@ public static class StringExtensions
                         : 0.0;
     }
 
-    public static bool SafeContains(this string value, string searchValue)
+    // public static bool SafeContains(this string value, string searchValue)
+    // {
+    //     if (searchValue is null)
+    //     {
+    //         return true;
+    //     }
+    //
+    //     return value != null && value.Contains(searchValue);
+    // }
+    public static bool SafeContains(this string value, string searchValue, bool caseInsensitive = false)
     {
-        if (searchValue is null)
-        {
-            return true;
-        }
+        if (value is null
+         && searchValue is null) return true;
 
-        return value != null && value.Contains(searchValue);
-    }
+        if (value is null) return false;
 
-    public static bool Contains(this string source, string toCheck, StringComparison stringComparer)
-    {
-        return source?.IndexOf(toCheck, stringComparer) >= 0;
+        if (searchValue is null) return true;
+
+        return caseInsensitive
+            ? value.Contains(searchValue, OrdinalIgnoreCase)
+            : value.Contains(searchValue);
+
     }
 
     public static bool NotContains(this string value
-                                 , string      toCheck)
+                                 , string      searchValue
+                                 , bool        caseInsensitive = false)
     {
-        return ! value.Contains(toCheck);
+        return ! SafeContains(value
+                            , searchValue
+                            , caseInsensitive);
     }
 
+    /// <summary>
+    /// Insert spaces between words in a given string, where a word is defined as a sequence of lowercase letters.
+    /// </summary>
+    /// <param name="value">The string that is to be split into words.</param>
+    /// <returns>A string with all words separated by spaces.</returns>
+    /// <remarks>Words in all caps (usually Acronyms) are treated as a word. E.g. "AAATest" is two words, and will return "AAA Test"</remarks>
     public static string SplitCamelCase(this string value)
     {
+        if (value.IsNullEmptyOrWhitespace())
+        {
+            return value;
+        }
+
         return Regex.Replace(Regex.Replace(value, @"(\P{Ll})(\P{Ll}\p{Ll})", "$1 $2"),
                              @"(\p{Ll})(\P{Ll})",
                              "$1 $2");
     }
+    public static bool IsValidJson(this string json)
+    {
+        try
+        {
+            if ( ! json.EndsWith("]"))
+            {
+                //TODO: Just return... I don't think I need to throw an error here.
+                //THis causes problems when the log is cleared out and then accessed again
+                throw new ArgumentException("JSON must end with ']'");
+            }
 
+            JsonNode.Parse(json);
+
+            return true;
+        }
+        catch (Exception ex)
+            when (ex is ArgumentException)
+        {
+            return false;
+        }
+    }
 }

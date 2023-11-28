@@ -1,0 +1,86 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:viewModels="clr-namespace:TimeSince.MVVM.ViewModels"
+             x:Class="TimeSince.MVVM.Views.MessageLog"
+             Title="Message Log">
+
+    <ContentPage.ToolbarItems>
+        <ToolbarItem x:Name="ClearToolbarItem"
+                     Text="Clear"
+                     Clicked="ClearToolbarItem_OnClicked"/>
+    </ContentPage.ToolbarItems>
+
+    <ContentPage.Resources>
+        <DataTemplate x:Key="LogGroupHeaderTemplate">
+            <ViewCell>
+                <Frame CornerRadius="10"
+                       BackgroundColor="{DynamicResource Secondary}"
+                       Padding="10"
+                       Margin="5,5,5,0">
+                    <StackLayout BindingContext="{Binding .}">
+                        <Label Text="{Binding Key}"
+                               TextColor="{DynamicResource TertiaryColor}"
+                               LineBreakMode="TailTruncation"
+                               FontAttributes="Bold"/>
+                        <Label Text=" "
+                               TextColor="{DynamicResource TertiaryColor}"
+                               FontAttributes="Bold"/>
+                        <Label Text="{Binding LogCount}"
+                               TextColor="{DynamicResource TertiaryColor}"
+                               FontAttributes="Bold"/>
+                    </StackLayout>
+                </Frame>
+            </ViewCell>
+        </DataTemplate>
+    </ContentPage.Resources>
+
+
+    <StackLayout x:Name="MainStackLayout"
+                 Margin="5, 0, 5, 0"
+                 >
+        <ListView x:Name="LogListView"
+                  RowHeight="85"
+                  ItemsSource="{Binding GroupedLogEntriesWithCount}"
+                  IsGroupingEnabled="True"
+                  GroupDisplayBinding="{Binding Key}"
+                  GroupShortNameBinding="{Binding Key}"
+                  GroupHeaderTemplate="{StaticResource LogGroupHeaderTemplate}"
+                  ItemTapped="OnLogListViewOnItemTapped">
+            <ListView.ItemTemplate>
+                <DataTemplate>
+                    <ViewCell>
+                        <Grid>
+
+                            <Frame x:Name="LogsEntriesFrame"
+                                   CornerRadius="10"
+                                   Padding="10"
+                                   Margin="25, 5, 5, 5"
+                                   BackgroundColor="{DynamicResource Secondary}"
+                                   >
+                                <Grid RowDefinitions="Auto, Auto, Auto">
+
+                                    <!-- <Label Grid.Row="0" -->
+                                    <!--        TextColor="{DynamicResource TertiaryColor}" -->
+                                    <!--        FontAttributes="Italic" -->
+                                    <!--        LineBreakMode="TailTruncation" -->
+                                    <!--        Text="{Binding Message}" /> -->
+
+                                    <Label Grid.Row="1"
+                                           TextColor="{DynamicResource TertiaryColor}"
+                                           FontAttributes="Italic"
+                                           Text="{Binding TimeStamp}" />
+
+                                    <Label Grid.Row="2"
+                                           TextType="Html"
+                                           Text="{Binding CategoryAsHtml}" />
+                                </Grid>
+                            </Frame>
+                        </Grid>
+                    </ViewCell>
+                </DataTemplate>
+            </ListView.ItemTemplate>
+        </ListView>
+    </StackLayout>
+
+</ContentPage>

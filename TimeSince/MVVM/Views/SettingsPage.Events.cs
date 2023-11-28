@@ -1,5 +1,6 @@
 ﻿using Syncfusion.Maui.Picker;
-using TimeSince.Avails;
+using TimeSince.Avails.Attributes;
+using TimeSince.Avails.ColorHelpers;
 using TimeSince.Data;
 
 namespace TimeSince.MVVM.Views;
@@ -10,6 +11,8 @@ public partial class SettingsPage
     private void PrimaryColorPickerOnSelectionChanged(object                          sender
                                              , PickerSelectionChangedEventArgs e)
     {
+        //BENDO: Investigate why Primary is handled differently than Secondary and Tertiary.
+
         if (e.NewValue < 0
          || e.NewValue >= ColorUtility.ColorNames.Count) return;
 
@@ -17,6 +20,11 @@ public partial class SettingsPage
         var color         = ColorUtility.ColorNames[selectedIndex];
 
         PrimaryColorPicker.BackgroundColor = color.Color;
+        PrimaryColorPicker.FooterView
+                          .TextStyle = new PickerTextStyle
+                                                  {
+                                                      TextColor = ColorUtility.ChooseReadableTextColor(PrimaryColorPicker.BackgroundColor)
+                                                  };
     }
 
     private void SecondaryColorPickerOnSelectionChanged(object                          sender
@@ -28,9 +36,14 @@ public partial class SettingsPage
         var selectedIndex = e.NewValue;
 
         var color     = ColorUtility.ColorNames[selectedIndex];
-        var mauiColor = ColorUtility.ConvertSystemColorNameToMauiColor(color.Name);
+        var mauiColor = ColorUtility.ConvertSystemColorNameToMauiColor(color.Name, ColorInfo.LavenderMist);
 
         SecondaryColorPicker.BackgroundColor = mauiColor;
+        SecondaryColorPicker.FooterView
+                            .TextStyle = new PickerTextStyle
+                                         {
+                                             TextColor = ColorUtility.ChooseReadableTextColor(SecondaryColorPicker.BackgroundColor)
+                                         };
     }
 
     private void TertiaryColorPickerOnSelectionChanged(object                          sender
@@ -42,11 +55,16 @@ public partial class SettingsPage
         var selectedIndex = e.NewValue;
 
         var color     = ColorUtility.ColorNames[selectedIndex];
-        var mauiColor = ColorUtility.ConvertSystemColorNameToMauiColor(color.Name);
+        var mauiColor = ColorUtility.ConvertSystemColorNameToMauiColor(color.Name, ColorInfo.MidnightIndigo);
         var didSetColor = ColorUtility.UpdateColorResource(ResourceColors.Tertiary
-                                                       , mauiColor);
+                                                         , mauiColor);
 
         TertiaryColorPicker.BackgroundColor = mauiColor;
+        TertiaryColorPicker.FooterView
+                           .TextStyle = new PickerTextStyle
+                                        {
+                                            TextColor = ColorUtility.ChooseReadableTextColor(TertiaryColorPicker.BackgroundColor)
+                                        };
     }
 
     private void PrimaryColorPickerOkButtonClicked(object    sender
@@ -172,20 +190,29 @@ public partial class SettingsPage
         ColorUtility.SetDefaultResourceColors();
     }
 
-    private void RemoveAdsCheckBoxOnCheckedChanged(object                  sender
-                                                 , CheckedChangedEventArgs e)
+    [UnderConstruction("Need to implement way to make a purchase to remove ads")]
+    private void RemoveAdsSwitchOnToggled(object           sender
+                                        , ToggledEventArgs e)
     {
-        RemoveAdsViewModel.PaidForAdsToBeRemoved = RemoveAdsCheckBox.IsChecked;
+        DisplayAlert("Under Construction"
+                   , "This feature is still under construction."
+                   , "OK");
+
+        // 1. Make purchase to remove ads
+        App.AppServiceMethods.MakePurchase();
+        // OR
+        App.AppServiceMethods.PurchaseItem();
+
+        // 2. Verify purchase was made
+
+        // 3. Turn off ads in app
+        RemoveAdsViewModel.PaidForAdsToBeRemoved = RemoveAdsSwitch.IsToggled;
 
         if (AdView is not null)
         {
-            AdView.IsVisible = RemoveAdsCheckBox.IsChecked;
-        }
-
-        if (RemoveAdsCheckBox.IsChecked)
-        {
-
+            AdView.IsVisible = RemoveAdsSwitch.IsToggled;
         }
     }
+
 
 }

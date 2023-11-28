@@ -2,10 +2,16 @@
 
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             xmlns:controls="clr-namespace:Plugin.MauiMTAdmob.Controls;assembly=Plugin.MauiMtAdmob"
              x:Class="TimeSince.MVVM.Views.MainPage"
              Title="Time Since"
              >
+    <ContentPage.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="/Resources/Styles/CommonStyles.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </ContentPage.Resources>
 
     <ContentPage.ToolbarItems>
 
@@ -29,15 +35,15 @@
 
         <Picker x:Name="SortPicker"
                 Title="How would you like to sort the list?"
-                SelectedIndexChanged="OnPickerSelectedIndexChanged"
+                SelectedIndexChanged="OnSortPickerSelectedIndexChanged"
                 IsVisible="False"
                 ItemsSource="{Binding SortOptionsList}"
         />
 
         <ListView x:Name="EventsListView"
-                  SeparatorColor="{DynamicResource Primary}"
-                  SelectionMode="None"
                   ItemsSource="{Binding Events}"
+                  SelectionMode="None"
+                  SeparatorColor="{DynamicResource Primary}"
                   RowHeight="340"
                   ItemTapped="EventsListView_OnItemTapped">
 
@@ -45,34 +51,16 @@
                 <DataTemplate>
                     <ViewCell>
                         <Grid>
-                            <Frame CornerRadius="10"
-                                   Padding="10"
-                                   Margin="5, 5, 5, 5"
-                                   BackgroundColor="{DynamicResource Secondary}">
+                            <Frame x:Name="EventsFrame"
+                                   Style="{StaticResource CommonFrameStyle}">
 
-                                <Grid>
-                                    <Grid.ColumnDefinitions>
-                                        <ColumnDefinition Width="*" />
-                                        <ColumnDefinition Width="*" />
-                                    </Grid.ColumnDefinitions>
-                                    <Grid.RowDefinitions>
-                                        <RowDefinition Height="Auto" />
-                                        <RowDefinition Height="Auto" />
-                                        <RowDefinition Height="Auto" />
-                                        <RowDefinition Height="Auto" />
-                                        <RowDefinition Height="Auto" />
-                                        <RowDefinition Height="Auto" />
-                                        <RowDefinition Height="Auto" />
-                                    </Grid.RowDefinitions>
+                                <Grid ColumnDefinitions="*, *"
+                                      RowDefinitions="Auto, Auto, Auto, Auto, Auto, Auto, Auto">
 
                                     <Label x:Name="ElapsedTimeLabel"
                                            Grid.ColumnSpan="2"
                                            Text="{Binding TimeElapsedForDisplay}"
-                                           FontSize="Medium"
-                                           FontAttributes="Bold"
-                                           TextColor="{DynamicResource Tertiary}"
-                                           HorizontalTextAlignment="Center"
-                                           Margin="0, 10, 0, 10"
+                                           Style="{StaticResource CommonSectionTitleLabelStyle}"
                                            >
                                         <Label.GestureRecognizers>
                                             <TapGestureRecognizer Tapped="ElapsedTimeLabel_Tapped" />
@@ -85,6 +73,7 @@
                                             Grid.Column="0"
                                             Grid.ColumnSpan="2"
                                             Placeholder="Name"
+                                            PlaceholderColor="Red"
                                             Text="{Binding Title}"
                                             TextColor="{DynamicResource Tertiary}"
                                             FontAttributes="Italic"
@@ -103,7 +92,8 @@
                                            Grid.Column="0"
                                            Grid.ColumnSpan="2"
                                            Text="Beginning Date:"
-                                           TextColor="{DynamicResource Tertiary}"/>
+                                           Style="{StaticResource CommonDataElementLabelStyle}"/>
+
                                     <DatePicker x:Name="DatePicker"
                                                 Grid.Row="3"
                                                 Grid.Column="0"
@@ -117,7 +107,7 @@
                                            Grid.Column="0"
                                            Grid.ColumnSpan="2"
                                            Text="Beginning Time:"
-                                           TextColor="{DynamicResource Tertiary}" />
+                                           Style="{StaticResource CommonDataElementLabelStyle}" />
                                     <TimePicker x:Name="TimePicker"
                                                 Grid.Row="5"
                                                 Grid.Column="0"
@@ -127,17 +117,19 @@
                                                 TextColor="{DynamicResource Tertiary}" />
 
                                     <!-- Save and Delete Buttons -->
-                                    <Button Grid.Row="6"
+                                    <Button x:Name="SaveButton"
+                                            Grid.Row="6"
                                             Grid.Column="0"
-                                            x:Name="SaveButton"
                                             BackgroundColor="{DynamicResource Primary}"
+                                            TextColor="{Binding ButtonTextColor}"
                                             Text="Save"
                                             Margin="0, 5, 5, 0"
                                             Clicked="SaveButton_OnClicked" />
-                                    <Button Grid.Row="6"
+                                    <Button x:Name="DeleteButton"
+                                            Grid.Row="6"
                                             Grid.Column="1"
-                                            x:Name="DeleteButton"
                                             BackgroundColor="{DynamicResource Primary}"
+                                            TextColor="{Binding ButtonTextColor}"
                                             Text="Delete"
                                             Margin="5, 5, 0, 0"
                                             Clicked="DeleteButton_OnClicked" />
@@ -149,19 +141,11 @@
             </ListView.ItemTemplate>
         </ListView>
 
-        <Button Text="Add Event"
+        <Button x:Name="AddEventButton"
+                Text="Add Event"
                 BackgroundColor="{DynamicResource Primary}"
                 Clicked="AddEventButton_OnClicked"
                 Margin="0, 0, 0, 10"
                 />
-        <!-- <controls:MTAdView x:Name="AddBanner" -->
-        <!--                    AdsClicked="AddBanner_OnAdsClicked" -->
-        <!--                    AdsClosed="AddBanner_OnAdsClosed" -->
-        <!--                    AdsImpression="AddBanner_OnAdsImpression" -->
-        <!--                    AdsLeftApplication="AddBanner_OnAdsLeftApplication" -->
-        <!--                    AdsFailedToLoad="AddBanner_OnAdsFailedToLoad" -->
-        <!--                    AdsLoaded="AddBanner_OnAdsLoaded" -->
-        <!--                    AdsOpened="AddBanner_OnAdsOpened"/> -->
-
     </StackLayout>
 </ContentPage>

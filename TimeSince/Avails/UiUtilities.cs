@@ -39,6 +39,24 @@ public static class UiUtilities
         return new RowDefinition { Height = height };
     }
 
+    public static void AddRowDefinitions(Grid grid, GridLength gridLength, int numberOfRows)
+    {
+        for (var i = 0; i < numberOfRows; i++)
+        {
+            grid.RowDefinitions.Add(NewRowDefinition(gridLength));
+        }
+    }
+
+    public static void AddColumnDefinitions(Grid       grid
+                                          , GridLength gridLength
+                                          , int        numberOfColumns)
+    {
+        for (var i = 0; i < numberOfColumns; i++)
+        {
+            grid.ColumnDefinitions.Add(NewColumnDefinition(gridLength));
+        }
+    }
+
     #endregion
 
     #region Clipboard Access
@@ -98,4 +116,5 @@ public static class UiUtilities
         };
         timer.Start();
     }
+
 }

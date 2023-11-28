@@ -9,6 +9,9 @@ public static class EnumExtensions
     {
         var field     = value.GetType().GetField(value.ToString());
         var attribute = field?.GetCustomAttribute<DescriptionAttribute>();
-        return attribute == null ? value.ToString() : attribute.Description;
+
+        return attribute == null
+                    ? value.ToString()
+                    : attribute.Description;
     }
 }

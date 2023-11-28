@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using TimeSince.Avails;
 using TimeSince.Data;
 using TimeSince.MVVM.ViewModels;
+using TimeSince.Services.ServicesIntegration;
 
 namespace TimeSince.MVVM.Views;
 
@@ -22,7 +23,7 @@ public partial class AboutPage : ContentPage
         AboutViewModel.CurrentAwesomeScore = "1";
 
         BindingContext = AboutViewModel;
-        AdView         = AdManager.Instance.GetAdView();
+        AdView         = AppIntegrationService.GetAdView();
         if (AdView is not null)
         {
             MainStackLayout.Add(AdView);
@@ -38,14 +39,14 @@ public partial class AboutPage : ContentPage
     }
     private void RefreshAdViewOnPage()
     {
-        var adsAreEnabled        = AdManager.Instance.AreAdsEnabled;
+        var adsAreEnabled        = App.AppServiceMethods.AreAdsEnabled();
         var adViewHasValue       = AdView is not null;
         var adViewIsInMainLayout = MainStackLayout.Children.Contains(AdView);
 
         if ( ! adViewHasValue
           && adsAreEnabled)
         {
-            AdView           = AdManager.Instance.GetAdView();
+            AdView           = AppIntegrationService.GetAdView();
             AdView.IsVisible = true;
 
             MainStackLayout.Add(AdView);
@@ -80,7 +81,7 @@ public partial class AboutPage : ContentPage
         ShowInterstitialAdButton.Text = "Ad is loading...";
 
         // Load the interstitial ad asynchronously
-        await AdManager.Instance.ShowInterstitialAdAsync(10, true);
+        App.AppServiceMethods.ShowInterstitialAdAsync();
 
         // Once the ad is shown, restore the original button text
         ShowInterstitialAdButton.Text = originalButtonText;
@@ -89,18 +90,18 @@ public partial class AboutPage : ContentPage
     }
 
     private async void ShowInterstitialRewardAdButton_OnClicked(object    sender
-                                                        , EventArgs e)
+                                                              , EventArgs e)
     {
-        await AdManager.Instance.ShowInterstitialRewardAdAsync(10, true);
+        await App.AppServiceMethods.ShowInterstitialRewardAdAsync(10, true);
     }
 
     private async void ShowRewardAdButton_OnClicked(object    sender
-                                            , EventArgs e)
+                                                  , EventArgs e)
     {
         var originalButtonText = ShowRewardAdButton.Text;
         ShowRewardAdButton.Text = "Ad is loading...";
 
-        await AdManager.Instance.ShowRewardAdAsync(10, true);
+        await App.AppServiceMethods.ShowRewardAdAsync(10, true);
 
         ShowRewardAdButton.Text = originalButtonText;
 
@@ -111,5 +112,11 @@ public partial class AboutPage : ContentPage
                                                  , EventArgs e)
     {
         AboutViewModel.ResetAwesomeScore();
+    }
+
+    private void PrivacyPolicyButton_OnClicked(object    sender
+                                             , EventArgs e)
+    {
+        Launcher.OpenAsync(new Uri("https://benhop2.wixsite.com/bensapps/privacypolicy"));
     }
 }

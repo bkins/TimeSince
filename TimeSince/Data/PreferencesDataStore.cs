@@ -55,6 +55,18 @@ public static class PreferencesDataStore
         set => Preferences.Set(nameof(AwesomePersonScore), value);
     }
 
+    public static int LastSortOption
+    {
+        get => Preferences.Get(nameof(LastSortOption), 0);
+        set => Preferences.Set(nameof(LastSortOption), value);
+    }
+
+    public static bool HideStartupMessage
+    {
+        get => Preferences.Get(nameof(HideStartupMessage), false);
+        set => Preferences.Set(nameof(HideStartupMessage), value);
+    }
+
     public static void ClearColors()
     {
         //Preferences.Clear();

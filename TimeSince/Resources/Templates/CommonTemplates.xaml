@@ -1,0 +1,13 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+                    xmlns:maui="http://schemas.microsoft.com/dotnet/2021/maui">
+
+    <ControlTemplate x:Key="CustomFrameTemplate">
+        <Frame CornerRadius="10" BorderColor="Black" BackgroundColor="White">
+            <!-- Define the structure, borders, corners, etc., of a common frame -->
+        </Frame>
+    </ControlTemplate>
+
+    <!-- Define templates for other controls if needed -->
+
+</ResourceDictionary>

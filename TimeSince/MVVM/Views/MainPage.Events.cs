@@ -1,8 +1,7 @@
 ﻿using System.Collections.Specialized;
-using System.ComponentModel;
-using Plugin.MauiMTAdmob;
 using Plugin.MauiMTAdmob.Extra;
 using TimeSince.Avails;
+using TimeSince.Avails.ColorHelpers;
 using TimeSince.Avails.Extensions;
 using TimeSince.Data;
 using TimeSince.MVVM.Models;
@@ -15,11 +14,12 @@ public partial class MainPage //Events
     private async void AddEventButton_OnClicked(object    sender
                                         , EventArgs e)
     {
-        await AdManager.Instance.ShowInterstitialAdAsync();
+        App.AppServiceMethods.ShowInterstitialAdAsync();
 
         TimeElapsedViewModel.AddNewEvent();
+        ScrollToLastItemInListView();
 
-        PreferencesDataStore.AwesomePersonScore += 1;
+        PreferencesDataStore.AwesomePersonScore += 10;
     }
 
     private void EventsListView_OnItemTapped(object              sender
@@ -90,6 +90,22 @@ public partial class MainPage //Events
                                , EventArgs e)
     {
         ColorUtility.SetResourceColors();
+        //SortPicker.TextColor          = ColorUtility.ChooseReadableTextColor(SortPicker.BackgroundColor);
+        EventsListView.SeparatorColor = Color.FromArgb(ColorInfo.BlackAsHex); //ColorUtility.ChooseReadableTextColor(EventsListView.BackgroundColor);
+
+        SetButtonsTextColor();
+    }
+
+    private void SetButtonsTextColor()
+    {
+
+        var buttonTextColor = ColorUtility.ChooseReadableTextColor(ColorUtility.GetColorFromResources(ResourceColors.Primary));
+        foreach (var beginningEvent in TimeElapsedViewModel.Events)
+        {
+            beginningEvent.ButtonTextColor = buttonTextColor;
+        }
+
+        AddEventButton.TextColor = buttonTextColor;
     }
 
     private void ElapsedTimeLabel_Tapped(object          sender
@@ -120,7 +136,8 @@ public partial class MainPage //Events
             TimeElapsedViewModel.SortEvents((SortOptions)selectedIndex);
         }
     }
-    void OnPickerSelectedIndexChanged(object sender, EventArgs e)
+
+    void OnSortPickerSelectedIndexChanged(object sender, EventArgs e)
     {
         var picker              = (Picker)sender;
         var selectedDescription = (string)picker.SelectedItem;
@@ -128,6 +145,7 @@ public partial class MainPage //Events
         if (selectedDescription.HasValue())
         {
             TimeElapsedViewModel.SortEvents(Utilities.GetEnumValueFromDescription<SortOptions>(selectedDescription));
+            ScrollToFirstItemInListView();
         }
     }
 

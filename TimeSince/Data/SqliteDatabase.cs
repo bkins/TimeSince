@@ -1,7 +1,6 @@
 ﻿using System.Collections.ObjectModel;
 using SQLite;
 using SQLiteNetExtensions.Extensions;
-using TimeSince.Avails;
 using TimeSince.Avails.Exceptions;
 using TimeSince.MVVM.Models;
 
@@ -10,21 +9,18 @@ namespace TimeSince.Data;
 public class SqliteDatabase : AbstractDataStore
 {
     private readonly SQLiteConnection _database;
-    private readonly string           _dbPath;
 
     public SqliteDatabase(string dbPath)
     {
         try
         {
             _database = new SQLiteConnection(dbPath);
-            _dbPath   = dbPath;
 
             _database.CreateTable<BeginningEvent>();
-            //.CreateTable<ColorName>();
         }
         catch (Exception e)
         {
-            Console.WriteLine(e);
+            App.Logger.LogError(e);
         }
     }
 

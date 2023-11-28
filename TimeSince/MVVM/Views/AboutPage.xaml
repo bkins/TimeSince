@@ -18,33 +18,48 @@
 
             <Grid x:Name="MainGrid"
                   ColumnDefinitions="*, *"
-                  RowDefinitions="*, *">
-
-                <Label x:Name="CurrentVersionLabel"
+                  RowDefinitions="*, *, *, *"
+                  Margin="5, 0, 0, 5"
+                  >
+                <Label x:Name="DescriptionLabel"
                        Grid.Column="0"
                        Grid.Row="0"
+                       Grid.ColumnSpan="2"
+                       Text="Time Since is an app to help track how long it has been since an event."
+                       Margin="0, 0, 0, 10"
+                       />
+                <Label x:Name="DevBioLabel"
+                       Grid.Column="0"
+                       Grid.Row="1"
+                       Grid.ColumnSpan="2"
+                       Text="Hi!  My name is Ben.  I create apps like this in my spare time.  I do this mostly for fun and to keep my skills up. I also do it to bring in a bit of supplemental income."
+                       Margin="0, 0, 0, 10"
+                />
+                <Label x:Name="CurrentVersionLabel"
+                       Grid.Column="0"
+                       Grid.Row="2"
                        Text="Current Version:"
-                       FontSize="18"
+                       FontSize="16"
                        TextColor="{DynamicResource Tertiary}" />
 
                 <Label x:Name="CurrentVersionValue"
                        Grid.Column="1"
-                       Grid.Row="0"
+                       Grid.Row="2"
                        Text="{Binding CurrentVersion}"
-                       FontSize="18"
+                       FontSize="16"
                        TextColor="{DynamicResource Tertiary}" />
 
                 <Label x:Name="CurrentBuildLabel"
                        Grid.Column="0"
-                       Grid.Row="1"
+                       Grid.Row="3"
                        Text="Current Build:"
-                       FontSize="18"
+                       FontSize="16"
                        TextColor="{DynamicResource Tertiary}" />
                 <Label x:Name="CurrentBuildValue"
                        Grid.Column="1"
-                       Grid.Row="1"
+                       Grid.Row="3"
                        Text="{Binding CurrentBuild}"
-                       FontSize="18"
+                       FontSize="16"
                        TextColor="{DynamicResource Tertiary}" />
 
             </Grid>
@@ -58,12 +73,6 @@
                     Text="Show Interstitial Ad"
                     Margin="5, 5, 5, 5"
                     Clicked="ShowInterstitialAdButton_OnClicked" />
-
-            <!--These ads are not working... TODO: Look into why these are not working, when I care.-->
-            <!-- <Button x:Name="ShowInterstitialRewardAdButton" -->
-            <!--         Text="Show Interstitial Reward Ad" -->
-            <!--         Margin="5, 5, 5, 5" -->
-            <!--         Clicked="ShowInterstitialRewardAdButton_OnClicked"/> -->
 
             <Button x:Name="ShowRewardAdButton"
                     Text="Show Reward Ad"
@@ -90,6 +99,10 @@
                     Margin="75, 5, 5, 5"
                     Clicked="ResetAwesomeScoreButton_OnClicked" />
 
+            <Button x:Name="PrivacyPolicyButton"
+                    Text="Privacy Policy"
+                    Margin="5, 5, 5, 5"
+                    Clicked="PrivacyPolicyButton_OnClicked"/>
         </StackLayout>
 
     </ContentPage.Content>

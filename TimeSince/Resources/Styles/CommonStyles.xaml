@@ -1,0 +1,38 @@
+﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+                    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml">
+
+    <!--BENDO: Review this file and compare it to the Styles.xaml to find which properties need to be more their-->
+    <!--appropriate file-->
+    <Style TargetType="Label" x:Key="CommonDataElementLabelStyle">
+        <Setter Property="FontSize" Value="16" />
+        <Setter Property="FontAttributes" Value="Bold"/>
+        <Setter Property="TextColor" Value="{DynamicResource Tertiary}" />
+    </Style>
+
+    <Style TargetType="Label" x:Key="CommonSectionTitleLabelStyle">
+        <Setter Property="FontSize" Value="Medium" />
+        <Setter Property="FontAttributes" Value="Bold"/>
+        <Setter Property="HorizontalTextAlignment" Value="Center"/>
+        <Setter Property="Margin" Value="0, 10, 0, 10"/>
+        <Setter Property="TextColor" Value="{DynamicResource Tertiary}" />
+    </Style>
+
+    <Style TargetType="Frame" x:Key="CommonFrameStyle">
+        <Setter Property="CornerRadius" Value="10" />
+        <Setter Property="Padding" Value="10"/>
+        <Setter Property="Margin" Value="5, 5, 5, 5"/>
+        <Setter Property="BorderColor" Value="{DynamicResource Primary}" />
+        <Setter Property="BackgroundColor" Value="{DynamicResource Secondary}" />
+    </Style>
+
+    <Style TargetType="Button" x:Key="CommonButtonStyle">
+        <Setter Property="BackgroundColor" Value="{DynamicResource Primary}" />
+        <Setter Property="TextColor" Value="{Binding ButtonTextColor}" />
+    </Style>
+
+    <Style TargetType="Picker" x:Key="CommonPickerStyle">
+        <Setter Property="Title" Value="How would you like to sort the list?" />
+        <Setter Property="IsVisible" Value="False" />
+    </Style>
+
+</ResourceDictionary>
