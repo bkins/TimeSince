@@ -7,20 +7,23 @@ namespace TimeSince.MVVM.Views;
 
 public partial class SettingsPage : ContentPage
 {
-    private SfPicker PrimaryColorPicker    { get; set; }
-    private SfPicker SecondaryColorPicker  { get; set; }
-    private SfPicker TertiaryColorPicker   { get; set; }
-    private Editor   PrimarySearchEditor   { get; set; }
-    private Editor   SecondarySearchEditor { get; set; }
-    private Editor   TertiarySearchEditor  { get; set; }
-    private Button   PrimaryButton         { get; set; }
-    private Button   SecondaryButton       { get; set; }
-    private Button   TertiaryButton        { get; set; }
-    private Color    ForegroundColor       { get; set; }
-    private Label    RemoveAdsLabel        { get; set; }
-    private CheckBox RemoveAdsCheckBox     { get; set; }
-    private Switch   RemoveAdsSwitch       { get; set; }
-    private View     AdView                { get; set; }
+    private StackLayout MainStackLayout       { get; set; }
+    private SfPicker    PrimaryColorPicker    { get; set; }
+    private SfPicker    SecondaryColorPicker  { get; set; }
+    private SfPicker    TertiaryColorPicker   { get; set; }
+    private Editor      PrimarySearchEditor   { get; set; }
+    private Editor      SecondarySearchEditor { get; set; }
+    private Editor      TertiarySearchEditor  { get; set; }
+    private Button      PrimaryButton         { get; set; }
+    private Button      SecondaryButton       { get; set; }
+    private Button      TertiaryButton        { get; set; }
+    private Color       ForegroundColor       { get; set; }
+    private Label       RemoveAdsLabel        { get; set; }
+    private CheckBox    RemoveAdsCheckBox     { get; set; }
+    private Switch      RemoveAdsSwitch       { get; set; }
+    private View        AdView                { get; set; }
+    private Entry       CodeEntry             { get; set; }
+    private bool        ViewLogsButtonAdded   { get; set; }
 
     private void InitializeComponent()
     {
@@ -28,6 +31,9 @@ public partial class SettingsPage : ContentPage
 
         Title = "Settings";
 
+        ViewLogsButtonAdded = false;
+
+        CreateToolBar();
         CreateColorPickers(columnWidth);
         CreateSearchEditors(columnWidth);
         CreateSetButtons();
@@ -36,7 +42,7 @@ public partial class SettingsPage : ContentPage
         var mainGrid      = BuildMainGrid();
         var adPlaceholder = new BoxView { HeightRequest = 0 };
 
-        var stackLayout = new StackLayout
+        MainStackLayout = new StackLayout
                           {
                               Children =
                                   {
@@ -45,48 +51,133 @@ public partial class SettingsPage : ContentPage
                                   }
                           };
 
-        AdView = AppIntegrationService.GetAdView();
-        if (AdView is not null)
-        {
-            stackLayout.Children.Remove(adPlaceholder);
-            stackLayout.Children.Add(AdView);
-        }
+        AddAdView(adPlaceholder);
 
 #if DEBUG
-        BuildViewLogsButton(stackLayout /*, forceHide: true*/);
+        RemoveAdsViewModel.DoorIsUnlocked = true;
 #endif
 
-        Content = stackLayout;
+        if (RemoveAdsViewModel.DoorIsUnlocked)
+        {
+            BuildViewLogsButton(MainStackLayout /*, forceHide: true*/);
+            BuildViewPreferencesButton(MainStackLayout);
+        }
+
+        Content = MainStackLayout;
+    }
+
+    private void CreateToolBar()
+    {
+        var enterCodeToolbarItem = new ToolbarItem
+                                   {
+                                       Text     = "~"
+                                     // , Order    = ToolbarItemOrder.Primary
+                                     // , Priority = 0 // Set the priority (higher values are displayed first)
+                                   };
+
+        enterCodeToolbarItem.Clicked += EnterCodeToolbarItem_Clicked;
+        //     (sender, e) =>
+        // {
+        //     var codeEntry = new Entry
+        //                     {
+        //                         Placeholder = "code"
+        //                         , Margin = new Thickness(5, 0, 5, 0);
+        //                     };
+        //     codeEntry.TextChanged += (o, args) =>
+        //     {
+        //         if (codeEntry.Text.Equals("viewLogs", StringComparison.CurrentCultureIgnoreCase))
+        //         {
+        //             BuildViewLogsButton(stackLayout);
+        //         }
+        //     };
+        //     stackLayout.Children.Add(codeEntry);
+        // };
+        ToolbarItems.Add(enterCodeToolbarItem);
+    }
+
+    private void EnterCodeToolbarItem_Clicked(object     sender
+                                             , EventArgs eventArgs)
+    {
+        CodeEntry = new Entry
+                        {
+                            Placeholder = "code"
+                            , Margin = new Thickness(5, 0, 5, 0)
+                        };
+        CodeEntry.TextChanged += CodeEntryOnTextChanged;
+        //     (o, args) =>
+        // {
+        //     if (codeEntry.Text.Equals("viewLogs", StringComparison.CurrentCultureIgnoreCase))
+        //     {
+        //         BuildViewLogsButton(MainStackLayout);
+        //     }
+        // };
+
+        MainStackLayout.Children.Add(CodeEntry);
+    }
+
+    private void CodeEntryOnTextChanged(object               sender
+                                      , TextChangedEventArgs e)
+    {
+        if (CodeEntry.Text.Equals("viewLogs", StringComparison.CurrentCultureIgnoreCase))
+        {
+            BuildViewLogsButton(MainStackLayout);
+        }
+        //Preferences can be accessed using the Door Key secret.
+    }
+
+    private void AddAdView(IView adPlaceholder)
+    {
+        if (RemoveAdsViewModel.PaidForAdsToBeRemoved) return;
+
+        AdView = App.AppServiceMethods.GetAdView();
+        if (AdView is not null)
+        {
+            MainStackLayout.Children.Remove(adPlaceholder);
+            MainStackLayout.Children.Add(AdView);
+        }
     }
 
     private void BuildViewLogsButton(Layout stackLayout, bool forceHide = false)
     {
-        if (forceHide) return;
+        if (forceHide || ViewLogsButtonAdded) return;
 
         var logButton = new Button
                         {
-                            Text            = "ViewLogs"
+                            Text            = "View Logs"
                           , BackgroundColor = PrimaryButton.BackgroundColor
                           , TextColor       = ForegroundColor
+                          , Margin          = new Thickness(5, 5, 5, 0)
                         };
 
         logButton.Clicked += OnLogButtonOnClicked;
 
         stackLayout.Children.Add(logButton);
+
+        ViewLogsButtonAdded = true;
     }
 
-    private async void OnLogButtonOnClicked(object    o
-                                 , EventArgs eventArgs)
+    private void BuildViewPreferencesButton(Layout stackLayout
+                                          , bool   forceHide = false)
     {
-        await Navigation.PushAsync(new MessageLog())
-                        .ConfigureAwait(false);
+        if (forceHide) return;
+
+        var preferenceButton = new Button
+                               {
+                                   Text            = "View Preferences"
+                                 , BackgroundColor = PrimaryButton.BackgroundColor
+                                 , TextColor       = ForegroundColor
+                                 , Margin          = new Thickness(5, 5, 5, 0)
+                               };
+        preferenceButton.Clicked += PreferenceButtonOnClicked;
+
+        stackLayout.Children.Add(preferenceButton);
     }
 
     private void CreateRemoveAdsControls()
     {
         RemoveAdsLabel = new Label
                          {
-                             Text                  = "Show Ads"
+                             Text                  = "Remove Ads"
                            , VerticalTextAlignment = TextAlignment.Center
                            , VerticalOptions       = LayoutOptions.Center
                            , TextColor             = TertiaryButton.BackgroundColor
@@ -109,7 +200,6 @@ public partial class SettingsPage : ContentPage
                             , OnColor           = ForegroundColor
                           };
         RemoveAdsSwitch.Toggled += RemoveAdsSwitchOnToggled;
-
     }
 
     private Grid BuildMainGrid()

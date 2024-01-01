@@ -191,28 +191,58 @@ public partial class SettingsPage
     }
 
     [UnderConstruction("Need to implement way to make a purchase to remove ads")]
-    private void RemoveAdsSwitchOnToggled(object           sender
-                                        , ToggledEventArgs e)
+    private async void RemoveAdsSwitchOnToggled(object           sender
+                                              , ToggledEventArgs e)
     {
-        DisplayAlert("Under Construction"
-                   , "This feature is still under construction."
-                   , "OK");
+        await DisplayAlert("Under Construction"
+                         , "This feature is still under construction."
+                         , "OK");
 
         // 1. Make purchase to remove ads
-        App.AppServiceMethods.MakePurchase();
-        // OR
-        App.AppServiceMethods.PurchaseItem();
+        var couldMakePurchase = await App.AppServiceMethods
+                                         .MakePurchase()
+                                         .ConfigureAwait(false);
+
+        // OR ?????
+        //App.AppServiceMethods.PurchaseItem();
 
         // 2. Verify purchase was made
+        if ( ! couldMakePurchase)
+        {
+            await DisplayAlert("Purchase Error"
+                             , "The purchase could not be made. Make sure you are connected to the internet and try again."
+                             , "OK");
+
+            RemoveAdsSwitch.IsToggled = false;
+
+            return;
+        }
 
         // 3. Turn off ads in app
         RemoveAdsViewModel.PaidForAdsToBeRemoved = RemoveAdsSwitch.IsToggled;
 
         if (AdView is not null)
         {
-            AdView.IsVisible = RemoveAdsSwitch.IsToggled;
+            AdView.IsVisible = ! RemoveAdsViewModel.PaidForAdsToBeRemoved;  //RemoveAdsSwitch.IsToggled;
+        }
+    }
+    private async void PreferenceButtonOnClicked(object    sender
+                                               , EventArgs e)
+    {
+        RemoveAdsViewModel.CheckLocks();
+
+        if (RemoveAdsViewModel.DoorIsUnlocked
+         || RemoveAdsViewModel.DoorReadOnlyIsUnlocked)
+        {
+            await Navigation.PushAsync(new HiddenPreferencePage())
+                                    .ConfigureAwait(false);
         }
     }
 
-
+    private async void OnLogButtonOnClicked(object    o
+                                          , EventArgs eventArgs)
+    {
+        await Navigation.PushAsync(new MessageLog())
+                        .ConfigureAwait(false);
+    }
 }

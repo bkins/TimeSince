@@ -14,6 +14,10 @@ public partial class MainPage //Events
     private async void AddEventButton_OnClicked(object    sender
                                         , EventArgs e)
     {
+        if ( ! App.AppServiceMethods.IsPhysicalDevice())
+        {
+            return; //Not a physical device.  These type of ads don't work that well here.
+        }
         App.AppServiceMethods.ShowInterstitialAdAsync();
 
         TimeElapsedViewModel.AddNewEvent();
@@ -96,17 +100,7 @@ public partial class MainPage //Events
         SetButtonsTextColor();
     }
 
-    private void SetButtonsTextColor()
-    {
 
-        var buttonTextColor = ColorUtility.ChooseReadableTextColor(ColorUtility.GetColorFromResources(ResourceColors.Primary));
-        foreach (var beginningEvent in TimeElapsedViewModel.Events)
-        {
-            beginningEvent.ButtonTextColor = buttonTextColor;
-        }
-
-        AddEventButton.TextColor = buttonTextColor;
-    }
 
     private void ElapsedTimeLabel_Tapped(object          sender
                                        , TappedEventArgs e)
@@ -189,5 +183,11 @@ public partial class MainPage //Events
                                      , EventArgs e)
     {
         var s = "Ad AdsOpened";
+    }
+
+    private void PrivacyPolicyButton_OnClicked(object    sender
+                                             , EventArgs e)
+    {
+        Launcher.OpenAsync(new Uri("https://benhop2.wixsite.com/bensapps/privacypolicy"));
     }
 }

@@ -2,108 +2,14 @@
 
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
-             x:Class="TimeSince.MVVM.Views.AboutPage"
-             Title="About"
-             BackgroundColor="{DynamicResource Secondary}">
-    <ContentPage.Content>
+             x:Class="TimeSince.MVVM.Views.AboutPage">
 
-        <StackLayout x:Name="MainStackLayout">
+    <ContentPage.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="/Resources/Styles/CommonStyles.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </ContentPage.Resources>
 
-            <Label x:Name="AppNameLabel"
-                   Text="Time Since"
-                   TextColor="{DynamicResource Tertiary}"
-                   HorizontalTextAlignment="Center"
-                   FontSize="24"
-                   Margin="0, 0, 0, 10" />
-
-            <Grid x:Name="MainGrid"
-                  ColumnDefinitions="*, *"
-                  RowDefinitions="*, *, *, *"
-                  Margin="5, 0, 0, 5"
-                  >
-                <Label x:Name="DescriptionLabel"
-                       Grid.Column="0"
-                       Grid.Row="0"
-                       Grid.ColumnSpan="2"
-                       Text="Time Since is an app to help track how long it has been since an event."
-                       Margin="0, 0, 0, 10"
-                       />
-                <Label x:Name="DevBioLabel"
-                       Grid.Column="0"
-                       Grid.Row="1"
-                       Grid.ColumnSpan="2"
-                       Text="Hi!  My name is Ben.  I create apps like this in my spare time.  I do this mostly for fun and to keep my skills up. I also do it to bring in a bit of supplemental income."
-                       Margin="0, 0, 0, 10"
-                />
-                <Label x:Name="CurrentVersionLabel"
-                       Grid.Column="0"
-                       Grid.Row="2"
-                       Text="Current Version:"
-                       FontSize="16"
-                       TextColor="{DynamicResource Tertiary}" />
-
-                <Label x:Name="CurrentVersionValue"
-                       Grid.Column="1"
-                       Grid.Row="2"
-                       Text="{Binding CurrentVersion}"
-                       FontSize="16"
-                       TextColor="{DynamicResource Tertiary}" />
-
-                <Label x:Name="CurrentBuildLabel"
-                       Grid.Column="0"
-                       Grid.Row="3"
-                       Text="Current Build:"
-                       FontSize="16"
-                       TextColor="{DynamicResource Tertiary}" />
-                <Label x:Name="CurrentBuildValue"
-                       Grid.Column="1"
-                       Grid.Row="3"
-                       Text="{Binding CurrentBuild}"
-                       FontSize="16"
-                       TextColor="{DynamicResource Tertiary}" />
-
-            </Grid>
-
-            <Label x:Name="SupportMeLabel"
-                   Text="You can support me by tapping on these buttons and watching a few ads"
-                   Margin="55, 15, 55, 5"
-                   HorizontalTextAlignment="Center" />
-
-            <Button x:Name="ShowInterstitialAdButton"
-                    Text="Show Interstitial Ad"
-                    Margin="5, 5, 5, 5"
-                    Clicked="ShowInterstitialAdButton_OnClicked" />
-
-            <Button x:Name="ShowRewardAdButton"
-                    Text="Show Reward Ad"
-                    Margin="5, 5, 5, 5"
-                    Clicked="ShowRewardAdButton_OnClicked" />
-
-            <Label x:Name="AwesomePersonLabel"
-                   Text="You are already an awesome person!  This number just shows how awesomer you are."
-                   Margin="25, 15, 25, 5"
-                   HorizontalTextAlignment="Center" />
-
-            <Label x:Name="AwesomePersonScoreLabel"
-                   Text="Awesome Person Score:"
-                   Margin="75, 5, 5, 5" />
-
-            <Label x:Name="AwesomePersonScoreValueLabel"
-                   Text="{Binding CurrentAwesomeScore}"
-                   Margin="75, 5, 5, 5" />
-
-            <Button x:Name="ResetAwesomeScoreButton"
-                    Text="Reset Awesome Person Score"
-                    WidthRequest="250"
-                    HorizontalOptions="Start"
-                    Margin="75, 5, 5, 5"
-                    Clicked="ResetAwesomeScoreButton_OnClicked" />
-
-            <Button x:Name="PrivacyPolicyButton"
-                    Text="Privacy Policy"
-                    Margin="5, 5, 5, 5"
-                    Clicked="PrivacyPolicyButton_OnClicked"/>
-        </StackLayout>
-
-    </ContentPage.Content>
 </ContentPage>

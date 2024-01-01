@@ -52,15 +52,17 @@ public partial class AdManager
          */
         if (e.ErrorCode == 3)
         {
+            // If there is a "lack of ad inventory" retry, otherwise log the error
             while(_numberOfTimesTried < TimesToRetryBannerOnFailure)
             {
-                //TODO: Retry
+                InitializeBannerAd();
                 _numberOfTimesTried++;
             }
         }
-        //If break point reaches this point and the error saying something about "lack of inventory"
-        // Try again, up to TimesToRetryBannerOnFailure
-        LogErrors("load", e);
+        else
+        {
+            LogErrors("load", e);
+        }
     }
     private void CurrentOnUserEarnedReward(object      sender
                                            , MTEventArgs e)

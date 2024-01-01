@@ -108,6 +108,8 @@ public enum SecretKeys
   , MainPageRewarded
   , AppSecretKey
   , SyncFusionLicense
+  , DoorKey
+  , DoorKeyReadOnly
 }
 
 public enum SecretCollections
@@ -115,4 +117,5 @@ public enum SecretCollections
     Admob
   , AppCenter
   , SyncFusion
+  , AppControl
 }

@@ -1,11 +1,23 @@
 ﻿
 namespace TimeSince.Services.ServicesIntegration;
 
+/// <summary>
+/// This class represents an integration service for app-related functionalities such as ads.
+/// </summary>
 public partial class AppIntegrationService // AdManager Service Methods
 {
-    public static View GetAdView()
+    public View GetAdView()
     {
-        return AdManager.Instance.GetAdView();
+        if (HasInternetAccess) return AdManager.Instance.GetAdView();
+
+        // No internet access
+        var noInternetLabel = new Label
+                              {
+                                  Text              = "No internet access available",
+                                  HorizontalOptions = LayoutOptions.Center,
+                                  VerticalOptions   = LayoutOptions.Center
+                              };
+        return noInternetLabel;
     }
 
     public bool AreAdsEnabled()
@@ -15,12 +27,16 @@ public partial class AppIntegrationService // AdManager Service Methods
 
     public async void ShowInterstitialAdAsync()
     {
+        if( ! HasInternetAccess) return;
+
         await AdManager.Instance.ShowInterstitialAdAsync();
     }
 
     public async Task ShowInterstitialRewardAdAsync(double timeoutInSeconds = 10
                                                   , bool   showAdAnyway     = false)
     {
+        if( ! HasInternetAccess) return;
+
         await AdManager.Instance.ShowInterstitialRewardAdAsync(timeoutInSeconds
                                                              , showAdAnyway);
     }
@@ -28,8 +44,9 @@ public partial class AppIntegrationService // AdManager Service Methods
     public async Task ShowRewardAdAsync(double timeoutInSeconds = 10
                                       , bool   showAdAnyway     = false)
     {
+        if( ! HasInternetAccess) return;
+
         await AdManager.Instance.ShowRewardAdAsync(timeoutInSeconds
                                                  , showAdAnyway);
     }
-
 }

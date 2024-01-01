@@ -19,15 +19,7 @@
     - ~~The section labels ("App Colors" and "Ads") don't look that good.~~
     - Option for user to remove ads
       - The option is there, really need a way for user to pay to turn off ads.
-  - Display a message at start up that gives the user the option to:
-    - read the Privacy Policy
-    - turn the message off (so it does not display at startup)
-    - And an option in the settings page to control whether or not the massage is displayed at startup.
-  - Add About Page
-    - ~~App description~~
-    - ~~Version~~
-    - Contact info
-    - Separate information on this page in Frames
+  
   - Need to test the app in Airplane Mode
   
 - Medium Priority 
@@ -41,7 +33,9 @@
 - Low Priority
 
   - Remove hard coded RowHeight in the EventsListView in the MainPage.  This should grow based on the size of the controls within it.
-  - Change Splash Screen, but how?!
+  - Change Splash Screen
+    - Is this needed?
+    - What would a better one look like?
 
 - Done
   - ~~App crashes on my device when scrolling on the MainPage~~
@@ -51,3 +45,12 @@
   - ~~Log entries are not being saved.~~
     - ~~When app is closed and restarted the previous log entries are not present~~
     - ~~Need way to see log; and/or send the log to developer.~~
+- ~~Display a message at start up that gives the user the option to:~~
+  - ~~read the Privacy Policy~~
+  - ~~turn the message off (so it does not display at startup)~~
+  - ~~And an option in the settings page to control whether or not the massage is displayed at startup.~~
+  - ~~Add About Page~~
+    - ~~App description~~
+    - ~~Version~~
+    - ~~Contact info~~
+    - ~~Separate information on this page in Frames~~

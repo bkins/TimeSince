@@ -119,7 +119,8 @@ namespace TimeSince.MVVM.Models
 
                 return x.Category == y.Category
                     && x.Message == y.Message
-                    && x.ExtraDetails == y.ExtraDetails;
+                    && x.ExtraDetails == y.ExtraDetails
+                    && x.TimeStamp == y.TimeStamp;
             }
 
             public int GetHashCode(LogLine obj)
@@ -129,6 +130,7 @@ namespace TimeSince.MVVM.Models
                     int hashCode = (int)obj.Category;
                     hashCode = (hashCode * 397) ^ (obj.Message != null ? obj.Message.GetHashCode() : 0);
                     hashCode = (hashCode * 397) ^ (obj.ExtraDetails != null ? obj.ExtraDetails.GetHashCode() : 0);
+                    hashCode = (hashCode * 397) ^ (obj.TimeStamp != null ? obj.TimeStamp.GetHashCode() : 0);
                     return hashCode;
                 }
             }

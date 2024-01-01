@@ -3,6 +3,7 @@ using Plugin.MauiMTAdmob;
 using Plugin.MauiMTAdmob.Controls;
 using TimeSince.Avails;
 using TimeSince.Data;
+using View = Microsoft.Maui.Controls.View;
 
 namespace TimeSince.Services;
 
@@ -13,38 +14,35 @@ public partial class AdManager
     private static AdManager _instance;
     public static  AdManager Instance => _instance ??= new AdManager();
 
-    public static bool AreAdsEnabled => PreferencesDataStore.PaidToTurnOffAds;
+    public static bool AreAdsEnabled => DetermineIfAdsAreEnabled();
+
+    private static bool DetermineIfAdsAreEnabled()
+    {
+        // Check if the user has paid to remove ads
+        var removalOfAdAsNotBeenPaidFor = ! PreferencesDataStore.PaidToTurnOffAds;
+
+        // Check if the device being used is a physical device
+        var isPhysicalDevice = App.AppServiceMethods.IsPhysicalDevice();
+
+        // Determine if ads should be enabled based on the conditions
+        var enableAds = removalOfAdAsNotBeenPaidFor
+                     || isPhysicalDevice;
+
+        return enableAds;
+    }
 
     private static readonly Secrets.FileJsonContentProvider FileJsonContentProvider = new();
 
-    private Secrets _secrets = new Secrets(FileJsonContentProvider.GetJsonContent);
+    private readonly Secrets _secrets = new(FileJsonContentProvider.GetJsonContent);
 
-    private string BannerAdUnitId
-    {
-        get
-        {
-            return _secrets.GetSecretValue(SecretCollections.Admob
-                                        , SecretKeys.MainPageBanner);
-        }
-    }
+    private string BannerAdUnitId => _secrets.GetSecretValue(SecretCollections.Admob
+                                                           , SecretKeys.MainPageBanner);
 
-    private string InterstitialAdUnitId
-    {
-        get
-        {
-            return _secrets.GetSecretValue(SecretCollections.Admob
-                                        , SecretKeys.MainPageNewEventInterstitial);
-        }
-    }
+    private string InterstitialAdUnitId => _secrets.GetSecretValue(SecretCollections.Admob
+                                                                 , SecretKeys.MainPageNewEventInterstitial);
 
-    private string RewardedAdUnitId
-    {
-        get
-        {
-            return _secrets.GetSecretValue(SecretCollections.Admob
-                                               , SecretKeys.MainPageRewarded);
-        }
-    }
+    private string RewardedAdUnitId => _secrets.GetSecretValue(SecretCollections.Admob
+                                                             , SecretKeys.MainPageRewarded);
 
     private AdManager()
     {
@@ -84,7 +82,6 @@ public partial class AdManager
         _bannerAdView.AdsFailedToLoad += OnBannerAdFailedToLoad;
     }
 
-
     public View GetAdView()
     {
         return AreAdsEnabled
@@ -107,21 +104,22 @@ public partial class AdManager
         {
             while (! isLoadedFunction())
             {
-                await Task.Delay(100
+                await Task.Delay(1000
                                , cancellationToken.Token);
+                //await Task.Delay(1000);
 
-                cancellationToken.Token.ThrowIfCancellationRequested();
+                 cancellationToken.Token.ThrowIfCancellationRequested();
             }
         }
         catch (OperationCanceledException canceledException)
         {
-           App.Logger.LogError(canceledException.Message);
+            App.Logger.LogEvent($"{canceledException.Message} (Ad timed out)", null); //(canceledException.Message, string.Empty, string.Empty, null);
 
             return;
         }
         catch (Exception exception)
         {
-            App.Logger.LogError(exception.Message);
+            App.Logger.LogError(exception.Message, string.Empty, string.Empty, null);
 
             return;
         }
@@ -130,9 +128,12 @@ public partial class AdManager
         showFunction();
     }
 
-    public async Task ShowInterstitialAdAsync(double timeoutInSeconds = 10
+    public async Task ShowInterstitialAdAsync(double timeoutInSeconds = 15
                                             , bool   showAdAnyway     = false)
     {
+#if DEBUG
+        WarnDeveloperAboutAdsOnEmulatedDevice(showAdAnyway);
+#endif
         // If ads are disabled and don't show ad anyway, it will return early
         // Or if ads are disable, show ads anyway is true, it will NOT return early.
         if ( ! AreAdsEnabled && ! showAdAnyway) return;
@@ -146,6 +147,11 @@ public partial class AdManager
     public async Task ShowInterstitialRewardAdAsync(double timeoutInSeconds = 10
                                                   , bool   showAdAnyway     = false)
     {
+
+#if DEBUG
+        WarnDeveloperAboutAdsOnEmulatedDevice(showAdAnyway);
+#endif
+
         // If ads are disabled and don't show ad anyway, it will return early
         // Or if ads are disable, show ads anyway is true, it will NOT return early.
         if ( ! AreAdsEnabled && ! showAdAnyway) return;
@@ -156,9 +162,22 @@ public partial class AdManager
                         , timeoutInSeconds);
     }
 
+    private static void WarnDeveloperAboutAdsOnEmulatedDevice(bool showAdAnyway)
+    {
+        if (showAdAnyway
+         && ! App.AppServiceMethods.IsPhysicalDevice())
+        {
+            App.Logger.ToastMessage("Ads may not display properly on an emulated device.");
+        }
+    }
+
     public async Task ShowRewardAdAsync(double timeoutInSeconds = 10
                                       , bool   showAdAnyway     = false)
     {
+#if DEBUG
+        WarnDeveloperAboutAdsOnEmulatedDevice(showAdAnyway);
+#endif
+
         // If ads are disabled and don't show ad anyway, it will return early
         // Or if ads are disable, show ads anyway is true, it will NOT return early.
         if ( ! AreAdsEnabled && ! showAdAnyway) return;

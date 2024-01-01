@@ -185,6 +185,7 @@ public class AppCenterService
     public void TrackEvent(string name, IDictionary<string, string> properties = null)
     {
         Analytics.TrackEvent(name, properties);
+        App.Logger.LogEvent(name, properties);
     }
 
     [UnderConstruction("Might not need, but want to explore this later.")]

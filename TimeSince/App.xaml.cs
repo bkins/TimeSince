@@ -1,14 +1,7 @@
-﻿using System.Xml;
-using Google.Apis.Util;
-using Plugin.MauiMTAdmob;
+﻿using Plugin.MauiMTAdmob;
 using TimeSince.Avails;
 using TimeSince.Data;
-using TimeSince.MVVM.Views;
 using MainPage = TimeSince.MVVM.Views.MainPage;
-using Microsoft.AppCenter;
-using Microsoft.AppCenter.Analytics;
-using Microsoft.AppCenter.Crashes;
-using TimeSince.Services;
 using TimeSince.Services.ServicesIntegration;
 
 namespace TimeSince;
@@ -32,6 +25,9 @@ public partial class App : Application
 
 	public static readonly AppIntegrationService AppServiceMethods = AppIntegrationService.Instance;
 
+	public static string DoorKey         { get; set; }
+	public static string DoorKeyReadOnly { get; set; }
+
 	private static string MainPageBannerId               { get; set; }
 	private static string MainPageNewEventInterstitialId { get; set; }
 
@@ -41,29 +37,44 @@ public partial class App : Application
 
 	public App()
 	{
+		AppDomain.CurrentDomain.UnhandledException += OnCurrentDomainOnUnhandledException;
+
 		Syncfusion.Licensing
 		          .SyncfusionLicenseProvider
 		          .RegisterLicense(_secrets.GetSecretValue(SecretCollections.SyncFusion
 		                                                 , SecretKeys.SyncFusionLicense));
 
-		AppDomain.CurrentDomain.UnhandledException += OnCurrentDomainOnUnhandledException;
+		DoorKey = _secrets.GetSecretValue(SecretCollections.AppControl
+		                                 , SecretKeys.DoorKey);
+		DoorKeyReadOnly = _secrets.GetSecretValue(SecretCollections.AppControl
+		                                        , SecretKeys.DoorKeyReadOnly);
 
 		InitializeComponent();
-		MergeResourcesDictionaries();
+
+		try
+		{
+			MergeResourcesDictionaries();
+		}
+		catch (Exception e)
+		{
+			Logger.LogError(e);
+		}
+
+		AppServiceMethods.InitializeServices();
 
 		MainPage = new NavigationPage(new MainPage());
 
 		LoadAdMobUnitIds();
 
-		CrossMauiMTAdmob.Current.UserPersonalizedAds = true;
-		CrossMauiMTAdmob.Current.ComplyWithFamilyPolicies = true;
+		CrossMauiMTAdmob.Current.UserPersonalizedAds         = true;
+		CrossMauiMTAdmob.Current.ComplyWithFamilyPolicies    = true;
 		CrossMauiMTAdmob.Current.UseRestrictedDataProcessing = true;
-		CrossMauiMTAdmob.Current.AdsId = MainPageBannerId;
+		CrossMauiMTAdmob.Current.AdsId                       = MainPageBannerId;
+
 	}
 
 	protected override void OnStart()
 	{
-		AppServiceMethods.InitializeServices();
 
 		base.OnStart();
 	}

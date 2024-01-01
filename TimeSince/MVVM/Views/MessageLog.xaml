@@ -1,86 +1,103 @@
-﻿<?xml version="1.0" encoding="utf-8" ?>
+﻿<?xml version="1.0" encoding="utf-8"?>
+
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
              xmlns:viewModels="clr-namespace:TimeSince.MVVM.ViewModels"
+             xmlns:timeSince="clr-namespace:TimeSince"
+             x:Name="PageRoot"
              x:Class="TimeSince.MVVM.Views.MessageLog"
              Title="Message Log">
 
     <ContentPage.ToolbarItems>
-        <ToolbarItem x:Name="ClearToolbarItem"
-                     Text="Clear"
-                     Clicked="ClearToolbarItem_OnClicked"/>
+        <ToolbarItem x:Name="DeleteSelectedToolbarItem"
+                     IconImageSource="delete_selected_white_48.png"
+                     Clicked="DeleteSelectedToolbarItem_OnClicked" />
+        <ToolbarItem x:Name="ClearAllToolbarItem"
+                     Text="Clear All"
+                     Clicked="ClearToolbarItem_OnClicked" />
     </ContentPage.ToolbarItems>
 
     <ContentPage.Resources>
-        <DataTemplate x:Key="LogGroupHeaderTemplate">
-            <ViewCell>
-                <Frame CornerRadius="10"
-                       BackgroundColor="{DynamicResource Secondary}"
-                       Padding="10"
-                       Margin="5,5,5,0">
-                    <StackLayout BindingContext="{Binding .}">
-                        <Label Text="{Binding Key}"
-                               TextColor="{DynamicResource TertiaryColor}"
-                               LineBreakMode="TailTruncation"
-                               FontAttributes="Bold"/>
-                        <Label Text=" "
-                               TextColor="{DynamicResource TertiaryColor}"
-                               FontAttributes="Bold"/>
-                        <Label Text="{Binding LogCount}"
-                               TextColor="{DynamicResource TertiaryColor}"
-                               FontAttributes="Bold"/>
-                    </StackLayout>
-                </Frame>
-            </ViewCell>
-        </DataTemplate>
+        <timeSince:InverseBooleanConverter x:Key="InverseBooleanConverter" />
     </ContentPage.Resources>
+    <ScrollView>
+        <StackLayout Orientation="Vertical" Padding="10">
+            <CollectionView x:Name="LogListView"
+                            ItemsSource="{Binding GroupedLogEntriesWithCount}"
+                            SelectionChangedCommandParameter="{Binding ShowLogDetailsCommand}">
+                <CollectionView.ItemTemplate>
+                    <DataTemplate>
+                        <StackLayout>
 
+                            <Label Text="{Binding Key}"
+                                   FontSize="20"
+                                   FontAttributes="Bold"
+                                   IsVisible="{Binding IsHeader}"
+                                   LineBreakMode="TailTruncation" >
+                                <Label.GestureRecognizers>
+                                    <TapGestureRecognizer Tapped="TapGestureRecognizer_OnTapped"/>
+                                </Label.GestureRecognizers>
+                            </Label>
 
-    <StackLayout x:Name="MainStackLayout"
-                 Margin="5, 0, 5, 0"
-                 >
-        <ListView x:Name="LogListView"
-                  RowHeight="85"
-                  ItemsSource="{Binding GroupedLogEntriesWithCount}"
-                  IsGroupingEnabled="True"
-                  GroupDisplayBinding="{Binding Key}"
-                  GroupShortNameBinding="{Binding Key}"
-                  GroupHeaderTemplate="{StaticResource LogGroupHeaderTemplate}"
-                  ItemTapped="OnLogListViewOnItemTapped">
-            <ListView.ItemTemplate>
-                <DataTemplate>
-                    <ViewCell>
-                        <Grid>
-
-                            <Frame x:Name="LogsEntriesFrame"
-                                   CornerRadius="10"
+                            <Label Text="{Binding LogCount}"
+                                   IsVisible="{Binding IsHeader}" />
+<!--IsVisible="{Binding IsHeader, Converter={StaticResource InverseBooleanConverter}}"-->
+                            <Frame CornerRadius="10"
                                    Padding="10"
                                    Margin="25, 5, 5, 5"
                                    BackgroundColor="{DynamicResource Secondary}"
+                                   InputTransparent="False"
                                    >
-                                <Grid RowDefinitions="Auto, Auto, Auto">
+                                <Frame.Triggers>
+                                    <DataTrigger TargetType="Frame"
+                                                 Binding="{Binding IsHeader}"
+                                                 Value="True">
+                                        <Setter Property="IsVisible"
+                                                Value="{Binding IsHeader, Converter={StaticResource InverseBooleanConverter}}" />
+                                    </DataTrigger>
+                                    <DataTrigger TargetType="Frame"
+                                                 Binding="{Binding IsCollapsed}"
+                                                 Value="True">
+                                        <Setter Property="IsVisible"
+                                                Value="False" />
+                                    </DataTrigger>
+                                </Frame.Triggers>
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="Auto" /> <!-- Adjust the width here -->
+                                        <ColumnDefinition Width="*" />
+                                    </Grid.ColumnDefinitions>
 
-                                    <!-- <Label Grid.Row="0" -->
-                                    <!--        TextColor="{DynamicResource TertiaryColor}" -->
-                                    <!--        FontAttributes="Italic" -->
-                                    <!--        LineBreakMode="TailTruncation" -->
-                                    <!--        Text="{Binding Message}" /> -->
+                                    <CheckBox Grid.Column="0" IsChecked="{Binding IsSelected}" VerticalOptions="Center" />
 
-                                    <Label Grid.Row="1"
-                                           TextColor="{DynamicResource TertiaryColor}"
-                                           FontAttributes="Italic"
-                                           Text="{Binding TimeStamp}" />
-
-                                    <Label Grid.Row="2"
-                                           TextType="Html"
-                                           Text="{Binding CategoryAsHtml}" />
+                                    <StackLayout Grid.Column="1">
+                                        <Label TextColor="{DynamicResource Tertiary}" FontAttributes="Italic"
+                                               Text="{Binding Log.TimeStamp}" />
+                                        <Label TextType="Html" Text="{Binding Log.CategoryAsHtml}" />
+                                    </StackLayout>
                                 </Grid>
-                            </Frame>
-                        </Grid>
-                    </ViewCell>
-                </DataTemplate>
-            </ListView.ItemTemplate>
-        </ListView>
-    </StackLayout>
 
+                                <Frame.GestureRecognizers>
+                                    <TapGestureRecognizer Tapped="OnLogListViewOnItemTapped" />
+                                </Frame.GestureRecognizers>
+
+                            </Frame>
+                        </StackLayout>
+                    </DataTemplate>
+                </CollectionView.ItemTemplate>
+
+                <CollectionView.SelectedItem>
+                    <Binding Source="{x:Reference PageRoot}"
+                             Path="BindingContext.SelectedLog"
+                             Mode="TwoWay" />
+                </CollectionView.SelectedItem>
+
+                <CollectionView.SelectionChangedCommand>
+                    <Binding Source="{x:Reference PageRoot}"
+                             Path="BindingContext.ShowLogDetailsCommand" />
+                </CollectionView.SelectionChangedCommand>
+
+            </CollectionView>
+        </StackLayout>
+    </ScrollView>
 </ContentPage>

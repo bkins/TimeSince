@@ -1,27 +1,23 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-		  android:versionCode="1"
-		  android:versionName="0.0.1"
-		  android:installLocation="auto"
-		  android:exported="true"
 		  package="com.hopkins.timesince">
 
-	<application android:allowBackup="true"
-		         android:icon="@drawable/twotone_timelapse_white_18"
-		         android:supportsRtl="true"
-		         android:label="TimeSince"
-		         >
+	<application android:label="TimeSince"
+			     android:icon="@drawable/clock">
 
-		<meta-data android:name="com.google.firebase.messaging.default_notification_icon"
-			android:resource="@drawable/clock" />
+<!--		<meta-data android:name="com.google.firebase.messaging.default_notification_icon"-->
+<!--			       android:resource="@drawable/clock" />-->
 
-		<meta-data
-			android:name="com.google.android.gms.ads.APPLICATION_ID"
-			android:value="ca-app-pub-1259969651432104~6327254179" />
+		<meta-data android:name="com.google.android.gms.ads.APPLICATION_ID"
+			       android:value="ca-app-pub-1259969651432104~6327254179" />
+
+		<meta-data android:name="com.android.vending.LICENSE"
+			       android:value="MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAjHSK2CR0BXO22Whrq8VDpOP/WuWD6vIaR7ATU0nKG7qpwOAiDgPOXdMIU8TtbIsc4j43Y/BdI3sup+yJfQ8htwdhgsJTHCeBYt5j+6xqRLRxFGYXyHtew6k5KKRQsPKx9W1e+RIIMS8DXkeLjVUp1WnDmWoMvrw2BuFpuYDu55fhYnwehjLKAiEhk6AdGVtIho6kVr9sIDG+ShXpVHovUOh4c8VJwP2Bw3czhDf0qSDgDaHv0O2XJfpxq5DsOmr9GG+I5bIQqujyIG/domGbnjp0Q8RVdodVHA7KOIB97yYSyU2iQ4f191kt4i0RtiAgDvtACZN9I3VCiFygjyRWzQIDAQAB" />
 
 	</application>
 
-	<uses-sdk android:minSdkVersion="31" android:targetSdkVersion="31" />
+	<uses-sdk android:minSdkVersion="31"
+		      android:targetSdkVersion="31" />
 
 	<uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
 	<uses-permission android:name="android.permission.INTERNET" />

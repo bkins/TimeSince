@@ -2,6 +2,7 @@
 using TimeSince.Avails;
 using TimeSince.Avails.Attributes;
 using TimeSince.Avails.ColorHelpers;
+using TimeSince.Avails.Extensions;
 using TimeSince.MVVM.ViewModels;
 using TimeSince.Data;
 using TimeSince.Services.ServicesIntegration;
@@ -18,9 +19,9 @@ public partial class MainPage : ContentPage
 	{
 		ColorUtility.PopulateColorNames();
 
-		ShowPrivacyPolicyMessage();
-
 		InitializeComponent();
+
+		ShowPrivacyPolicyMessage();
 
 		TimeElapsedViewModel = new TimeElapsedViewModel();
 
@@ -29,7 +30,7 @@ public partial class MainPage : ContentPage
 		Appearing += OnPageAppearing;
 		TimeElapsedViewModel.Events.CollectionChanged += Events_OnCollectionChanged;
 
-		AdView = AppIntegrationService.GetAdView();
+		AdView = App.AppServiceMethods.GetAdView();
 		if (AdView is not null)
 		{
 			MainStackLayout.Add(AdView);
@@ -43,47 +44,12 @@ public partial class MainPage : ContentPage
 
 	}
 
-	[UnderConstruction("Need to implement a message a the start up of the app that gives the user to read the Privacy Policy.")]
+
 	private void ShowPrivacyPolicyMessage()
 	{
-		// Check if the message should be displayed
-
 		if (! PreferencesDataStore.HideStartupMessage)
 		{
-			// Create a popup or dialog
-			// var popup = new SfPopup
-			//             {
-			// 	            HeaderTitle = "Welcome!"
-			// 	           , ContentTemplate = new StackLayout
-			// 	                      {
-			// 		                      Children =
-			// 		                      {
-			// 			                      new Label { Text = "Your short message here" },
-			// 			                      new Button
-			// 			                      {
-			// 				                      Text = "Visit our website",
-			// 				                      Command = new Command(() =>
-			// 				                      {
-			// 					                      // Open the web page on click
-			// 					                      Device.OpenUri(new Uri("https://yourwebsite.com"));
-			// 				                      })
-			// 			                      },
-			// 			                      new Button
-			// 			                      {
-			// 				                      Text = "Don't show again",
-			// 				                      Command = new Command(() =>
-			// 				                      {
-			// 					                      // Store the preference not to show the message again
-			// 					                      Preferences.Set("HideStartupMessage", true);
-			// 					                      popup.Dismiss();
-			// 				                      })
-			// 			                      }
-			// 		                      }
-			// 	                      }
-			//             };
-			//
-			// // Show the popup
-			// App.Current.MainPage.Navigation.PushModalAsync(popup);
+			PrivacyPolicyPopup.Show();
 		}
 	}
 
@@ -121,37 +87,63 @@ public partial class MainPage : ContentPage
 
 	private void RefreshAdViewOnPage()
 	{
+		var hasPurchased         = TimeElapsedViewModel.HasPurchasedToHideAds();
 		var adsAreEnabled        = App.AppServiceMethods.AreAdsEnabled();
 		var adViewHasValue       = AdView is not null;
 		var adViewIsInMainLayout = MainStackLayout.Children.Contains(AdView);
 
-		if ( ! adViewHasValue
-		  && adsAreEnabled)
+		if (hasPurchased)
 		{
-			AdView           = AppIntegrationService.GetAdView();
-			AdView.IsVisible = true;
-
-			MainStackLayout.Add(AdView);
-
-			return;
+			UpdateAdViewVisibility(false
+			                     , false);
 		}
-
-		if (adViewHasValue
-		 && adsAreEnabled
-		 && ! adViewIsInMainLayout)
+		else switch (adViewHasValue)
 		{
-			AdView.IsVisible = true;
-			MainStackLayout.Add(AdView);
+			case false when adsAreEnabled:
+				AdView = App.AppServiceMethods.GetAdView();
+				UpdateAdViewVisibility(true
+				                     , true);
 
-			return;
+				break;
+
+			case true when ! adViewIsInMainLayout
+			            && adsAreEnabled:
+				UpdateAdViewVisibility(true
+				                     , true);
+
+				break;
+
+			default:
+			{
+				if (AdView is not null && ! adsAreEnabled && adViewIsInMainLayout)
+				{
+					UpdateAdViewVisibility(false
+					                     , true);
+				}
+
+				break;
+			}
 		}
+	}
 
-		if (AdView is not null
-		 && ! adsAreEnabled
-		 && adViewIsInMainLayout)
+	private void UpdateAdViewVisibility(bool isVisible
+	                                  , bool addToLayout)
+	{
+		if (AdView is null) return;
+
+		AdView.IsVisible = isVisible;
+
+		switch (addToLayout)
 		{
-			AdView.IsVisible = false;
-			MainStackLayout.Remove(AdView);
+			case true when ! MainStackLayout.Children.Contains(AdView):
+				MainStackLayout.Add(AdView);
+
+				break;
+
+			case false when MainStackLayout.Children.Contains(AdView):
+				MainStackLayout.Remove(AdView);
+
+				break;
 		}
 	}
 
@@ -162,4 +154,33 @@ public partial class MainPage : ContentPage
 		EventsListView.ItemTapped -= EventsListView_OnItemTapped;
 	}
 
+
+	private async void OkButton_OnClicked(object    sender
+	                                    , EventArgs e)
+	{
+		if (PrivacyPolicyPopup.BindingContext is not TimeElapsedViewModel viewModel) return;
+
+		if (viewModel.IsPrivacyPolicyAccepted)
+		{
+			PrivacyPolicyPopup.IsOpen = false;
+
+			PreferencesDataStore.HideStartupMessage = true;
+		}
+		else
+		{
+			await DisplayAlert("Error", "Please check the privacy policy acceptance checkbox to continue."
+			                 , "OK");
+		}
+	}
+
+	private void SetButtonsTextColor()
+	{
+		var buttonTextColor = ColorUtility.ChooseReadableTextColor(ColorUtility.GetColorFromResources(ResourceColors.Primary));
+		foreach (var beginningEvent in TimeElapsedViewModel.Events)
+		{
+			beginningEvent.ButtonTextColor = buttonTextColor;
+		}
+
+		AddEventButton.TextColor = buttonTextColor;
+	}
 }

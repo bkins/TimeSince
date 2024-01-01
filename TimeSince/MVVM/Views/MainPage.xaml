@@ -2,6 +2,8 @@
 
 <ContentPage xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
              xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+             xmlns:syncfusion="clr-namespace:Syncfusion.Maui.Popup;assembly=Syncfusion.Maui.Popup"
+             xmlns:viewModels="clr-namespace:TimeSince.MVVM.ViewModels"
              x:Class="TimeSince.MVVM.Views.MainPage"
              Title="Time Since"
              >
@@ -147,5 +149,45 @@
                 Clicked="AddEventButton_OnClicked"
                 Margin="0, 0, 0, 10"
                 />
+
+        <syncfusion:SfPopup x:Name="PrivacyPolicyPopup"
+                            HeaderTitle="Privacy Policy"
+                            HorizontalOptions="Center"
+                            StaysOpen="True"
+                            ShowHeader="True"
+                            AutoSizeMode="Both"
+                            >
+            <syncfusion:SfPopup.ContentTemplate>
+                <DataTemplate>
+                    <StackLayout x:DataType="viewModels:TimeElapsedViewModel">
+
+                        <Label Text="Please read my:"
+                               TextColor="{DynamicResource Tertiary}"
+                               Margin="15, 0, 0, 0"/>
+                        <Button x:Name="PrivacyPolicyButton"
+                                Text="Privacy Policy"
+                                Clicked="PrivacyPolicyButton_OnClicked"
+                                Margin="80, 0, 80, 0"/>
+
+                        <Grid ColumnDefinitions="90*, 10*"
+                              Margin="15, 0, 0, 0">
+                            <Label Text="Check if you agree:"
+                                   TextColor="{DynamicResource Tertiary}"
+                                   Grid.Column="0"
+                                   VerticalOptions="Center"/>
+                            <CheckBox IsChecked="{Binding IsPrivacyPolicyAccepted, Mode=TwoWay}"
+                                      Grid.Column="1"
+                                      VerticalOptions="Center"
+                                      HorizontalOptions="Start"/>
+                        </Grid>
+                        <Button x:Name="OkButton"
+                                Text="OK"
+
+                                Margin="80, 0, 80, 10"
+                                Clicked="OkButton_OnClicked"/>
+                    </StackLayout>
+                </DataTemplate>
+            </syncfusion:SfPopup.ContentTemplate>
+        </syncfusion:SfPopup>
     </StackLayout>
 </ContentPage>

@@ -5,13 +5,9 @@ namespace TimeSince.Services;
 
 public class InAppPurchasing
 {
-    public async Task<bool> MakePurchase(string   productId
-                                       , ItemType itemType            = ItemType.InAppPurchase
-                                       , string   obfuscatedAccountId = null
-                                       , string   obfuscatedProfileId = null
-                                       , string   subOfferToken       = null)
+    public async Task<bool> MakePurchase()
     {
-        if (! CrossInAppBilling.IsSupported)
+        if(!CrossInAppBilling.IsSupported)
             return false;
 
         IInAppBilling billing = null;
@@ -20,20 +16,68 @@ public class InAppPurchasing
         {
             billing = CrossInAppBilling.Current;
 
-            if (billing is null) return false;
-
             var connected = await billing.ConnectAsync();
 
-            if (! connected) return false;
+            if(!connected)
+                return false;
 
             //make additional billing calls
-            billing?.PurchaseAsync(productId
-                                 , itemType
-                                 , obfuscatedAccountId
-                                 , obfuscatedProfileId
-                                 , subOfferToken);
+
+        }
+        finally
+        {
+            await (billing?.DisconnectAsync()!).ConfigureAwait(false);
+        }
+
+        return true;
+    }
+
+    public async Task<bool> MakePurchase(string   productId
+                                       , ItemType itemType            = ItemType.InAppPurchase
+                                       , string   obfuscatedAccountId = null
+                                       , string   obfuscatedProfileId = null
+                                       , string   subOfferToken       = null)
+    {
+        if ( ! CrossInAppBilling.IsSupported)
+            return false;
+
+        IInAppBilling billing = null;
+
+        try
+        {
+            billing = CrossInAppBilling.Current;
+            var connected = await billing.ConnectAsync().ConfigureAwait(false);
+            if ( ! connected || billing is null) return false;
+            // if (billing is null) return false;
+
+#if DEBUG
+            billing.InTestingMode = true;
+#endif
+            //make additional billing calls
+            //Developer account ID: 4983254722324342692
+            await billing.PurchaseAsync(productId //aka SKU: 1234 - see: https://play.google.com/console/u/0/developers/4983254722324342692/app/4974739974752206682/managed-products
+                                      , itemType
+                                      , obfuscatedAccountId
+                                      , obfuscatedProfileId
+                                      , subOfferToken)
+                         .ConfigureAwait(false);
 
             return true;
+        }
+        catch (InAppBillingPurchaseException purchaseEx)
+        {
+            var message = $"Error in purchase, Payment State: {purchaseEx.PurchaseError}, Message: {purchaseEx.Message}";
+
+            Debug.WriteLine(message);
+            App.Logger.LogError(purchaseEx, message);
+
+            return false;
+        }
+        catch (Exception e)
+        {
+            App.Logger.LogError(e);
+
+            return false;
         }
         finally
         {

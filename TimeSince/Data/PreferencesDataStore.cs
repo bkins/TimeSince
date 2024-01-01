@@ -1,9 +1,4 @@
-﻿using System.Collections.ObjectModel;
-using Microsoft.Maui.Platform;
-using Microsoft.Maui.Storage;
-using TimeSince.MVVM.Models;
-
-namespace TimeSince.Data;
+﻿namespace TimeSince.Data;
 
 public static class PreferencesDataStore
 {
@@ -65,6 +60,22 @@ public static class PreferencesDataStore
     {
         get => Preferences.Get(nameof(HideStartupMessage), false);
         set => Preferences.Set(nameof(HideStartupMessage), value);
+    }
+
+    public static string ErrorReportingId
+    {
+        get
+        {
+            var id = Preferences.Get(nameof(ErrorReportingId), null);
+
+            if (id != null) return id;
+
+            id = Guid.NewGuid().ToString();
+            Preferences.Set(nameof(ErrorReportingId), id);
+
+            return id;
+        }
+        set => Preferences.Set(nameof(ErrorReportingId), value);
     }
 
     public static void ClearColors()

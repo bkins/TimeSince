@@ -41,6 +41,20 @@ public class TimeElapsedViewModel : BaseViewModel
         }
     }
 
+    private bool _isPrivacyPolicyAccepted;
+
+    public bool IsPrivacyPolicyAccepted
+    {
+        get => _isPrivacyPolicyAccepted;
+        set
+        {
+            if (_isPrivacyPolicyAccepted == value) return;
+            _isPrivacyPolicyAccepted = value;
+            OnPropertyChanged();
+
+        }
+    }
+
     public List<string> SortOptionsList { get; } = Enum.GetValues(typeof(SortOptions))
                                                        .Cast<SortOptions>()
                                                        .Select(e => e.GetDescription())
@@ -61,6 +75,8 @@ public class TimeElapsedViewModel : BaseViewModel
         SaveCommand       = new Command(ExecuteSave);
         DeleteCommand     = new Command(ExecuteDelete);
         ToggleSortCommand = new Command(ToggleSort);
+
+        IsPrivacyPolicyAccepted = PreferencesDataStore.HideStartupMessage;
 
         StartUpdatingElapsedTime();
 
@@ -231,6 +247,11 @@ public class TimeElapsedViewModel : BaseViewModel
         }
     }
 
+    public bool HasPurchasedToHideAds()
+    {
+        return PreferencesDataStore.PaidToTurnOffAds;
+    }
+
     private void SortEventsByDateAndTime(bool descending = false)
     {
 
@@ -269,6 +290,7 @@ public class TimeElapsedViewModel : BaseViewModel
 
         SortEvents(CurrentSortOption);
     }
+
 }
 
 public enum SortOptions
