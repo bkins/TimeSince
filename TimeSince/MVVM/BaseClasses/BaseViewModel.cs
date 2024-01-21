@@ -1,6 +1,5 @@
 ﻿using System.ComponentModel;
 using System.Runtime.CompilerServices;
-using TimeSince.Avails;
 using TimeSince.Data;
 
 namespace TimeSince.MVVM.BaseClasses;

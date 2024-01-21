@@ -2,37 +2,37 @@
 
 public static class PreferencesDataStore
 {
-    public static string PrimaryColorName
+    public static string? PrimaryColorName
     {
         get => Preferences.Get(nameof(PrimaryColorName), null);
         set => Preferences.Set(nameof(PrimaryColorName), value);
     }
 
-    public static string SecondaryColorName
+    public static string? SecondaryColorName
     {
         get => Preferences.Get(nameof(SecondaryColorName), null);
         set => Preferences.Set(nameof(SecondaryColorName), value);
     }
 
-    public static string TertiaryColorName
+    public static string? TertiaryColorName
     {
         get => Preferences.Get(nameof(TertiaryColorName), null);
         set => Preferences.Set(nameof(TertiaryColorName), value);
     }
 
-    public static string DefaultPrimaryColorName
+    public static string? DefaultPrimaryColorName
     {
         get => Preferences.Get(nameof(DefaultPrimaryColorName), null);
         set => Preferences.Set(nameof(DefaultPrimaryColorName), value);
     }
 
-    public static string DefaultSecondaryColorName
+    public static string? DefaultSecondaryColorName
     {
         get => Preferences.Get(nameof(DefaultSecondaryColorName), null);
         set => Preferences.Set(nameof(DefaultSecondaryColorName), value);
     }
 
-    public static string DefaultTertiaryColorName
+    public static string? DefaultTertiaryColorName
     {
         get => Preferences.Get(nameof(DefaultTertiaryColorName), null);
         set => Preferences.Set(nameof(DefaultTertiaryColorName), value);

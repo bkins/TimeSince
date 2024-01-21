@@ -1,6 +1,4 @@
-﻿using Microsoft.Maui.Controls;
-using System;
-using Microsoft.Maui.Controls.Compatibility;
+﻿using Microsoft.Maui.Controls.Compatibility;
 using TimeSince.Avails.ColorHelpers;
 using TimeSince.MVVM.ViewModels;
 using Grid = Microsoft.Maui.Controls.Grid;

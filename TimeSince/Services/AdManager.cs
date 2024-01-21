@@ -1,5 +1,4 @@
-﻿using Microsoft.Extensions.Logging;
-using Plugin.MauiMTAdmob;
+﻿using Plugin.MauiMTAdmob;
 using Plugin.MauiMTAdmob.Controls;
 using TimeSince.Avails;
 using TimeSince.Data;

@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Drawing;
-using System.Linq;
-using System.Text;
+﻿using System.Text;
 using TimeSince.Avails.ColorHelpers;
 using TimeSince.MVVM.Models;
 using Xunit.Abstractions;
@@ -10,7 +6,7 @@ using Color = System.Drawing.Color;
 using MauiGraphics = Microsoft.Maui.Graphics;
 using ColorUtilities = TimeSince.Avails.ColorHelpers.ColorUtility;
 
-namespace TimeSince.Tests.Avails;
+namespace Tests.Avails;
 
 public class ColorUtility
 {

@@ -1,12 +1,7 @@
 ﻿namespace TimeSince.Avails.Attributes;
 
 [AttributeUsage(AttributeTargets.All)]
-public class UnderConstructionAttribute : System.Attribute
+public class UnderConstructionAttribute(string reason) : System.Attribute
 {
-    public string Reason;
-
-    public UnderConstructionAttribute(string reason)
-    {
-        Reason = reason;
-    }
+    public string Reason = reason;
 }

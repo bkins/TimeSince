@@ -1,11 +1,6 @@
-﻿using Syncfusion.Maui.Popup;
-using TimeSince.Avails;
-using TimeSince.Avails.Attributes;
-using TimeSince.Avails.ColorHelpers;
-using TimeSince.Avails.Extensions;
+﻿using TimeSince.Avails.ColorHelpers;
 using TimeSince.MVVM.ViewModels;
 using TimeSince.Data;
-using TimeSince.Services.ServicesIntegration;
 
 namespace TimeSince.MVVM.Views;
 

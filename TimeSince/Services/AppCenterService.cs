@@ -126,28 +126,28 @@ public class AppCenterService
         MainThread.BeginInvokeOnMainThread(() =>
         {
             Application.Current
-              ?.MainPage
-              ?.DisplayActionSheet("Crash detected. Send anonymous crash report?"
-                                , null
-                                , null
-                                , "Send"
-                                , "Always Send"
-                                , "Don't Send")
-              .ContinueWith(arg =>
-              {
-                  var answer = arg.Result;
+                       ?.MainPage
+                       ?.DisplayActionSheet("Crash detected. Send anonymous crash report?"
+                                          , null
+                                          , null
+                                          , "Send"
+                                          , "Always Send"
+                                          , "Don't Send")
+                       .ContinueWith(arg =>
+                       {
+                           var answer = arg.Result;
 
-                  var userConfirmationSelection = answer switch
-                                                  {
-                                                      "Send" => UserConfirmation.Send
-                                                    , "Always Send" => UserConfirmation.AlwaysSend
-                                                    , _ => UserConfirmation.DontSend
-                                                  };
+                           var userConfirmationSelection = answer switch
+                                                           {
+                                                               "Send" => UserConfirmation.Send
+                                                             , "Always Send" => UserConfirmation.AlwaysSend
+                                                             , _ => UserConfirmation.DontSend
+                                                           };
 
-                  AppCenterLog.Debug(LogTag
-                                   , $"User selected confirmation option: \"{answer}\"");
-                  Crashes.NotifyUserConfirmation(userConfirmationSelection);
-              });
+                           AppCenterLog.Debug(LogTag
+                                            , $"User selected confirmation option: \"{answer}\"");
+                           Crashes.NotifyUserConfirmation(userConfirmationSelection);
+                       });
         });
 
         return true;

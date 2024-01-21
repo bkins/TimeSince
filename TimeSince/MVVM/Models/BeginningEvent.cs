@@ -1,11 +1,9 @@
 ﻿using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using SQLite;
-using TimeSince.Avails;
 using TimeSince.Avails.ColorHelpers;
 using TimeSince.Avails.Extensions;
 using TimeSince.MVVM.BaseClasses;
-using TimeSince.MVVM.ViewModels;
 
 namespace TimeSince.MVVM.Models;
 
@@ -38,9 +36,9 @@ public class BeginningEvent : BaseModel, INotifyPropertyChanged
         }
     }
 
-    private Color _buttonTextColor = Color.FromArgb(ColorInfo.Black);
+    private Color? _buttonTextColor = Color.FromArgb(ColorInfo.Black);
     [Ignore]
-    public Color ButtonTextColor
+    public Color? ButtonTextColor
     {
         get => _buttonTextColor;
         set

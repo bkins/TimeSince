@@ -1,5 +1,6 @@
 ﻿namespace TimeSince.Avails
 {
+    [Obsolete("Not needed in this application.  Remove it")]
     public class SearchOptions
     {
         private string _searchTerm;

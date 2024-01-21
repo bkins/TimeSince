@@ -11,14 +11,17 @@ namespace TimeSince.MVVM.Views;
 
 public partial class MainPage //Events
 {
-    private async void AddEventButton_OnClicked(object    sender
+    private void AddEventButton_OnClicked(object    sender
                                         , EventArgs e)
     {
         if ( ! App.AppServiceMethods.IsPhysicalDevice())
         {
-            return; //Not a physical device.  These type of ads don't work that well here.
+            App.Logger.ToastMessage("Not a physical device.  These types of ads don't work that well here.");
         }
-        App.AppServiceMethods.ShowInterstitialAdAsync();
+        else
+        {
+            App.AppServiceMethods.ShowInterstitialAdAsync();
+        }
 
         TimeElapsedViewModel.AddNewEvent();
         ScrollToLastItemInListView();

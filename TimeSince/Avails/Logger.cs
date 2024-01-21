@@ -23,21 +23,27 @@ public partial class Logger : ILogger
 
     public StringBuilder LogStringBuilder { get; private set; }
 
-    public Logger()
+    private bool ForProd { get; set; }
+
+    public Logger(bool forProd = true)
     {
+        ForProd = forProd;
+
         var extraDetailsBuilder = new StringBuilder();
         extraDetailsBuilder.AppendLine("");
-        extraDetailsBuilder.AppendLine($"UserId: {PreferencesDataStore.ErrorReportingId}");
+        if(ForProd) extraDetailsBuilder.AppendLine($"UserId: {PreferencesDataStore.ErrorReportingId}");
         extraDetailsBuilder.AppendLine("Info From Device:");
-        extraDetailsBuilder.AppendLine(App.AppServiceMethods.FullDeviceInfo());
+        if(ForProd) extraDetailsBuilder.AppendLine(App.AppServiceMethods.FullDeviceInfo());
         extraDetailsBuilder.AppendLine("");
         extraDetailsBuilder.AppendLine($"App Info:");
-        extraDetailsBuilder.AppendLine($"\tVersion: {App.AppServiceMethods.AppInfo.CurrentVersion}");
-        extraDetailsBuilder.AppendLine($"\tBuild:   {App.AppServiceMethods.AppInfo.CurrentBuild}");
+        if(ForProd) extraDetailsBuilder.AppendLine($"\tVersion: {App.AppServiceMethods.AppInfo.CurrentVersion}");
+        if(ForProd) extraDetailsBuilder.AppendLine($"\tBuild:   {App.AppServiceMethods.AppInfo.CurrentBuild}");
 
         ExtraDetails = extraDetailsBuilder.ToString();
-
-        RefreshLogsFromFile();
+       
+        LogStringBuilder = new StringBuilder(GetFileContents());
+        CompleteLog      = LogStringBuilder.ToString();
+        LogList          = Deserialize(CompleteLog);
     }
 
     public void RefreshLogsFromFile()
@@ -70,8 +76,8 @@ public partial class Logger : ILogger
 
         if (ShouldLogToConsole)   LogToConsole(line);
         if (ShouldLogToFile)      LogToFile();
-        if (ShouldLogToAppCenter) LogErrorToAppCenter(exception, extraDetails);
-        if (ShouldLogToToast)     ToastMessage(line.Message);
+        if (ShouldLogToAppCenter && ForProd) LogErrorToAppCenter(exception, extraDetails);
+        if (ShouldLogToToast && ForProd)     ToastMessage(line.Message);
         //if (sendEmail)            await SendEmail().ConfigureAwait(false);
     }
 
@@ -98,7 +104,7 @@ public partial class Logger : ILogger
 
         if (ShouldLogToConsole)   LogToConsole(line);
         if (ShouldLogToFile)      LogToFile();
-        if (ShouldLogToToast)     ToastMessage(line.Message);
+        if (ShouldLogToToast && ForProd)     ToastMessage(line.Message);
     }
 
     public void LogTrace(string message)
@@ -111,7 +117,7 @@ public partial class Logger : ILogger
         LogToConsole(line);
         LogToFile();
 
-        if (ShouldLogToToast) ToastMessage(line.Message);
+        if (ShouldLogToToast && ForProd) ToastMessage(line.Message);
     }
 
     public void ToastMessage(string message)
@@ -119,19 +125,19 @@ public partial class Logger : ILogger
         ToastLineMessage(message);
     }
 
-    public IOrderedEnumerable<LogLine> ToggleLogListOrderByTimeStamp(SearchOptions options)
-    {
-        return Ascending
-            ? ToListOrderedByTimeStampDescending(options)
-            : ToListOrderedByTimeStampAscending(options);
-    }
+    // public IOrderedEnumerable<LogLine> ToggleLogListOrderByTimeStamp(SearchOptions options)
+    // {
+    //     return Ascending
+    //         ? ToListOrderedByTimeStampDescending(options)
+    //         : ToListOrderedByTimeStampAscending(options);
+    // }
 
-    public string SearchLog(SearchOptions options)
-    {
-        var resultsList = SearchLogAsList(options).ToList();
-
-        return ListToString(resultsList);
-    }
+    // public string SearchLog(SearchOptions options)
+    // {
+    //     var resultsList = SearchLogAsList(options).ToList();
+    //
+    //     return ListToString(resultsList);
+    // }
 
     public void Log<TState>(LogLevel                        logLevel
                           , EventId                         eventId
@@ -152,14 +158,22 @@ public partial class Logger : ILogger
         throw new NotImplementedException();
     }
 
-    public void Clear()
+    public void Clear(bool softClearLogFile = false)
     {
         LogList.Clear();
         LogStringBuilder.Clear();
         CompleteLog = string.Empty;
 
-        File.Delete(FullLogPath);
-        File.Create(FullLogPath);
+        if (softClearLogFile)
+        {
+            SoftClearLogFile();
+        }
+        else
+        {
+            File.Delete(FullLogPath);
+            File.Create(FullLogPath);
+        }
+
     }
 
     public void DeleteLogEntry(LogLine logEntry)

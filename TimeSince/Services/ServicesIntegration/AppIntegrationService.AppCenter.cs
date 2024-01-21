@@ -1,6 +1,4 @@
-﻿
-using System.Dynamic;
-using Microsoft.AppCenter.Crashes;
+﻿using Microsoft.AppCenter.Crashes;
 
 namespace TimeSince.Services.ServicesIntegration;
 
@@ -51,9 +49,9 @@ public partial class AppIntegrationService //AppCenter Service Methods
         _appCenterService.TrackEvent(name, properties);
     }
 
-    public void TrackError(Exception                   exception
-                         , IDictionary<string, string> properties = null
-                         , params ErrorAttachmentLog[] attachments)
+    public void TrackError(Exception                    exception
+                         , IDictionary<string, string>? properties = null
+                         , params ErrorAttachmentLog[]? attachments)
     {
         if (! HasInternetAccess) return;
 

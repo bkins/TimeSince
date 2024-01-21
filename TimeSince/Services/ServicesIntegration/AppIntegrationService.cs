@@ -1,6 +1,4 @@
-﻿using SQLitePCL;
-
-namespace TimeSince.Services.ServicesIntegration;
+﻿namespace TimeSince.Services.ServicesIntegration;
 
 /// <summary>
 /// The AppIntegrationService class is responsible for integrating various app services and providing access to them.

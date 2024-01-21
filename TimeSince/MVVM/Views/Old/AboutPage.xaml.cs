@@ -1,13 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using TimeSince.Avails;
-using TimeSince.Avails.ColorHelpers;
-using TimeSince.Data;
+﻿using TimeSince.Avails.ColorHelpers;
 using TimeSince.MVVM.ViewModels;
-using TimeSince.Services.ServicesIntegration;
 
 namespace TimeSince.MVVM.Views;
 
@@ -111,8 +103,8 @@ public partial class AboutPage_old : ContentPage
         // }
     }
 
-    private async void ShowInterstitialAdButton_OnClicked(object    sender
-                                                        , EventArgs e)
+    private void ShowInterstitialAdButton_OnClicked(object    sender
+                                                  , EventArgs e)
     {
         var originalButtonText = ShowInterstitialAdButton.Text;
 

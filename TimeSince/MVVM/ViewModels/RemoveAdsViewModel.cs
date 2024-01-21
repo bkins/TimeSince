@@ -1,5 +1,4 @@
-﻿using TimeSince.Avails;
-using TimeSince.Data;
+﻿using TimeSince.Data;
 using TimeSince.MVVM.BaseClasses;
 
 namespace TimeSince.MVVM.ViewModels;

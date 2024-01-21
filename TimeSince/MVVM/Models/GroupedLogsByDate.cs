@@ -1,6 +1,4 @@
-﻿using TimeSince.Avails;
-
-namespace TimeSince.MVVM.Models;
+﻿namespace TimeSince.MVVM.Models;
 
 public class GroupedLogsByDate
 {

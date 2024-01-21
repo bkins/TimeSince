@@ -1,5 +1,4 @@
 ﻿using Syncfusion.Maui.ListView.Helpers;
-using TimeSince.Avails;
 using TimeSince.MVVM.Models;
 
 namespace TimeSince.Behaviors;

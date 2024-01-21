@@ -1,7 +1,6 @@
-﻿using System;
-using TimeSince.Avails;
+﻿using TimeSince.Avails;
 
-namespace TimeSince.Tests.Helpers;
+namespace Tests.Helpers;
 
 public class SecretsFixture : IDisposable
 {

@@ -1,11 +1,11 @@
-﻿using System.Collections.Generic;
-using System.IO;
+﻿using Google.Apis.AdMob.v1.Data;
 using Newtonsoft.Json;
 using TimeSince.Avails;
 using TimeSince.MVVM.Models;
 using Xunit.Abstractions;
+using App = TimeSince.App;
 
-namespace TimeSince.Tests.Avails
+namespace Tests.Avails
 {
     public class LoggerTests
     {
@@ -24,7 +24,8 @@ namespace TimeSince.Tests.Avails
             const string expectedExceptionDetails = "Test Exception Details";
             const string expectedExtraDetails     = "Test Extra Details";
 
-            var logger = new Logger { ShouldLogToFile = true };
+            var logger = new Logger(forProd: false) { ShouldLogToFile = true };
+            logger.Clear(true);
 
             // Act
             logger.LogError(expectedMessage, expectedExceptionDetails, expectedExtraDetails);
@@ -40,7 +41,7 @@ namespace TimeSince.Tests.Avails
             // Assert
             var expectedLogList = new List<LogLine>
                                   {
-                                      new LogLine
+                                      new()
                                       {
                                           Category     = Category.Error,
                                           Message      = expectedMessage,
@@ -65,8 +66,10 @@ namespace TimeSince.Tests.Avails
         public void LogTrace_AddsToLogListAndLogsToFile()
         {
             // Arrange
-            var logger = new Logger();
-            var expectedMessage = "Test Trace Message";
+            const string expectedMessage = "Test Trace Message";
+
+            var logger = new Logger(forProd: false);
+            logger.Clear(softClearLogFile: true);
 
             // Act
             logger.LogTrace(expectedMessage);
@@ -79,6 +82,7 @@ namespace TimeSince.Tests.Avails
             // Check if log is written to file
             var fileContents = File.ReadAllText(logger.FullLogPath);
             var loggedList = JsonConvert.DeserializeObject<List<LogLine>>(fileContents);
+
             Assert.NotNull(loggedList);
             Assert.Single(loggedList);
             Assert.Equal(Category.Information, loggedList[0].Category);

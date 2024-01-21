@@ -1,0 +1,6 @@
+﻿<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="Publish TimeSince to folder" type="DotNetFolderPublish" factoryName="Publish to folder">
+    <riderPublish configuration="Release" platform="Any CPU" runtime="Portable" target_folder="$PROJECT_DIR$/TimeSince/bin/Release/net7.0/publish" target_framework="net7.0" uuid_high="8790200624003237868" uuid_low="-8711356812972969444" />
+    <method v="2" />
+  </configuration>
+</component>

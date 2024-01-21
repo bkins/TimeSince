@@ -1,8 +1,6 @@
-﻿using System.Collections;
-using System.Collections.ObjectModel;
+﻿using System.Collections.ObjectModel;
 using System.Text;
 using System.Windows.Input;
-using TimeSince.Avails;
 using TimeSince.MVVM.BaseClasses;
 using TimeSince.MVVM.Models;
 

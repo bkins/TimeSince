@@ -1,19 +1,13 @@
-﻿using System.Collections.ObjectModel;
-using System.Text;
-using Newtonsoft.Json;
+﻿using Newtonsoft.Json;
 using TimeSince.Avails.Extensions;
 using TimeSince.MVVM.Models;
 using CommunityToolkit.Maui.Alerts;
-using CommunityToolkit.Maui.Core; //BENDO: Need to update to 7.0.1 (at least), but need to upgrade to .NET 8 first.
+using CommunityToolkit.Maui.Core;
 
 namespace TimeSince.Avails;
 
 public partial class Logger
 {
-    private const string LogIsEmpty = "Log is empty or there are not entries that match your search criteria.";
-
-    private bool          Ascending        { get; set; }
-
     private string CompleteLog
     {
         get => LogStringBuilder.ToString();
@@ -23,7 +17,7 @@ public partial class Logger
     private void LogErrorToAppCenter(Exception exception
                                    , string    extraDetails = "")
     {
-        Dictionary<string, string> properties = null;
+        Dictionary<string, string>? properties = null;
 
         if (extraDetails.HasValue())
         {
@@ -32,17 +26,16 @@ public partial class Logger
 
         try
         {
-
             App.AppServiceMethods.TrackError(exception
-                                           , properties
+                                           , properties ?? null
                                            , null);
         }
         catch (Exception e)
         {
-            var line = AddToLogList(e.Message
-                                  , Category.Error
-                                  , e.StackTrace
-                                  , extraDetails);
+            var resultForDebugging = AddToLogList(e.Message
+                                                , Category.Error
+                                                , e.StackTrace ?? string.Empty
+                                                , extraDetails);
             LogToFile();
         }
     }
@@ -51,27 +44,6 @@ public partial class Logger
     {
 
         Console.WriteLine(line);
-    }
-
-    private IEnumerable<LogLine> SearchLogAsList(SearchOptions options)
-    {
-        return new ObservableCollection<LogLine>(LogList.Where(fields => FilterBySearchTerm(options
-                                                                                          , fields)
-                                                                      && FilterOptionsByCategory(options
-                                                                                               , fields)));
-    }
-
-    private List<LogLine> ToList(bool forceRefresh = false)
-    {
-        if (!forceRefresh) { return LogList; }
-
-        var task = Task.Factory.StartNew(() => Deserialize(GetFileContents()));
-
-        Task.WaitAll();
-
-        return task.Result;
-
-        //return Deserialize(GetFileContents());
     }
 
     private void LogToFile()
@@ -85,14 +57,20 @@ public partial class Logger
         streamWriter.Write(Serialize(LogList));
     }
 
-    private LogLine AddToLogList(string   message
-                               , Category category
-                               , string   exceptionDetails
-                               , string   extraDetails)
+    private void SoftClearLogFile()
+    {
+        using var streamWriter = new StreamWriter(File.Create(FullLogPath));
+        streamWriter.Write(string.Empty);
+    }
+
+    private static LogLine AddToLogList(string   message
+                                      , Category category
+                                      , string   exceptionDetails
+                                      , string   extraDetails)
     {
         extraDetails = extraDetails.IsNullEmptyOrWhitespace()
-            ? string.Empty
-            : $"{extraDetails}";
+                                        ? string.Empty
+                                        : $"{extraDetails}";
 
         var line = new LogLine
                    {
@@ -115,87 +93,6 @@ public partial class Logger
                                   : string.Empty;
 
         return fileContents;
-    }
-
-    private IOrderedEnumerable<LogLine> ToListOrderedByTimeStampAscending(SearchOptions options)
-    {
-        Ascending = !Ascending;
-
-        if (options.SearchTerm.IsNullEmptyOrWhitespace())
-        {
-            return ToList().Where(fields => FilterOptionsByCategory(options, fields))
-                           .OrderBy(fields => fields.TimestampDateTime);
-        }
-
-        return ToList().Where(fields => FilterBySearchTerm(options, fields)
-                                     && FilterOptionsByCategory(options, fields))
-                       .OrderBy(fields => fields.TimestampDateTime);
-    }
-
-    private IOrderedEnumerable<LogLine> ToListOrderedByTimeStampDescending(SearchOptions options)
-    {
-        Ascending = !Ascending;
-
-        if (options.SearchTerm.IsNullEmptyOrWhitespace())
-        {
-            return ToList().Where(fields => FilterOptionsByCategory(options, fields))
-                           .OrderByDescending(fields => fields.TimestampDateTime);
-        }
-
-        return ToList().Where(fields => FilterBySearchTerm(options, fields)
-                                     && FilterOptionsByCategory(options, fields))
-                       .OrderByDescending(fields => fields.TimestampDateTime);
-    }
-
-    private bool FilterBySearchTerm(SearchOptions options
-                                         , LogLine       fields)
-    {
-        return (fields.TimeStamp.Contains(options.SearchTerm
-                                        , StringComparison.OrdinalIgnoreCase)
-             || fields.Category.ToString().Contains(options.SearchTerm
-                                                  , StringComparison.OrdinalIgnoreCase)
-             || fields.Message.Contains(options.SearchTerm
-                                      , StringComparison.OrdinalIgnoreCase));
-    }
-
-    private bool FilterOptionsByCategory(SearchOptions options
-                                              , LogLine       fields)
-    {
-        return (fields.Category == Category.Error && options.ShowErrors)
-            || (fields.Category == Category.Warning && options.ShowWarnings)
-            || (fields.Category == Category.Information && options.ShowInformation);
-    }
-
-    private string ListToString(List<LogLine> list)
-    {
-        var log = new StringBuilder();
-
-        foreach (var line in list)
-        {
-            log.AppendLine(line.ToString(true));
-        }
-
-        return log.Length == 0
-            ? LogIsEmpty
-            : log.ToString();
-    }
-
-    private string ToStringOrderedByTimeStampDescending(SearchOptions options)
-    {
-        Ascending = !Ascending;
-
-        var theList = ToListOrderedByTimeStampDescending(options);
-
-        return ListToString(theList.ToList());
-    }
-
-    private string ToStringOrderedByTimeStampAscending(SearchOptions options)
-    {
-        Ascending = !Ascending;
-
-        var theList = ToListOrderedByTimeStampAscending(options);
-
-        return ListToString(theList.ToList());
     }
 
     private List<LogLine> LegacyLogFileToList(string fileContents)
@@ -248,7 +145,6 @@ public partial class Logger
         var toast = Toast.Make(text
                              , duration
                              , fontSize);
-
         toast.Show();
     }
 }

@@ -1,6 +1,5 @@
 ﻿using System.Collections.ObjectModel;
 using System.ComponentModel;
-using TimeSince.Avails;
 using TimeSince.Avails.Extensions;
 using TimeSince.Data;
 using TimeSince.MVVM.BaseClasses;

@@ -1,6 +1,6 @@
 ﻿namespace TimeSince.Avails.ColorHelpers;
 
-public class ColorComparer : IEqualityComparer<Microsoft.Maui.Graphics.Color?>
+public class ColorComparer : IEqualityComparer<Color?>
 {
     private const float Epsilon = 0.001f;
 

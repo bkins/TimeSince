@@ -11,21 +11,21 @@ namespace TimeSince.Avails.ColorHelpers;
 
 public static class ColorUtility
 {
-    public static ObservableCollection<ColorName> ColorNames { get; set; }
+    public static ObservableCollection<ColorName>? ColorNames { get; set; }
 
-    public static List<string> GetNamedColors()
+    public static List<string?> GetNamedColors()
     {
-        var namedColors = typeof(Color).GetProperties(BindingFlags.Public
-                                                    | BindingFlags.Static)
-                                       .Where(propertyInfo => propertyInfo.PropertyType == typeof(Color))
-                                       .Select(propertyInfo => propertyInfo.Name)
-                                       .ToList();
+        List<string?> namedColors = typeof(Color).GetProperties(BindingFlags.Public
+                                                              | BindingFlags.Static)
+                                                 .Where(propertyInfo => propertyInfo.PropertyType == typeof(Color))
+                                                 .Select(propertyInfo => propertyInfo.Name)
+                                                 .ToList();
 
         return namedColors;
     }
 
-    public static Microsoft.Maui.Graphics.Color ConvertSystemColorNameToMauiColor(string systemColorName
-                                                                                , Color? defaultColor = null)
+    public static MauiGraphics.Color? ConvertSystemColorNameToMauiColor(string? systemColorName
+                                                                      , Color? defaultColor = null)
     {
         var systemColor = GetColorFromName(systemColorName
                                          , defaultColor);
@@ -33,8 +33,8 @@ public static class ColorUtility
         return ConvertSystemColorToMauiColor(systemColor);
     }
 
-    public static Color? GetColorFromName(string colorName
-                                        , Color? defaultColor = null)
+    private static Color? GetColorFromName(string? colorName
+                                         , Color?  defaultColor = null)
     {
         if (colorName is null) return defaultColor;
 
@@ -51,7 +51,7 @@ public static class ColorUtility
         return defaultColor;
     }
 
-    public static Microsoft.Maui.Graphics.Color ConvertSystemColorToMauiColor(Color? systemColor)
+    private static MauiGraphics.Color? ConvertSystemColorToMauiColor(Color? systemColor)
     {
         if (systemColor is null) return null;
 
@@ -61,9 +61,9 @@ public static class ColorUtility
                                     , systemColor?.A ?? 0);
     }
 
-    public static Color ConvertMauiColorToSystemColor(Microsoft.Maui.Graphics.Color mauiColor)
+    public static Color ConvertMauiColorToSystemColor(MauiGraphics.Color? mauiColor)
     {
-        if (mauiColor is null) return System.Drawing.Color.Empty;
+        if (mauiColor is null) return Color.Empty;
 
         var alpha = (int)(mauiColor.Alpha * 255);
         var red   = (int)(mauiColor.Red * 255);
@@ -93,11 +93,11 @@ public static class ColorUtility
     public static void SetDefaultResourceColors()
     {
         UpdateColorResource(ResourceColors.Primary
-                          , Microsoft.Maui.Graphics.Color.FromArgb(ColorInfo.RoyalAzureAsHex));
+                          , MauiGraphics.Color.FromArgb(ColorInfo.RoyalAzureAsHex));
         UpdateColorResource(ResourceColors.Secondary
-                          , Microsoft.Maui.Graphics.Color.FromArgb(ColorInfo.LavenderMistAsHex));
+                          , MauiGraphics.Color.FromArgb(ColorInfo.LavenderMistAsHex));
         UpdateColorResource(ResourceColors.Tertiary
-                          , Microsoft.Maui.Graphics.Color.FromArgb(ColorInfo.MidnightIndigoAsHex));
+                          , MauiGraphics.Color.FromArgb(ColorInfo.MidnightIndigoAsHex));
 
     }
 
@@ -121,10 +121,10 @@ public static class ColorUtility
                                                                   , defaultColor);
     }
 
-    public static bool UpdateColorResource(ResourceColors     resourceColorName
-                                         , MauiGraphics.Color mauiColor)
+    public static bool UpdateColorResource(ResourceColors      resourceColorName
+                                         , MauiGraphics.Color? mauiColor)
     {
-        if (mauiColor is null) return false; // Is true more appropriate?
+        if (mauiColor is null) return false;
 
         if (Application.Current == null) return false;
 
@@ -140,7 +140,7 @@ public static class ColorUtility
         {
             UpdateColorName(resourceColorName
                           , GetNameFromColor(mauiColor
-                                           , ColorNames.ToList()));
+                                           , (ColorNames ?? []).ToList()));
         }
         catch (Exception e)
         {
@@ -153,7 +153,7 @@ public static class ColorUtility
     }
 
     private static void UpdateColorName(ResourceColors resourceColorName
-                                      , string         name)
+                                      , string?        name)
     {
         switch (resourceColorName)
         {
@@ -172,6 +172,7 @@ public static class ColorUtility
 
                 break;
 
+            case ResourceColors.InvalidColor:
             default:
                 throw new ArgumentOutOfRangeException(nameof(resourceColorName)
                                                     , resourceColorName
@@ -179,7 +180,7 @@ public static class ColorUtility
         }
     }
 
-    public static Microsoft.Maui.Graphics.Color GetColorFromResources(ResourceColors resourceColorsName)
+    public static MauiGraphics.Color? GetColorFromResources(ResourceColors resourceColorsName)
     {
         try
         {
@@ -189,15 +190,15 @@ public static class ColorUtility
                                       , out _)
              ?? false)
             {
-                return (MauiGraphics.Color)Application.Current
-                                                   ?.Resources[resourceColorsName.ToString()];
+                return Application.Current
+                                  .Resources[resourceColorsName.ToString()] as MauiGraphics.Color;
             }
         }
         catch (InvalidCastException e)
         {
             App.Logger.LogError("Error while getting color from Resources.  Converting System color to Maui color."
                               , e.Message
-                              , e.StackTrace);
+                              , e.StackTrace ?? string.Empty);
 
             return ConvertSystemColorToMauiColor((Color)Application.Current
                                                                    ?.Resources[resourceColorsName.ToString()]!);
@@ -206,7 +207,7 @@ public static class ColorUtility
         {
             App.Logger.LogError("Error while getting color from Resources.  Converting System color to Maui color."
                               , e.Message
-                              , e.StackTrace);
+                              , e.StackTrace ?? string.Empty);
 
             return null;
         }
@@ -214,24 +215,24 @@ public static class ColorUtility
         return null;
     }
 
-    public static int GetIndexFromPartialName(string partialName)
+    public static int GetIndexFromPartialName(string? partialName)
     {
         if (partialName is null) return -1;
 
-        var index = ColorNames.ToList()
-                              .FindIndex(colorName => colorName.Name
-                                                               .StartsWith(partialName.ToLower()
-                                                                         , StringComparison.CurrentCultureIgnoreCase));
+        var index = (ColorNames ?? []).ToList()
+                                      .FindIndex(colorName => colorName.Name
+                                                                       .StartsWith(partialName.ToLower()
+                                                                                 , StringComparison.CurrentCultureIgnoreCase));
 
         return index;
     }
 
-    public static string GetNameFromColor(MauiGraphics.Color mauiColor
-                                        , List<ColorName> colorNames)
+    public static string? GetNameFromColor(MauiGraphics.Color? mauiColor
+                                         , List<ColorName>     colorNames)
     {
         if (mauiColor is null) return string.Empty;
 
-        var colorName = colorNames.FirstOrDefault(name => name.Color.ToArgbHex() == mauiColor.ToArgbHex());
+        var colorName = colorNames.FirstOrDefault(name => name.Color?.ToArgbHex() == mauiColor.ToArgbHex());
 
         if (colorName is not null) return colorName.Name;
 
@@ -244,15 +245,15 @@ public static class ColorUtility
                               , colorNames);
     }
 
-    public static int GetIndexFromColor(MauiGraphics.Color mauiColor)
+    public static int GetIndexFromColor(MauiGraphics.Color? mauiColor)
     {
-        var colorNamesList = ColorNames.ToList();
+        var colorNamesList = (ColorNames ?? []).ToList();
 
         var transparent = colorNamesList.FindIndex(name => name.Name == "Transparent");
 
         if (mauiColor is null) return transparent;
 
-        var index = colorNamesList.FindIndex(name => name.Color.ToArgbHex() == mauiColor.ToArgbHex());
+        var index = colorNamesList.FindIndex(name => name.Color?.ToArgbHex() == mauiColor.ToArgbHex());
 
         if (index != -1) return index;
 
@@ -260,17 +261,17 @@ public static class ColorUtility
                                             , mauiColor);
 
         return closeEnough is null
-            ? transparent
-            : GetIndexFromColor(closeEnough.Color);
+                    ? transparent
+                    : GetIndexFromColor(closeEnough.Color);
 
     }
 
-    public static ColorName FindTheClosestColor(List<ColorName> colorNames
-                                              , MauiGraphics.Color targetColor)
+    public static ColorName? FindTheClosestColor(List<ColorName>     colorNames
+                                               , MauiGraphics.Color? targetColor)
     {
         var minDistance = double.MaxValue;
 
-        ColorName closestColor = null;
+        ColorName? closestColor = null;
 
         foreach (var colorName in colorNames)
         {
@@ -293,9 +294,11 @@ public static class ColorUtility
     /// <param name="color1"></param>
     /// <param name="color2"></param>
     /// <returns></returns>
-    public static double CalculateColorDistance(MauiGraphics.Color color1
-                                              , MauiGraphics.Color color2)
+    public static double CalculateColorDistance(MauiGraphics.Color? color1
+                                              , MauiGraphics.Color? color2)
     {
+        if (color1 is null || color2 is null) throw new NullReferenceException("'color1' or 'color2', or both, are null.");
+
         double redDiff   = color1.Red - color2.Red;
         double greenDiff = color1.Green - color2.Green;
         double blueDiff  = color1.Blue - color2.Blue;
@@ -398,12 +401,8 @@ public static class ColorUtility
         var backLuminance = GetRelativeLuminance(backgroundColor);
         var textLuminance = GetRelativeLuminance(textColor);
 
-        var contrastRatio = (Math.Max(backLuminance
-                                    , textLuminance)
-                           + 0.05)
-                          / (Math.Min(backLuminance
-                                    , textLuminance)
-                           + 0.05);
+        var contrastRatio = (Math.Max(backLuminance, textLuminance) + 0.05)
+                          / (Math.Min(backLuminance, textLuminance) + 0.05);
 
         return contrastRatio;
     }
@@ -433,10 +432,12 @@ public static class ColorUtility
             ? red / linearThreshold
             : Math.Pow((red + thresholdEnd) / gammaCorrectionForBrighterColors
                      , gammaCorrection);
+
         green = green <= thresholdStart
             ? green / linearThreshold
             : Math.Pow((green + thresholdEnd) / gammaCorrectionForBrighterColors
                      , gammaCorrection);
+
         blue = blue <= thresholdStart
             ? blue / linearThreshold
             : Math.Pow((blue + thresholdEnd) / gammaCorrectionForBrighterColors
@@ -447,14 +448,14 @@ public static class ColorUtility
              + bWeight * blue;
     }
 
-    private static double GetRelativeLuminance(MauiGraphics.Color color)
+    private static double GetRelativeLuminance(MauiGraphics.Color? color)
     {
         var systemColor = ConvertMauiColorToSystemColor(color);
 
         return GetRelativeLuminance(systemColor);
     }
 
-    public static MauiGraphics.Color ChooseReadableTextColor(MauiGraphics.Color backgroundColor)
+    public static MauiGraphics.Color? ChooseReadableTextColor(MauiGraphics.Color? backgroundColor)
     {
         const double yellowThreshold = 0.2;
         const double lightThreshold = 0.5;
@@ -469,10 +470,7 @@ public static class ColorUtility
 
         var isLightBackground = bgLuminance > lightThreshold;
 
-        if (isLightBackground)
-        {
-            return black;
-        }
+        if (isLightBackground) return black;
 
         return bgLuminance < yellowThreshold
                     ? white
@@ -485,5 +483,5 @@ public enum ResourceColors
     Primary
   , Secondary
   , Tertiary
-   , InvalidColor //only used in unit test
+  , InvalidColor //only used in unit test
 }

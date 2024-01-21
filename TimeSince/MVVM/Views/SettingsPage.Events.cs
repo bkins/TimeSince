@@ -35,7 +35,7 @@ public partial class SettingsPage
 
         var selectedIndex = e.NewValue;
 
-        var color     = ColorUtility.ColorNames[selectedIndex];
+        var    color     = ColorUtility.ColorNames[selectedIndex];
         var mauiColor = ColorUtility.ConvertSystemColorNameToMauiColor(color.Name, ColorInfo.LavenderMist);
 
         SecondaryColorPicker.BackgroundColor = mauiColor;
@@ -54,7 +54,7 @@ public partial class SettingsPage
 
         var selectedIndex = e.NewValue;
 
-        var color     = ColorUtility.ColorNames[selectedIndex];
+        var    color     = ColorUtility.ColorNames[selectedIndex];
         var mauiColor = ColorUtility.ConvertSystemColorNameToMauiColor(color.Name, ColorInfo.MidnightIndigo);
         var didSetColor = ColorUtility.UpdateColorResource(ResourceColors.Tertiary
                                                          , mauiColor);

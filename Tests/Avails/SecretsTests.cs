@@ -1,9 +1,8 @@
-﻿using System;
-using System.Reflection;
+﻿using System.Reflection;
+using Tests.Helpers;
 using TimeSince.Avails;
-using TimeSince.Tests.Helpers;
 
-namespace TimeSince.Tests.Avails
+namespace Tests.Avails
 {
     [CollectionDefinition("SecretsCollection")]
     public class SecretsCollection : ICollectionFixture<SecretsFixture>

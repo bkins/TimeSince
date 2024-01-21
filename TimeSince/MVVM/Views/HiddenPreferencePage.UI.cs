@@ -1,6 +1,4 @@
 ﻿using System.Globalization;
-using Microsoft.AppCenter.Crashes;
-using Microsoft.Maui.Controls;
 using TimeSince.Data;
 using TimeSince.MVVM.ViewModels;
 

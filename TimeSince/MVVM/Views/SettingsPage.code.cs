@@ -1,6 +1,4 @@
-﻿using Syncfusion.Maui.Picker;
-using TimeSince.MVVM.Models;
-using TimeSince.MVVM.ViewModels;
+﻿using TimeSince.MVVM.ViewModels;
 
 namespace TimeSince.MVVM.Views;
 

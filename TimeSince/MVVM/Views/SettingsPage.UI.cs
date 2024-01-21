@@ -1,7 +1,6 @@
 ﻿using Syncfusion.Maui.Picker;
 using TimeSince.Avails;
 using TimeSince.Avails.ColorHelpers;
-using TimeSince.Services.ServicesIntegration;
 
 namespace TimeSince.MVVM.Views;
 
@@ -17,7 +16,7 @@ public partial class SettingsPage : ContentPage
     private Button      PrimaryButton         { get; set; }
     private Button      SecondaryButton       { get; set; }
     private Button      TertiaryButton        { get; set; }
-    private Color       ForegroundColor       { get; set; }
+    private Color?      ForegroundColor       { get; set; }
     private Label       RemoveAdsLabel        { get; set; }
     private CheckBox    RemoveAdsCheckBox     { get; set; }
     private Switch      RemoveAdsSwitch       { get; set; }

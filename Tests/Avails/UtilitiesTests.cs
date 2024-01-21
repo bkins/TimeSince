@@ -1,8 +1,7 @@
-﻿using System;
-using System.ComponentModel;
+﻿using System.ComponentModel;
 using TimeSince.Avails;
 
-namespace TimeSince.Tests.Avails;
+namespace Tests.Avails;
 
 public class UtilitiesTests
 {
