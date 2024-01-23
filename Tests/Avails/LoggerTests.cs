@@ -1,21 +1,12 @@
-﻿using Google.Apis.AdMob.v1.Data;
-using Newtonsoft.Json;
+﻿using Newtonsoft.Json;
 using TimeSince.Avails;
 using TimeSince.MVVM.Models;
 using Xunit.Abstractions;
-using App = TimeSince.App;
 
 namespace Tests.Avails
 {
-    public class LoggerTests
+    public class LoggerTests(ITestOutputHelper testOutputHelper)
     {
-        private readonly ITestOutputHelper _testOutputHelper;
-
-        public LoggerTests(ITestOutputHelper testOutputHelper)
-        {
-            _testOutputHelper = testOutputHelper;
-        }
-
         [Fact]
         public void LogError_AddsToLogListAndLogsToFile()
         {
@@ -50,10 +41,10 @@ namespace Tests.Avails
                                   };
 
             // Print out the contents for debugging
-            _testOutputHelper.WriteLine($"expectedLogList.Count: {expectedLogList.Count}");
-            _testOutputHelper.WriteLine($"loggedListAfterLog.Count: {loggedListAfterLog.Count}");
-            _testOutputHelper.WriteLine($"expectedLogList[0].Message: {expectedLogList[0].Message}");
-            _testOutputHelper.WriteLine($"loggedListAfterLog[0].Message: {loggedListAfterLog[0].Message}");
+            testOutputHelper.WriteLine($"expectedLogList.Count: {expectedLogList.Count}");
+            testOutputHelper.WriteLine($"loggedListAfterLog.Count: {loggedListAfterLog.Count}");
+            testOutputHelper.WriteLine($"expectedLogList[0].Message: {expectedLogList[0].Message}");
+            testOutputHelper.WriteLine($"loggedListAfterLog[0].Message: {loggedListAfterLog[0].Message}");
 
             // Assert that the logged list matches the expected list using LogLineComparer
             Assert.Equal(expectedLogList

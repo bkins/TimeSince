@@ -10,17 +10,16 @@ public partial class AppIntegrationService // AdManager Service Methods
     {
         if (HasInternetAccess) return AdManager.Instance.GetAdView();
 
-        // No internet access
         var noInternetLabel = new Label
                               {
-                                  Text              = "No internet access available",
-                                  HorizontalOptions = LayoutOptions.Center,
-                                  VerticalOptions   = LayoutOptions.Center
+                                  Text              = "No internet access"
+                                , HorizontalOptions = LayoutOptions.Center
+                                , VerticalOptions   = LayoutOptions.Center
                               };
         return noInternetLabel;
     }
 
-    public bool AreAdsEnabled()
+    public static bool AreAdsEnabled()
     {
         return AdManager.AreAdsEnabled;
     }

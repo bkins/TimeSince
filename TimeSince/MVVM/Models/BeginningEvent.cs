@@ -52,9 +52,11 @@ public class BeginningEvent : BaseModel, INotifyPropertyChanged
 
     public BeginningEvent()
     {
-        Title    = string.Empty;
-        Date     = DateTime.Today;
-        TimeSpan = DateTime.Now.TimeOfDay;
+        Title                  = string.Empty;
+        Date                   = DateTime.Today;
+        TimeSpan               = DateTime.Now.TimeOfDay;
+        Time                   = string.Empty;
+        _timeElapsedForDisplay = string.Empty;
     }
 
     private void SetTimeSpan(TimeSpan timeSpan)
@@ -62,28 +64,5 @@ public class BeginningEvent : BaseModel, INotifyPropertyChanged
         Time = timeSpan.ToShortForm();
     }
 
-    #region INotifyPropertyChanged Properties and Methods
 
-    public event PropertyChangedEventHandler PropertyChanged;
-
-    protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
-    {
-        PropertyChanged?.Invoke(this
-                              , new PropertyChangedEventArgs(propertyName));
-    }
-
-    protected bool SetField<T>(ref T                     field
-                             , T                         value
-                             , [CallerMemberName] string propertyName = null)
-    {
-        if (EqualityComparer<T>.Default.Equals(field, value))
-            return false;
-
-        field = value;
-        OnPropertyChanged(propertyName);
-
-        return true;
-    }
-
-    #endregion
 }

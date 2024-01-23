@@ -5,7 +5,7 @@ public partial class AppIntegrationService // Device Service Methods
 {
     public bool HasInternetAccess { get; set; }
 
-    public async Task<string> GetDoorKay()
+    public async Task<string?> GetDoorKay()
     {
         return await _deviceServices.GetDoorKey();
     }

@@ -4,17 +4,15 @@ namespace TimeSince.Services;
 
 public class AppInfoService
 {
-    public static AppInfo Info { get; set; }
+    public static AppInfo? Info { get; set; }
 
     public AppInfoService()
     {
-        Info = new AppInfo();
-
-        Info.CurrentVersion = VersionTracking.CurrentVersion;
-        Info.CurrentBuild   = GetBuildName(VersionTracking.CurrentBuild);
+        Info = new AppInfo(VersionTracking.CurrentVersion
+                         , GetBuildName(VersionTracking.CurrentBuild));
     }
 
-    public string GetMode()
+    public static string GetMode()
     {
 #if DEBUG
         return "Debug";
@@ -23,7 +21,7 @@ public class AppInfoService
 #endif
     }
 
-    private string GetBuildName(string buildNumber)
+    private static string? GetBuildName(string buildNumber)
     {
         return buildNumber switch
                {

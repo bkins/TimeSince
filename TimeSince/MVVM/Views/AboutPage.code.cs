@@ -5,7 +5,7 @@ namespace TimeSince.MVVM.Views;
 
 public partial class AboutPage
 {
-    private void ShowInterstitialAdButton_OnClicked(object    sender
+    private void ShowInterstitialAdButton_OnClicked(object?    sender
                                                   , EventArgs e)
     {
         var originalButtonText = ShowInterstitialAdButton.Text;
@@ -43,7 +43,7 @@ public partial class AboutPage
         AboutViewModel.CurrentAwesomeScore = "10";
     }
 
-    private void ResetAwesomeScoreButton_OnClicked(object    sender
+    private void ResetAwesomeScoreButton_OnClicked(object?    sender
                                                  , EventArgs e)
     {
         AboutViewModel.ResetAwesomeScore();

@@ -32,7 +32,7 @@ public class DeviceServices
         return InternetAccessStatus().AccessCode == NetworkAccess.Internet;
     }
 
-    public async Task<string> GetDoorKey()
+    public async Task<string?> GetDoorKey()
     {
         return await UiUtilities.GetClipboardValueAsync();
     }

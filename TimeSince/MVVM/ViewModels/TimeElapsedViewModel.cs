@@ -68,6 +68,8 @@ public class TimeElapsedViewModel : BaseViewModel
 
     public TimeElapsedViewModel()
     {
+        _events    = [];
+        Event      = new BeginningEvent();
         DataAccess = new DataAccess(App.Database);
         Events     = DataAccess.GetObservableCollection<BeginningEvent>();
 
@@ -138,6 +140,7 @@ public class TimeElapsedViewModel : BaseViewModel
         }
         catch (Exception e)
         {
+            //BENDO: I believe this is not longer possible.  Remove the try/catch or the 'return' in this catch
             App.Logger.LogError(e);
 
             return "Please set a date and time for the event";
@@ -189,10 +192,8 @@ public class TimeElapsedViewModel : BaseViewModel
         }
     }
 
-    private DateTime GetEventDateTime(BeginningEvent beginningEvent)
+    private static DateTime GetEventDateTime(BeginningEvent beginningEvent)
     {
-        if (beginningEvent is null) return DateTime.Now;
-
         return new DateTime(beginningEvent.Date.Year
                           , beginningEvent.Date.Month
                           , beginningEvent.Date.Day
@@ -201,7 +202,7 @@ public class TimeElapsedViewModel : BaseViewModel
                           , beginningEvent.TimeSpan.Seconds);
     }
 
-    public BeginningEvent GetEventFromSender(object sender)
+    public static BeginningEvent? GetEventFromSender(object sender)
     {
         var saveButton = (Button)sender;
 
@@ -246,7 +247,7 @@ public class TimeElapsedViewModel : BaseViewModel
         }
     }
 
-    public bool HasPurchasedToHideAds()
+    public static bool HasPurchasedToHideAds()
     {
         return PreferencesDataStore.PaidToTurnOffAds;
     }

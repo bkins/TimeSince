@@ -1,7 +1,8 @@
 ﻿namespace TimeSince.MVVM.Models;
 
-public class AppInfo
+public class AppInfo(string? currentVersion
+                   , string? currentBuild)
 {
-    public string CurrentVersion { get; set; }
-    public string CurrentBuild   { get; set; }
+    public string? CurrentVersion { get; } = currentVersion;
+    public string? CurrentBuild   { get; } = currentBuild;
 }

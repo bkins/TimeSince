@@ -2,6 +2,62 @@
 
 - To track and display events and the Time Since they occurred
 
+### Needed to run code:
+
+- You must implement your own 'secrets' file with Ids/Guids/Licenses.  To do this follow these steps:
+  1. Create a new .json file at the root of the project 'TimeSince' and name it 'secrets.keys.json'
+  2. Copy and paste the JSON text below into it:
+  3. You must replace any '<yourId>', '<yourGuid>', or '<yourLicense>' with an actual and appropriate value.
+  4. NOTE: You must obtain your own Syncfusion license.  If you do not want to provide your own ids/guids for the other feature, it should be fairly straight forward to disable them.  SyncFusion will be more difficult to do that.  I recommend getting your own license. If you meet their criteria, this license may be free.  Please visit https://www.syncfusion.com/ for more information. 
+```json
+{
+    "admob":
+          [
+              {
+                 "keyName": "MainPageBanner"
+               , "keyValue":"<yourId>"
+              }
+            , {
+                 "keyName": "AppId"
+               , "keyValue": "<yourId>"
+              }
+            , {
+                 "keyName": "MainPageNewEventInterstitial"
+               , "keyValue": "<yourId>"
+              }
+            , {
+                 "keyName": "MainPageRewarded"
+               , "keyValue": "<yourId>"
+              }
+          ]
+  , "appcenter":
+          [
+              {
+                  "keyName":"AppSecretKey"
+                , "keyValue":"<yourId>"
+              }
+          ]
+  , "syncfusion":
+          [
+            {
+                  "keyName":"SyncFusionLicense"
+                , "keyValue":"<yourLicense>"
+            }
+          ]
+  , "appcontrol":
+        [
+          {
+              "keyName":"DoorKey"
+            , "keyValue":"<yourGuid>"
+          }
+         ,{
+              "keyName":"DoorKeyReadOnly"
+            , "keyValue":"<yourGuid>"
+          }
+        ]
+}
+
+```
 ## Features
 
 - Displays the amount of time since an event has occurred.
@@ -20,8 +76,6 @@
     - Option for user to remove ads
       - The option is there, really need a way for user to pay to turn off ads.
   
-  - Need to test the app in Airplane Mode
-  
 - Medium Priority 
   
   - Add End Date (Goal Date?) to events
@@ -38,6 +92,7 @@
     - What would a better one look like?
 
 - Done
+  - ~~Need to test the app in Airplane Mode~~
   - ~~App crashes on my device when scrolling on the MainPage~~
     - Fixed by following: https://stackoverflow.com/questions/75080266/during-scrolling-listview-error-cannot-access-a-disposed-object
   - ~~Implement ads~~

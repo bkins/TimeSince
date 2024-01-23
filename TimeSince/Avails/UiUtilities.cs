@@ -61,7 +61,7 @@ public static class UiUtilities
 
     #region Clipboard Access
 
-    public static async Task<string> GetClipboardValueAsync()
+    public static async Task<string?> GetClipboardValueAsync()
     {
         if (Clipboard.HasText)
         {

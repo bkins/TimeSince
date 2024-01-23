@@ -6,11 +6,11 @@ namespace TimeSince.MVVM.BaseClasses;
 
 public class BaseViewModel : INotifyPropertyChanged
 {
-    protected     DataAccess DataAccess { get; set; }
+    protected DataAccess DataAccess { get; set; }
 
-    public event PropertyChangedEventHandler PropertyChanged;
+    public event PropertyChangedEventHandler? PropertyChanged;
 
-    protected virtual void OnPropertyChanged([CallerMemberName] string propertyName = null)
+    protected void OnPropertyChanged([CallerMemberName] string? propertyName = null)
     {
         PropertyChanged?.Invoke(this
                               , new PropertyChangedEventArgs(propertyName));

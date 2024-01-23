@@ -34,33 +34,34 @@ public class InAppPurchasing
 
     public async Task<bool> MakePurchase(string   productId
                                        , ItemType itemType            = ItemType.InAppPurchase
-                                       , string   obfuscatedAccountId = null
-                                       , string   obfuscatedProfileId = null
-                                       , string   subOfferToken       = null)
+                                       , string?  obfuscatedAccountId = null
+                                       , string?  obfuscatedProfileId = null
+                                       , string?  subOfferToken       = null)
     {
         if ( ! CrossInAppBilling.IsSupported)
             return false;
 
-        IInAppBilling billing = null;
+        IInAppBilling? billing = null;
 
         try
         {
             billing = CrossInAppBilling.Current;
             var connected = await billing.ConnectAsync().ConfigureAwait(false);
-            if ( ! connected || billing is null) return false;
-            // if (billing is null) return false;
+
+            if ( ! connected) return false;
 
 #if DEBUG
             billing.InTestingMode = true;
 #endif
             //make additional billing calls
             //Developer account ID: 4983254722324342692
-            await billing.PurchaseAsync(productId //aka SKU: 1234 - see: https://play.google.com/console/u/0/developers/4983254722324342692/app/4974739974752206682/managed-products
-                                      , itemType
-                                      , obfuscatedAccountId
-                                      , obfuscatedProfileId
-                                      , subOfferToken)
-                         .ConfigureAwait(false);
+            var purchaseResult = await billing.PurchaseAsync(
+                                                  productId //aka SKU: 1234 - see: https://play.google.com/console/u/0/developers/4983254722324342692/app/4974739974752206682/managed-products
+                                                , itemType
+                                                , obfuscatedAccountId
+                                                , obfuscatedProfileId
+                                                , subOfferToken)
+                                              .ConfigureAwait(false);
 
             return true;
         }

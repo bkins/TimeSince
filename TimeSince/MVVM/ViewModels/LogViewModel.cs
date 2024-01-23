@@ -8,17 +8,11 @@ namespace TimeSince.MVVM.ViewModels;
 
 public class LogViewModel : BaseViewModel
 {
-    public StringBuilder LogStringBuilder      { get; set; }
-
     public ICommand      DeleteCommand         { get; }
     public ICommand      ShowLogDetailsCommand { get; }
-
     public List<LogLine> SelectedEntries { get; set; } = new List<LogLine>();
 
     public ICommand DeleteSelectedEntriesCommand => new Command(DeleteSelectedEntries);
-
-
-    public  LogLine SelectedLog { get; set; }
 
     private ObservableCollection<LogLine> _logEntries;
     public ObservableCollection<LogLine> LogEntries
@@ -55,6 +49,10 @@ public class LogViewModel : BaseViewModel
 
     public LogViewModel()
     {
+        _logEntries                 = [];
+        _groupedLogEntries          = [];
+        _groupedLogEntriesWithCount = [];
+
         DeleteCommand         = new Command<LogLine>(DeleteLog);
         ShowLogDetailsCommand = new Command<LogLine>(ShowLogDetails);
         LogEntries            = new ObservableCollection<LogLine>();
@@ -78,7 +76,7 @@ public class LogViewModel : BaseViewModel
             LogEntries.Add(entry);
         }
 
-        GroupedLogEntriesWithCount = new ObservableCollection<LogEntryWrapper>();
+        GroupedLogEntriesWithCount = [];
         RefreshGroupedLogEntries();
     }
 
@@ -105,10 +103,8 @@ public class LogViewModel : BaseViewModel
         OnPropertyChanged(nameof(GroupedLogEntriesWithCount));
     }
 
-    private void ShowLogDetails(LogLine selectedLog)
+    private static void ShowLogDetails(LogLine selectedLog)
     {
-        if (selectedLog is null) return;
-
         Console.WriteLine($"Tapped Log: {selectedLog.Message}");
     }
 
@@ -124,7 +120,6 @@ public class LogViewModel : BaseViewModel
         OnPropertyChanged(nameof(GroupedLogEntriesWithCount));
     }
 
-    // A new method to refresh the grouped log entries.
     private void RefreshGroupedLogEntries()
     {
         GroupedLogEntriesWithCount.Clear();

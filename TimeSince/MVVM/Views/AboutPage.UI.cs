@@ -52,10 +52,10 @@ namespace TimeSince.MVVM.Views
         private void SetButtonsTextColor()
         {
             var buttonTextColor = ColorUtility.ChooseReadableTextColor(ColorUtility.GetColorFromResources(ResourceColors.Primary));
-            PrivacyPolicyButton.TextColor      = buttonTextColor;
-            ResetAwesomeScoreButton.TextColor  = buttonTextColor;
-            ShowInterstitialAdButton.TextColor = buttonTextColor;
-            ShowRewardAdButton.TextColor       = buttonTextColor;
+            PrivacyPolicyButton.TextColor      = buttonTextColor ?? Colors.Black;
+            ResetAwesomeScoreButton.TextColor  = buttonTextColor ?? Colors.Black;
+            ShowInterstitialAdButton.TextColor = buttonTextColor ?? Colors.Black;
+            ShowRewardAdButton.TextColor       = buttonTextColor ?? Colors.Black;
         }
 
         private void RefreshAdViewOnPage()
@@ -68,7 +68,8 @@ namespace TimeSince.MVVM.Views
             App.Logger.ToastMessage("Ads cannot be shown on emulated devices.");
         }
 
-        private void TapGestureRecognizer_OnTapped(object sender, EventArgs e)
+        private void TapGestureRecognizer_OnTapped(object    sender
+                                                 , EventArgs e)
         {
             // Your implementation for TapGestureRecognizer_OnTapped event
         }
@@ -101,18 +102,25 @@ namespace TimeSince.MVVM.Views
             gridLayout.RowDefinitions.Add(new RowDefinition { Height = GridLength.Star });
             gridLayout.RowDefinitions.Add(new RowDefinition { Height = GridLength.Auto });
 
-            gridLayout.Add(innerStackLayout, 0, 0);
+            gridLayout.Add(innerStackLayout
+                         , 0
+                         , 0);
 
             var adPlaceholder = new ContentView();
 
-            Grid.SetRow(innerStackLayout, 0);
-            Grid.SetRow(adPlaceholder, 1);
+            Grid.SetRow(innerStackLayout
+                      , 0);
+            Grid.SetRow(adPlaceholder
+                      , 1);
 
             var scrollView = new ScrollView
                              {
                                  Content         = gridLayout
                                , BackgroundColor = ColorUtility.GetColorFromResources(ResourceColors.Tertiary)
-                               , Padding = new Thickness(0, 0, 0, 50)
+                               , Padding = new Thickness(0
+                                                       , 0
+                                                       , 0
+                                                       , 50)
                              };
 
             var relativeLayout = new RelativeLayout();
@@ -140,19 +148,31 @@ namespace TimeSince.MVVM.Views
         private void ArrangeFramesIntoMainGrid()
         {
 
-            Grid.SetColumnSpan(DescriptionFrame, 2);
-            Grid.SetColumnSpan(DevBioFrame, 2);
-            Grid.SetColumnSpan(VersionFrame, 2);
-            Grid.SetColumnSpan(SupportMeFrame, 2);
-            Grid.SetColumnSpan(AwesomePersonFrame, 2);
-            Grid.SetColumnSpan(PrivacyPolicyFrame, 2);
+            Grid.SetColumnSpan(DescriptionFrame
+                             , 2);
+            Grid.SetColumnSpan(DevBioFrame
+                             , 2);
+            Grid.SetColumnSpan(VersionFrame
+                             , 2);
+            Grid.SetColumnSpan(SupportMeFrame
+                             , 2);
+            Grid.SetColumnSpan(AwesomePersonFrame
+                             , 2);
+            Grid.SetColumnSpan(PrivacyPolicyFrame
+                             , 2);
 
-            Grid.SetRow(DescriptionFrame, 0);
-            Grid.SetRow(DevBioFrame, 1);
-            Grid.SetRow(VersionFrame, 2);
-            Grid.SetRow(SupportMeFrame, 3);
-            Grid.SetRow(AwesomePersonFrame, 4);
-            Grid.SetRow(PrivacyPolicyFrame, 5);
+            Grid.SetRow(DescriptionFrame
+                      , 0);
+            Grid.SetRow(DevBioFrame
+                      , 1);
+            Grid.SetRow(VersionFrame
+                      , 2);
+            Grid.SetRow(SupportMeFrame
+                      , 3);
+            Grid.SetRow(AwesomePersonFrame
+                      , 4);
+            Grid.SetRow(PrivacyPolicyFrame
+                      , 5);
 
             MainGrid.Children.Add(DescriptionFrame);
             MainGrid.Children.Add(DevBioFrame);
@@ -176,8 +196,16 @@ namespace TimeSince.MVVM.Views
                                                                     }
                                                  , ColumnDefinitions = new ColumnDefinitionCollection
                                                                        {
-                                                                           new() { Width = new GridLength(90, GridUnitType.Star) }
-                                                                         , new() { Width = new GridLength(10, GridUnitType.Star) }
+                                                                           new()
+                                                                           {
+                                                                               Width = new GridLength(90
+                                                                                                    , GridUnitType.Star)
+                                                                           }
+                                                                         , new()
+                                                                           {
+                                                                               Width = new GridLength(10
+                                                                                                    , GridUnitType.Star)
+                                                                           }
                                                                        }
                                                }
                                    , Style = frameStyle
@@ -191,29 +219,38 @@ namespace TimeSince.MVVM.Views
                                     , Margin = new Thickness(5)
                                   };
 
-            privacyPolicyGrid.Add(PrivacyPolicyButton, 0, 0);
-            Grid.SetColumnSpan(PrivacyPolicyButton, 2);
+            privacyPolicyGrid.Add(PrivacyPolicyButton
+                                , 0
+                                , 0);
+            Grid.SetColumnSpan(PrivacyPolicyButton
+                             , 2);
 
             privacyPolicyGrid.Add(new Label
                                   {
                                       Text            = "Hide Privacy Policy Startup Message:"
                                     , TextColor       = ColorUtility.GetColorFromResources(ResourceColors.Tertiary)
                                     , VerticalOptions = LayoutOptions.Center
-                                  }, 0, 1);
+                                  }
+                                , 0
+                                , 1);
 
             privacyPolicyGrid.Add(new CheckBox
                                   {
                                       VerticalOptions   = LayoutOptions.Center
                                     , HorizontalOptions = LayoutOptions.Start
-                                  }, 1, 1);
+                                  }
+                                , 1
+                                , 1);
 
 
-            if (PrivacyPolicyFrame.Content is Grid )
+            if (PrivacyPolicyFrame.Content is Grid)
             {
                 if (privacyPolicyGrid.Children[2] is CheckBox checkBox)
                 {
                     checkBox.BindingContext = AboutViewModel;
-                    checkBox.SetBinding(CheckBox.IsCheckedProperty, "IsPrivacyPolicyAccepted", BindingMode.TwoWay);
+                    checkBox.SetBinding(CheckBox.IsCheckedProperty
+                                      , "IsPrivacyPolicyAccepted"
+                                      , BindingMode.TwoWay);
                 }
 
                 if (privacyPolicyGrid.Children[0] is Button)
@@ -241,8 +278,10 @@ namespace TimeSince.MVVM.Views
                                                    {
                                                        new Label
                                                        {
-                                                           Text      = "You are already an awesome person! This number just shows how awesomer you are."
+                                                           Text =
+                                                               "You are already an awesome person! This number just shows how awesomer you are."
                                                          , TextColor = ColorUtility.GetColorFromResources(ResourceColors.Tertiary)
+                                                                    ?? Colors.Black
                                                        }
                                                      , new Frame
                                                        {
@@ -252,14 +291,20 @@ namespace TimeSince.MVVM.Views
                                                                          {
                                                                              new Label
                                                                              {
-                                                                                 Text           = "Awesome Person Score:"
-                                                                               , TextColor      = ColorUtility.GetColorFromResources(ResourceColors.Tertiary)
+                                                                                 Text = "Awesome Person Score:"
+                                                                               , TextColor =
+                                                                                     ColorUtility.GetColorFromResources(
+                                                                                         ResourceColors.Tertiary)
+                                                                                  ?? Colors.Black
                                                                                , FontAttributes = FontAttributes.Bold
                                                                              }
                                                                            , new Label
                                                                              {
-                                                                                 Text      = AboutViewModel.CurrentAwesomeScore
-                                                                               , TextColor = ColorUtility.GetColorFromResources(ResourceColors.Tertiary)
+                                                                                 Text = AboutViewModel.CurrentAwesomeScore
+                                                                               , TextColor =
+                                                                                     ColorUtility.GetColorFromResources(
+                                                                                         ResourceColors.Tertiary)
+                                                                                  ?? Colors.Black
                                                                              }
                                                                          }
                                                                      }
@@ -297,8 +342,9 @@ namespace TimeSince.MVVM.Views
                                                {
                                                    new Label
                                                    {
-                                                       Text                    = "You can support me by tapping on these buttons and watching a few ads"
-                                                     , TextColor               = ColorUtility.GetColorFromResources(ResourceColors.Tertiary)
+                                                       Text = "You can support me by tapping on these buttons and watching a few ads"
+                                                     , TextColor = ColorUtility.GetColorFromResources(ResourceColors.Tertiary)
+                                                                ?? Colors.Black
                                                      , HorizontalTextAlignment = TextAlignment.Center
                                                    }
                                                  , ShowInterstitialAdButton
@@ -346,43 +392,70 @@ namespace TimeSince.MVVM.Views
                                                  Text      = "Current Version:"
                                                , FontSize  = 16
                                                , TextColor = ColorUtility.GetColorFromResources(ResourceColors.Tertiary)
-                                             }, 0, 0);
+                                             }
+                                           , 0
+                                           , 0);
             ((Grid)VersionFrame.Content).Add(new Label
                                              {
                                                  Text      = AboutViewModel.CurrentVersion
                                                , FontSize  = 16
                                                , TextColor = ColorUtility.GetColorFromResources(ResourceColors.Tertiary)
-                                               , Margin    = new Thickness(5, 0, 0, 0)
-                                             }, 1, 0);
+                                               , Margin = new Thickness(5
+                                                                      , 0
+                                                                      , 0
+                                                                      , 0)
+                                             }
+                                           , 1
+                                           , 0);
             ((Grid)VersionFrame.Content).Add(new Label
                                              {
                                                  Text      = "Current Build:"
                                                , FontSize  = 16
                                                , TextColor = ColorUtility.GetColorFromResources(ResourceColors.Tertiary)
-                                               , Margin    = new Thickness(0, 10, 0, 0)
-                                             }, 0, 1);
+                                               , Margin = new Thickness(0
+                                                                      , 10
+                                                                      , 0
+                                                                      , 0)
+                                             }
+                                           , 0
+                                           , 1);
             ((Grid)VersionFrame.Content).Add(new Label
                                              {
                                                  Text      = AboutViewModel.CurrentBuild
                                                , FontSize  = 16
                                                , TextColor = ColorUtility.GetColorFromResources(ResourceColors.Tertiary)
-                                               , Margin    = new Thickness(5, 10, 0, 0)
-                                             }, 1, 1);
+                                               , Margin = new Thickness(5
+                                                                      , 10
+                                                                      , 0
+                                                                      , 0)
+                                             }
+                                           , 1
+                                           , 1);
 
             ((Grid)VersionFrame.Content).Add(new Label
                                              {
                                                  Text      = "Build Mode:"
                                                , FontSize  = 16
                                                , TextColor = ColorUtility.GetColorFromResources(ResourceColors.Tertiary)
-                                               , Margin    = new Thickness(0, 10, 0, 0)
-                                             }, 0, 2);
+                                               , Margin = new Thickness(0
+                                                                      , 10
+                                                                      , 0
+                                                                      , 0)
+                                             }
+                                           , 0
+                                           , 2);
             ((Grid)VersionFrame.Content).Add(new Label
                                              {
                                                  Text      = AboutViewModel.CurrentMode
                                                , FontSize  = 16
                                                , TextColor = ColorUtility.GetColorFromResources(ResourceColors.Tertiary)
-                                               , Margin    = new Thickness(5, 10, 0, 0)
-                                             }, 1, 2);
+                                               , Margin = new Thickness(5
+                                                                      , 10
+                                                                      , 0
+                                                                      , 0)
+                                             }
+                                           , 1
+                                           , 2);
         }
 
         private void DefineDevBioFrame(Style frameStyle)
@@ -396,8 +469,12 @@ namespace TimeSince.MVVM.Views
                                             {
                                                 new Label
                                                 {
-                                                    Text      = "Hi! My name is Ben. I create apps like this in my spare time. I do this mostly for fun and to keep my skills up. I also do it to bring in a bit of supplemental income."
-                                                  , Margin    = new Thickness(0, 0, 0, 10)
+                                                    Text =
+                                                        "Hi! My name is Ben. I create apps like this in my spare time. I do this mostly for fun and to keep my skills up. I also do it to bring in a bit of supplemental income."
+                                                  , Margin = new Thickness(0
+                                                                         , 0
+                                                                         , 0
+                                                                         , 10)
                                                   , TextColor = ColorUtility.GetColorFromResources(ResourceColors.Tertiary)
                                                 }
                                               , new Label
@@ -433,8 +510,11 @@ namespace TimeSince.MVVM.Views
                                {
                                    Content = new Label
                                              {
-                                                 Text      = "Time Since is an app to help track how long it has been since an event."
-                                               , Margin    = new Thickness(0, 0, 0, 10)
+                                                 Text = "Time Since is an app to help track how long it has been since an event."
+                                               , Margin = new Thickness(0
+                                                                      , 0
+                                                                      , 0
+                                                                      , 10)
                                                , TextColor = ColorUtility.GetColorFromResources(ResourceColors.Tertiary)
                                              }
                                  , Style = frameStyle
@@ -484,12 +564,14 @@ namespace TimeSince.MVVM.Views
         private static Style GetFrameStyle()
         {
 
-            if (Application.Current?.Resources.TryGetValue("CommonFrameStyle", out var style) ?? false)
+            if (Application.Current?.Resources.TryGetValue("CommonFrameStyle"
+                                                         , out var style)
+             ?? false)
             {
                 return (Style)style;
             }
 
-            return null;
+            return null; //BENDO: change return type to nullable
         }
     }
 }

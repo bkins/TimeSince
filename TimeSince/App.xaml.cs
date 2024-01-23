@@ -1,4 +1,5 @@
-﻿using Plugin.MauiMTAdmob;
+﻿
+using Plugin.MauiMTAdmob;
 using TimeSince.Avails;
 using TimeSince.Data;
 using MainPage = TimeSince.MVVM.Views.MainPage;
@@ -17,19 +18,19 @@ public partial class App : Application
 
 	private readonly Secrets _secrets = new(FileJsonContentProvider.GetJsonContent);
 
-	private static SqliteDatabase _database;
-	public static  SqliteDatabase Database => _database ??= new SqliteDatabase(DatabasePath);
+	private static SqliteDatabase? _database;
+	public static  SqliteDatabase  Database => _database ??= new SqliteDatabase(DatabasePath);
 
-	private static Logger _logger;
-	public static  Logger Logger => _logger ??= new Logger();
+	private static Logger? _logger;
+	public static  Logger  Logger => _logger ??= new Logger();
 
 	public static readonly AppIntegrationService AppServiceMethods = AppIntegrationService.Instance;
 
-	public static string DoorKey         { get; set; }
-	public static string DoorKeyReadOnly { get; set; }
+	public static string DoorKey         { get; set; } = string.Empty;
+	public static string DoorKeyReadOnly { get; set; } = string.Empty;
 
-	private static string MainPageBannerId               { get; set; }
-	private static string MainPageNewEventInterstitialId { get; set; }
+	private static string MainPageBannerId               { get; set; } = string.Empty;
+	private static string MainPageNewEventInterstitialId { get; set; } = string.Empty;
 
 	private const string PathToAndroidManifestXml = "path_to/AndroidManifest.xml";
 	private const string AdsApplicationId         = @"//meta-data[@android:name='com.google.android.gms.ads.APPLICATION_ID']";
@@ -70,12 +71,10 @@ public partial class App : Application
 		CrossMauiMTAdmob.Current.ComplyWithFamilyPolicies    = true;
 		CrossMauiMTAdmob.Current.UseRestrictedDataProcessing = true;
 		CrossMauiMTAdmob.Current.AdsId                       = MainPageBannerId;
-
 	}
 
 	protected override void OnStart()
 	{
-
 		base.OnStart();
 	}
 

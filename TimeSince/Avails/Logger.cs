@@ -4,6 +4,7 @@ using Newtonsoft.Json;
 using TimeSince.Avails.Extensions;
 using TimeSince.Data;
 using TimeSince.MVVM.Models;
+using TimeSince.Services.ServicesIntegration;
 
 namespace TimeSince.Avails;
 
@@ -36,8 +37,8 @@ public partial class Logger : ILogger
         if(ForProd) extraDetailsBuilder.AppendLine(App.AppServiceMethods.FullDeviceInfo());
         extraDetailsBuilder.AppendLine("");
         extraDetailsBuilder.AppendLine($"App Info:");
-        if(ForProd) extraDetailsBuilder.AppendLine($"\tVersion: {App.AppServiceMethods.AppInfo.CurrentVersion}");
-        if(ForProd) extraDetailsBuilder.AppendLine($"\tBuild:   {App.AppServiceMethods.AppInfo.CurrentBuild}");
+        if(ForProd) extraDetailsBuilder.AppendLine($"\tVersion: {AppIntegrationService.AppInfo.CurrentVersion}");
+        if(ForProd) extraDetailsBuilder.AppendLine($"\tBuild:   {AppIntegrationService.AppInfo.CurrentBuild}");
 
         ExtraDetails = extraDetailsBuilder.ToString();
        

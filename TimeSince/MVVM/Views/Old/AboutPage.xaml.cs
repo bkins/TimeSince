@@ -1,5 +1,6 @@
 ﻿using TimeSince.Avails.ColorHelpers;
 using TimeSince.MVVM.ViewModels;
+using TimeSince.Services.ServicesIntegration;
 
 namespace TimeSince.MVVM.Views;
 
@@ -41,7 +42,7 @@ public partial class AboutPage_old : ContentPage
             return;
         }
 
-        var adsAreEnabled        = App.AppServiceMethods.AreAdsEnabled();
+        var adsAreEnabled        = AppIntegrationService.AreAdsEnabled();
         var adViewHasValue       = AdView is not null;
         var adViewIsInMainLayout = MainStackLayout.Children.Contains(AdView);
 

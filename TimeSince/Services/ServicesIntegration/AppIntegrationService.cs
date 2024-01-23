@@ -5,8 +5,7 @@
 /// </summary>
 public partial class AppIntegrationService
 {
-    private static AppIntegrationService _instance;
-    private const  string                LogTag = "com.hopkins.timeSince.AppIntegrationService";
+    private const string LogTag = "com.hopkins.timeSince.AppIntegrationService";
 
     // Private service instances
     private readonly AppCenterService _appCenterService;
@@ -15,7 +14,8 @@ public partial class AppIntegrationService
     private readonly DeviceServices   _deviceServices;
     private readonly AppInfoService   _appInfoService;
 
-    public static AppIntegrationService Instance => _instance ??= new AppIntegrationService();
+    private static AppIntegrationService? _instance;
+    public static  AppIntegrationService  Instance => _instance ??= new AppIntegrationService();
 
     private AppIntegrationService()
     {
@@ -26,12 +26,10 @@ public partial class AppIntegrationService
         _appInfoService   = new AppInfoService();
     }
 
-    // Method to initialize services
     public void InitializeServices()
     {
         HasInternetAccess = _deviceServices.HasInternetAccess();
 
         _appCenterService.Start();
-        // Initialize other services here if needed
     }
 }

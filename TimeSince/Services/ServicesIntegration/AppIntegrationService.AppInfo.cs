@@ -4,10 +4,10 @@ namespace TimeSince.Services.ServicesIntegration;
 
 public partial class AppIntegrationService
 {
-    public AppInfo AppInfo => AppInfoService.Info;
+    public static AppInfo? AppInfo => AppInfoService.Info;
 
-    public string GetMode()
+    public static string GetMode()
     {
-        return _appInfoService.GetMode();
+        return AppInfoService.GetMode();
     }
 }

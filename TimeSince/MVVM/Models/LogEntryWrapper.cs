@@ -4,10 +4,10 @@ namespace TimeSince.MVVM.Models;
 
 public class LogEntryWrapper : BaseViewModel
 {
-    public  string  Key      { get; set; }
-    public  LogLine Log      { get; set; }
-    public  bool    IsHeader { get; set; }
-    public  string  LogCount { get; set; }
+    public string?  Key      { get; init; }
+    public LogLine? Log      { get; init; }
+    public bool     IsHeader { get; init; }
+    public string?  LogCount { get; set; }
 
     private bool _isSelected;
     public bool IsSelected
@@ -18,7 +18,7 @@ public class LogEntryWrapper : BaseViewModel
             if (_isSelected == value) return;
 
             _isSelected = value;
-            OnPropertyChanged(nameof(IsSelected));
+            OnPropertyChanged();
         }
     }
 
@@ -28,11 +28,10 @@ public class LogEntryWrapper : BaseViewModel
         get => _isCollapsed;
         set
         {
-            if (_isCollapsed != value)
-            {
-                _isCollapsed = value;
-                OnPropertyChanged(nameof(IsCollapsed));
-            }
+            if (_isCollapsed == value) return;
+
+            _isCollapsed = value;
+            OnPropertyChanged();
         }
     }
 
