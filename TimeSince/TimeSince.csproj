@@ -156,6 +156,10 @@
 		
 	  	<Compile Remove="Avails\SearchOptions.cs" />
 		
+	  	<Compile Update="Services\ServicesIntegration\AppIntegrationService.Secrets.cs">
+	  	  <DependentUpon>AppIntegrationService.cs</DependentUpon>
+	  	</Compile>
+		
 	</ItemGroup>
 
 
@@ -173,12 +177,15 @@
 
 
 	<ItemGroup>
-	  <None Remove="secrets.keys.json" />
+	  <Folder Include="Platforms\Android\Renderers\" />
 	</ItemGroup>
 
 
 	<ItemGroup>
-	  <Folder Include="Platforms\Android\Renderers\" />
+	  <None Remove="secrets.keys.json" />
+	  <EmbeddedResource Include="secrets.keys.json">
+	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+	  </EmbeddedResource>
 	</ItemGroup>
 
 </Project>

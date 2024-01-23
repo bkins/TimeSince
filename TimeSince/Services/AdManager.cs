@@ -8,12 +8,37 @@ namespace TimeSince.Services;
 
 public partial class AdManager
 {
-    private MTAdView _bannerAdView;
+    private MTAdView _bannerAdView = null!;
 
-    private static AdManager _instance;
+    private static AdManager  _instance;
     public static  AdManager Instance => _instance ??= new AdManager();
 
     public static bool AreAdsEnabled => DetermineIfAdsAreEnabled();
+
+    //private static readonly Secrets.FileJsonContentProvider FileJsonContentProvider = new();
+
+    //private readonly Secrets _secrets = new("TimeSince.secrets.keys.json");
+
+    public string BannerAdUnitId { get; set; } // => App.AppServiceMethods.GetSecretValue(SecretCollections.Admob, SecretKeys.MainPageBanner);
+
+    public string InterstitialAdUnitId { get; set; } // => App.AppServiceMethods.GetSecretValue(SecretCollections.Admob, SecretKeys.MainPageNewEventInterstitial);
+
+    public string RewardedAdUnitId { get; set; } // => App.AppServiceMethods.GetSecretValue(SecretCollections.Admob, SecretKeys.MainPageRewarded);
+
+    private AdManager()
+    {
+
+    }
+
+    public void Start()
+    {
+        BannerAdUnitId       = App.AppServiceMethods.GetSecretValue(SecretCollections.Admob, SecretKeys.MainPageBanner);
+        InterstitialAdUnitId = App.AppServiceMethods.GetSecretValue(SecretCollections.Admob, SecretKeys.MainPageNewEventInterstitial);
+        RewardedAdUnitId     = App.AppServiceMethods.GetSecretValue(SecretCollections.Admob, SecretKeys.MainPageRewarded);
+
+        InitializeBannerAd();
+        InitializeSubscriptions();
+    }
 
     private static bool DetermineIfAdsAreEnabled()
     {
@@ -28,26 +53,6 @@ public partial class AdManager
                      || isPhysicalDevice;
 
         return enableAds;
-    }
-
-    private static readonly Secrets.FileJsonContentProvider FileJsonContentProvider = new();
-
-    private readonly Secrets _secrets = new(FileJsonContentProvider.GetJsonContent);
-
-    private string BannerAdUnitId => _secrets.GetSecretValue(SecretCollections.Admob
-                                                           , SecretKeys.MainPageBanner);
-
-    private string InterstitialAdUnitId => _secrets.GetSecretValue(SecretCollections.Admob
-                                                                 , SecretKeys.MainPageNewEventInterstitial);
-
-    private string RewardedAdUnitId => _secrets.GetSecretValue(SecretCollections.Admob
-                                                             , SecretKeys.MainPageRewarded);
-
-    private AdManager()
-    {
-        InitializeBannerAd();
-
-        InitializeSubscriptions();
     }
 
     private void InitializeSubscriptions()

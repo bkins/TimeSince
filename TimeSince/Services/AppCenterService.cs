@@ -10,10 +10,6 @@ public class AppCenterService
 {
     private const string LogTag = "com.hopkins.timeSince.AppCenterService";
 
-    private static readonly Secrets.FileJsonContentProvider FileJsonContentProvider = new();
-
-    private readonly Secrets _secrets = new Secrets(FileJsonContentProvider.GetJsonContent);
-
     public void Start()
     {
         AppCenter.LogLevel = LogLevel.Verbose;
@@ -24,9 +20,9 @@ public class AppCenterService
         Crashes.ShouldAwaitUserConfirmation = ConfirmationHandler;
         Crashes.GetErrorAttachments         = GetErrorAttachments;
 
-        var appCenterSecretKey = _secrets.GetSecretValue(SecretCollections.AppCenter
-                                                       , SecretKeys.AppSecretKey);
 
+        var appCenterSecretKey = App.AppServiceMethods.GetSecretValue(SecretCollections.AppCenter
+                                                                    , SecretKeys.AppSecretKey);
         AppCenter.Start($"android={appCenterSecretKey};"
                       , typeof(Analytics)
                       , typeof(Crashes));

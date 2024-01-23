@@ -38,7 +38,7 @@ namespace Tests.Avails
                                          + "  ]"
                                          + "}";
 
-            var secrets = new Secrets(new Secrets.FileJsonContentProvider().GetJsonContent);
+            var secrets = new Secrets("TimeSince.secrets.keys.json");
 
             var type  = typeof(Secrets);
             var field = type.GetField("jsonContentProvider"
@@ -102,22 +102,6 @@ namespace Tests.Avails
 
             Assert.Equal($"Invalid key name: {invalidKeyName}", exception.Message);
         }
-
-        [Fact]
-        public void GetSecretsJsonContent_ReturnsNonEmptyString()
-        {
-
-            // Arrange
-            const string resourceName = "TimeSince.secrets.keys.json";
-
-            // Act
-            var result = _secrets.GetSecretsJsonContent(resourceName);
-
-            // Assert
-            Assert.NotNull(result);
-            Assert.NotEmpty(result);
-        }
-
     }
 
 }

@@ -1,93 +1,52 @@
 ﻿using System.Reflection;
 using Newtonsoft.Json.Linq;
 
-namespace TimeSince.Avails;
-
-/// <summary>
-/// This class is to handle secret values.
-/// To use, set the 'resourceName' in the 'GetSecretValue' method to the JSON file that holds the secrets.
-/// See below of an example of the contents of the secrets.keys.json file:
-/// </summary>
-/* Example of the contents of the secrets.keys.json file:
-// {
-//     "admob":
-//     [
-//     {
-//         "keyName": "MainPageBanner"
-//       , "keyValue":"ca-app-pub-12341234123412340/1234512345"
-//     }
-//   , {
-//         "keyName": "AppId"
-//       , "keyValue": "ca-app-pub-12341234123412340~1234512345"
-//     }
-//   , {
-//         "keyName": "MainPageNewEventInterstitial"
-//       , "keyValue": "ca-app-pub-12341234123412340/1234512345"
-//     }
-//   , {
-//         "keyName": "MainPageRewarded"
-//       , "keyValue": "ca-app-pub-12341234123412340/1234512345"
-//     }
-//     ]
-// }
-*/
-public class Secrets
+namespace TimeSince.Avails
 {
-    private const    string               IdName  = "keyName";
-    private const    string               IdValue = "keyValue";
-    private readonly Func<string, string> _jsonContentProvider;
-
-    public Secrets(Func<string, string> jsonContentProvider)
-    {
-        _jsonContentProvider = jsonContentProvider;
-    }
-
-    public string GetSecretValue(SecretCollections collection, SecretKeys key)
-    {
-        const string resourceName = "TimeSince.secrets.keys.json";
-
-        var jsonContent = _jsonContentProvider(resourceName);
-
-        var jsonObj = JObject.Parse(jsonContent);
-        var id = jsonObj[collection.ToString()
-                                   .ToLower()]?.FirstOrDefault(token => (string) token[IdName] == key.ToString());
-
-        return id != null ? (string) id[IdValue] : null;
-    }
-
-    // public string GetSecretValue(SecretCollections collection, SecretKeys key)
+    /// <summary>
+    /// This class is to handle secret values.
+    /// To use, set the 'resourceName' to the JSON file that holds the secrets
+    /// when newing up this class (e.g. TimeSince.secrets.keys.json).
+    /// See below of an example of the contents of the secrets.keys.json file:
+    /// </summary>
+    /* Example of the contents of the secrets.keys.json file:
     // {
-    //     const string resourceName = "TimeSince.secrets.keys.json";
-    //
-    //     var jsonContent = GetSecretsJsonContent(resourceName);
-    //
-    //     var jsonObj = JObject.Parse(jsonContent);
-    //     var id      = jsonObj[collection.ToString()
-    //                                     .ToLower()]?.FirstOrDefault(token => (string)token[IdName] == key.ToString());
-    //
-    //     if (id != null)
+    //     "admob":
+    //     [
     //     {
-    //         return (string)id[IdValue];
+    //         "keyName": "MainPageBanner"
+    //       , "keyValue":"ca-app-pub-12341234123412340/1234512345"
     //     }
-    //
-    //     return null;
+    //   , {
+    //         "keyName": "AppId"
+    //       , "keyValue": "ca-app-pub-12341234123412340~1234512345"
+    //     }
+    //   , {
+    //         "keyName": "MainPageNewEventInterstitial"
+    //       , "keyValue": "ca-app-pub-12341234123412340/1234512345"
+    //     }
+    //   , {
+    //         "keyName": "MainPageRewarded"
+    //       , "keyValue": "ca-app-pub-12341234123412340/1234512345"
+    //     }
+    //     ]
     // }
-
-    public string GetSecretsJsonContent(string resourceName)
+    */
+    public class Secrets(string resourceName)
     {
-        var          assembly       = Assembly.GetExecutingAssembly();
-        using var    resourceStream = assembly.GetManifestResourceStream(resourceName);
+        private const    string IdName       = "keyName";
+        private const    string IdValue      = "keyValue";
+        private readonly string _jsonContent = LoadJsonContent(resourceName);
 
-        if (resourceStream == null) return string.Empty;
+        public string GetSecretValue(SecretCollections collection, SecretKeys key)
+        {
+            var jsonObj = JObject.Parse(_jsonContent);
+            var id      = jsonObj[collection.ToString().ToLower()]?.FirstOrDefault(token => (string)token[IdName] == key.ToString());
 
-        using var reader = new StreamReader(resourceStream);
-        var jsonContent = reader.ReadToEnd();
+            return id != null ? (string)id[IdValue] : null;
+        }
 
-        return jsonContent;
-    }
-    public class FileJsonContentProvider
-    {
-        public string GetJsonContent(string resourceName)
+        private static string LoadJsonContent(string resourceName)
         {
             var       assembly       = Assembly.GetExecutingAssembly();
             using var resourceStream = assembly.GetManifestResourceStream(resourceName);

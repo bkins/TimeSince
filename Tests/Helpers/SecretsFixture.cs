@@ -8,7 +8,7 @@ public class SecretsFixture : IDisposable
 
     public SecretsFixture()
     {
-        SecretsInstance = new Secrets(new Secrets.FileJsonContentProvider().GetJsonContent);
+        SecretsInstance = new Secrets("TimeSince.secrets.keys.json");
     }
 
     public void Dispose()

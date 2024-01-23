@@ -14,12 +14,8 @@ public partial class App : Application
 	private static readonly string DatabasePath = Path.Combine(LocalApplicationFolder
 	                                                         , "TimeSince.db3");
 
-	private static readonly Secrets.FileJsonContentProvider FileJsonContentProvider = new();
-
-	private readonly Secrets _secrets = new(FileJsonContentProvider.GetJsonContent);
-
-	private static SqliteDatabase? _database;
-	public static  SqliteDatabase  Database => _database ??= new SqliteDatabase(DatabasePath);
+	private static   SqliteDatabase? _database;
+	public static    SqliteDatabase  Database => _database ??= new SqliteDatabase(DatabasePath);
 
 	private static Logger? _logger;
 	public static  Logger  Logger => _logger ??= new Logger();
@@ -42,13 +38,13 @@ public partial class App : Application
 
 		Syncfusion.Licensing
 		          .SyncfusionLicenseProvider
-		          .RegisterLicense(_secrets.GetSecretValue(SecretCollections.SyncFusion
-		                                                 , SecretKeys.SyncFusionLicense));
+		          .RegisterLicense(AppServiceMethods.GetSecretValue(SecretCollections.SyncFusion
+		                                                          , SecretKeys.SyncFusionLicense));
 
-		DoorKey = _secrets.GetSecretValue(SecretCollections.AppControl
-		                                 , SecretKeys.DoorKey);
-		DoorKeyReadOnly = _secrets.GetSecretValue(SecretCollections.AppControl
-		                                        , SecretKeys.DoorKeyReadOnly);
+		DoorKey = AppServiceMethods.GetSecretValue(SecretCollections.AppControl
+		                                         , SecretKeys.DoorKey);
+		DoorKeyReadOnly = AppServiceMethods.GetSecretValue(SecretCollections.AppControl
+		                                                 , SecretKeys.DoorKeyReadOnly);
 
 		InitializeComponent();
 
@@ -80,10 +76,10 @@ public partial class App : Application
 
 	private void LoadAdMobUnitIds()
 	{
-		MainPageBannerId = _secrets.GetSecretValue(SecretCollections.Admob
-		                                        , SecretKeys.MainPageBanner);
-		MainPageNewEventInterstitialId = _secrets.GetSecretValue(SecretCollections.Admob
-		                                                      , SecretKeys.MainPageNewEventInterstitial);
+		MainPageBannerId = AppServiceMethods.GetSecretValue(SecretCollections.Admob
+		                                                  , SecretKeys.MainPageBanner);
+		MainPageNewEventInterstitialId = AppServiceMethods.GetSecretValue(SecretCollections.Admob
+		                                                                , SecretKeys.MainPageNewEventInterstitial);
 	}
 
 	private static void OnCurrentDomainOnUnhandledException(object                      sender

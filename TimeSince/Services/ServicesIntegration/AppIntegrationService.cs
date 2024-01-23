@@ -10,15 +10,17 @@ public partial class AppIntegrationService
     // Private service instances
     private readonly AppCenterService _appCenterService;
     private readonly InAppPurchasing  _inAppPurchasing;
-    private readonly AdManager        _adManager;
+    private readonly AdManager?       _adManager;
     private readonly DeviceServices   _deviceServices;
     private readonly AppInfoService   _appInfoService;
+    private readonly SecretsService   _secretsService;
 
     private static AppIntegrationService? _instance;
     public static  AppIntegrationService  Instance => _instance ??= new AppIntegrationService();
 
     private AppIntegrationService()
     {
+        _secretsService   = SecretsService.Instance;
         _appCenterService = new AppCenterService();
         _inAppPurchasing  = new InAppPurchasing();
         _adManager        = AdManager.Instance;
@@ -30,6 +32,7 @@ public partial class AppIntegrationService
     {
         HasInternetAccess = _deviceServices.HasInternetAccess();
 
+        _adManager!.Start();
         _appCenterService.Start();
     }
 }
