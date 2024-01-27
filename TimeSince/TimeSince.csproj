@@ -183,9 +183,6 @@
 
 	<ItemGroup>
 	  <None Remove="secrets.keys.json" />
-	  <EmbeddedResource Include="secrets.keys.json">
-	    <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-	  </EmbeddedResource>
 	</ItemGroup>
 
 </Project>
