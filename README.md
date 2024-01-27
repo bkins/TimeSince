@@ -7,7 +7,7 @@
 - You must implement your own 'secrets' file with Ids/Guids/Licenses.  To do this follow these steps:
   1. Create a new .json file at the root of the project 'TimeSince' and name it 'secrets.keys.json'
   2. Copy and paste the JSON text below into it:
-  3. You must replace any '<yourId>', '<yourGuid>', or '<yourLicense>' with an actual and appropriate value.
+  3. You must replace any `<yourId>`, `<yourGuid>`, or `<yourLicense>` with an actual and appropriate value.
   4. NOTE: You must obtain your own Syncfusion license.  If you do not want to provide your own ids/guids for the other feature, it should be fairly straight forward to disable them.  SyncFusion will be more difficult to do that.  I recommend getting your own license. If you meet their criteria, this license may be free.  Please visit https://www.syncfusion.com/ for more information. 
 ```json
 {
