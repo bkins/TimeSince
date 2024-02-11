@@ -5,11 +5,19 @@ using static System.StringComparison;
 
 namespace TimeSince.Avails.Extensions;
 
-public static class StringExtensions
+/// <summary>
+/// String extension methods for various operations.
+/// </summary>
+public static partial class StringExtensions
 {
     private const string BadTimeFormatMessage = "To convert to a time, the value must be a whole number or in [hh:]mm[:ss] format.";
 
-    public static bool IsNullEmptyOrWhitespace(this string value)
+    /// <summary>
+    /// Checks if the string is null, empty, or whitespace.
+    /// </summary>
+    /// <param name="value">Is checked for if it is null, empty, or whitespace.</param>
+    /// <returns>Boolean value based on if the string is null, empty, or whitespace.</returns>
+    public static bool IsNullEmptyOrWhitespace(this string? value)
     {
         return string.IsNullOrEmpty(value) || string.IsNullOrWhiteSpace(value);
     }
@@ -22,22 +30,30 @@ public static class StringExtensions
     /// </summary>
     /// <param name="value"></param>
     /// <returns></returns>
-    public static bool HasValue(this string value)
+    public static bool HasValue(this string? value)
     {
         return ! IsNullEmptyOrWhitespace(value);
     }
 
-    public static string ToTitleCase(this string value
-                                   , bool        force)
+    /// <summary>
+    /// Converts a string to title case.
+    /// e.g. If "Converts a string to title case." passed in, it would return:
+    /// "Converts A String To Title Case."
+    /// </summary>
+    /// <param name="value"></param>
+    /// <param name="force"></param>
+    /// <returns></returns>
+    public static string ToTitleCase(this string? value
+                                   , bool         force)
     {
-        var ti = new CultureInfo("en-US"
-                               , false).TextInfo;
+        var cultureTextInfo = new CultureInfo("en-US"
+                                            , false).TextInfo;
 
         if (force)
         {
             value = value?.ToLower();
         }
-        return ti.ToTitleCase(value ?? string.Empty);
+        return cultureTextInfo.ToTitleCase(value ?? string.Empty);
     }
 
     /// <summary>
@@ -48,36 +64,32 @@ public static class StringExtensions
     /// <exception cref="FormatException">If the string does not contain ':' or has more than two ':'.</exception>
     public static TimeSpan ToTimeSpan(this string timeAsString)
     {
-        //BENDO: Refactor this method
+        // Validate the input string and return default value if needed
+        if ( ! IsValidTimeString(timeAsString, out var defaultValue)) return defaultValue;
 
-        //No value, return a new TimeSpan
-        if (timeAsString.IsNullEmptyOrWhitespace())
-        {
-            return new TimeSpan(0, 0, 0, 0);
-        }
-
-        //Value is a whole number, return TimeSpan in minutes
-        if (int.TryParse(timeAsString
-                       , out var number))
-        {
-            return new TimeSpan(0, 0, number, 0);
-        }
-
-        //Value is not in a time format (there is no ':' in string), throw error
-        if ( timeAsString is null
-          || ! timeAsString.Contains(':'))
-            throw new FormatException(BadTimeFormatMessage);
-
+        // Split the time string by ':' and determine the format based on the number of parts
         var timeParts = timeAsString.Split(':');
 
         return timeParts.Length switch
                {
-                   2 => //00:00
-                       TryToGetTimeInMinutesAndSeconds(timeParts)
-                 , 3 => //00:00:00
-                       TryToGetTimeInHoursMinutesAndSeconds(timeParts)
+                   2 => TryToGetTimeInMinutesAndSeconds(timeParts)       //00:00
+                 , 3 => TryToGetTimeInHoursMinutesAndSeconds(timeParts)  //00:00:00
                  , _ => throw new FormatException(BadTimeFormatMessage)
                };
+    }
+
+    private static bool IsValidTimeString(string timeAsString, out TimeSpan defaultValue)
+    {
+        defaultValue = new TimeSpan(0, 0, 0, 0);
+
+        // No value, return a new TimeSpan
+        if (timeAsString.IsNullEmptyOrWhitespace()) return false;
+
+        // Value is a whole number, return TimeSpan in minutes
+        if ( ! int.TryParse(timeAsString, out var number)) return timeAsString.Contains(':');
+
+        defaultValue = new TimeSpan(0, 0, number, 0);
+        return false;
     }
 
     private static TimeSpan TryToGetTimeInHoursMinutesAndSeconds(IReadOnlyList<string> timeParts)
@@ -127,6 +139,20 @@ public static class StringExtensions
         return shortForm;
     }
 
+    /// <summary>
+    /// Checks if the string represents a truth value.
+    /// False:
+    /// Value is null, OR
+    /// "0"
+    /// True:
+    /// "yes", OR
+    /// "y", OR
+    /// "true", OR
+    /// "t"
+    /// (all string comparisons above done using <see cref="StringComparison.CurrentCultureIgnoreCase"/>
+    /// </summary>
+    /// <param name="value"></param>
+    /// <returns></returns>
     public static bool IsTrue(this string value)
     {
         if (value is null or "0") return false;
@@ -137,6 +163,11 @@ public static class StringExtensions
             || value.Equals("t",    CurrentCultureIgnoreCase);
     }
 
+    /// <summary>
+    /// Converts the string to a safe integer.
+    /// </summary>
+    /// <param name="value"></param>
+    /// <returns></returns>
     public static int ToSafeInt(this string value)
     {
         if (double.TryParse(value, out var doubleValue))
@@ -147,6 +178,11 @@ public static class StringExtensions
         return 0;
     }
 
+    /// <summary>
+    /// Converts the string to a safe double.
+    /// </summary>
+    /// <param name="value"></param>
+    /// <returns></returns>
     public static double ToSafeDouble(this string value)
     {
         return double.TryParse(value, out var outDouble)
@@ -154,33 +190,43 @@ public static class StringExtensions
                         : 0.0;
     }
 
-    // public static bool SafeContains(this string value, string searchValue)
-    // {
-    //     if (searchValue is null)
-    //     {
-    //         return true;
-    //     }
-    //
-    //     return value != null && value.Contains(searchValue);
-    // }
-    public static bool SafeContains(this string value, string searchValue, bool caseInsensitive = false)
+    /// <summary>
+    /// Checks if the string contains another string, with optional case-insensitivity.
+    /// </summary>
+    /// <param name="value"></param>
+    /// <param name="searchValue"></param>
+    /// <param name="caseInsensitive"></param>
+    /// <returns></returns>
+    public static bool SafeContains(this string? value
+                                  , string? searchValue
+                                  , bool caseInsensitive = false)
     {
-        if (value is null
-         && searchValue is null) return true;
-
-        if (value is null) return false;
+        switch (value)
+        {
+            case null when searchValue is null:
+                return true;
+            case null:
+                return false;
+        }
 
         if (searchValue is null) return true;
 
         return caseInsensitive
-            ? value.Contains(searchValue, OrdinalIgnoreCase)
-            : value.Contains(searchValue);
+                    ? value.Contains(searchValue, CurrentCultureIgnoreCase)
+                    : value.Contains(searchValue);
 
     }
 
-    public static bool NotContains(this string value
-                                 , string      searchValue
-                                 , bool        caseInsensitive = false)
+    /// <summary>
+    /// Checks if the string does not contain another string, with optional case-insensitivity.
+    /// </summary>
+    /// <param name="value"></param>
+    /// <param name="searchValue"></param>
+    /// <param name="caseInsensitive"></param>
+    /// <returns></returns>
+    public static bool NotContains(this string? value
+                                 , string?      searchValue
+                                 , bool         caseInsensitive = false)
     {
         return ! SafeContains(value
                             , searchValue
@@ -195,24 +241,30 @@ public static class StringExtensions
     /// <remarks>Words in all caps (usually Acronyms) are treated as a word. E.g. "AAATest" is two words, and will return "AAA Test"</remarks>
     public static string SplitCamelCase(this string value)
     {
-        if (value.IsNullEmptyOrWhitespace())
-        {
-            return value;
-        }
+        return value.IsNullEmptyOrWhitespace()
+                        ? value
+                        : LowerCaseToNonLowercase().Replace(NonLowercaseToLowerCase().Replace(value, "$1 $2"), "$1 $2");
 
-        return Regex.Replace(Regex.Replace(value, @"(\P{Ll})(\P{Ll}\p{Ll})", "$1 $2"),
-                             @"(\p{Ll})(\P{Ll})",
-                             "$1 $2");
     }
+
+    [GeneratedRegex(@"(\p{Ll})(\P{Ll})")]
+    private static partial Regex LowerCaseToNonLowercase();
+
+    [GeneratedRegex(@"(\P{Ll})(\P{Ll}\p{Ll})")]
+    private static partial Regex NonLowercaseToLowerCase();
+
+    /// <summary>
+    /// Checks if the string is a valid JSON format.
+    /// </summary>
+    /// <param name="json"></param>
+    /// <returns>Returns true if the string is valid JSON; otherwise, false.</returns>
     public static bool IsValidJson(this string json)
     {
         try
         {
-            if ( ! json.EndsWith("]"))
+            if ( ! json.EndsWith(']'))
             {
-                //TODO: Just return... I don't think I need to throw an error here.
-                //THis causes problems when the log is cleared out and then accessed again
-                throw new ArgumentException("JSON must end with ']'");
+                return false;
             }
 
             JsonNode.Parse(json);
@@ -225,4 +277,5 @@ public static class StringExtensions
             return false;
         }
     }
+
 }

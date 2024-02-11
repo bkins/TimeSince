@@ -7,9 +7,7 @@
     Shell.FlyoutBehavior="Disabled"
     TitleColor="{DynamicResource Primary}">
 
-    <ShellContent
-        Title="TimeSince"
-        ContentTemplate="{DataTemplate views:MainPage}"
-        Route="MainPage" />
-
+    <ShellContent Title="TimeSince"
+                  ContentTemplate="{DataTemplate views:MainPage}"
+                  Route="MainPage" />
 </Shell>

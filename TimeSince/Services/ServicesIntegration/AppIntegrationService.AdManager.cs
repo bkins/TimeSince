@@ -6,7 +6,7 @@ namespace TimeSince.Services.ServicesIntegration;
 /// </summary>
 public partial class AppIntegrationService // AdManager Service Methods
 {
-    public View GetAdView()
+    public View? GetAdView()
     {
         if (HasInternetAccess) return AdManager.Instance.GetAdView();
 

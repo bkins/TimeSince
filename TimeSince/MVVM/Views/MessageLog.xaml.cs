@@ -15,23 +15,6 @@ public partial class MessageLog : ContentPage
         LogEntryViewModel = new LogViewModel();
 
         BindingContext = LogEntryViewModel;
-
-#if DEBUG
-
-#endif
-    }
-    private T FindParent<T>(Element element) where T : Element
-    {
-        var parent = element.Parent;
-        while (parent != null)
-        {
-            if (parent is T typedParent)
-            {
-                return typedParent;
-            }
-            parent = parent.Parent;
-        }
-        return null;
     }
 
     private async void OnLogListViewOnItemTapped(object          sender
@@ -43,7 +26,7 @@ public partial class MessageLog : ContentPage
             return;
         }
 
-        var selectedLog = logEntryWrapper.Log;
+        var selectedLog = logEntryWrapper.Log ?? new LogLine();
         var userChoseOk = await DisplayAlert("Details"
                                           , $"Message: {selectedLog.Message}\nExtra Details: {selectedLog.ExtraDetails}"
                                           , "OK"
@@ -62,11 +45,11 @@ public partial class MessageLog : ContentPage
                                           , "This will clear out all log entries.  This action cannot be undone.  Would you like to continue?"
                                           , "Yes, Delete Logs"
                                           , "No, Leave the logs");
-        if (deleteLogs)
-        {
-            LogViewModel.ClearLogs();
-            await Navigation.PopAsync();
-        }
+
+        if ( ! deleteLogs) return;
+
+        LogViewModel.ClearLogs();
+        await Navigation.PopAsync();
     }
 
     private void DeleteSelectedToolbarItem_OnClicked(object    sender
@@ -95,10 +78,38 @@ public partial class MessageLog : ContentPage
         foreach (var logEntry in LogEntryViewModel.GroupedLogEntriesWithCount)
         {
             if (logEntry.IsHeader
-                && logEntry.Key == group?.Text)
+             && logEntry.Key == group?.Text)
             {
                 logEntry.IsCollapsed = ! logEntry.IsCollapsed;
             }
         }
+    }
+
+    private void TodaysMessages_OnClicked(object?   sender
+                                        , EventArgs e)
+    {
+        if (BindingContext is not LogViewModel viewModel) return;
+
+        var showTodaysMessages = TodaysMessages.Text == "T";
+
+        TodaysMessages.Text = showTodaysMessages ? "A" : "T";
+
+        viewModel.FilterEntriesByTodaysDate(showTodaysMessages);
+
+        LogListView.ItemsSource = viewModel.GroupedLogEntriesWithCount;
+    }
+
+    private T? FindParent<T>(Element element) where T : Element
+    {
+        var parent = element.Parent;
+        while (parent != null)
+        {
+            if (parent is T typedParent)
+            {
+                return typedParent;
+            }
+            parent = parent.Parent;
+        }
+        return null;
     }
 }

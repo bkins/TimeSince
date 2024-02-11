@@ -1,29 +1,27 @@
 ﻿using Plugin.MauiMTAdmob;
 using Plugin.MauiMTAdmob.Controls;
 using TimeSince.Avails;
+using TimeSince.Avails.SecretsEnums;
 using TimeSince.Data;
+using TimeSince.Services.ServicesIntegration;
 using View = Microsoft.Maui.Controls.View;
 
 namespace TimeSince.Services;
 
 public partial class AdManager
 {
-    private MTAdView _bannerAdView = null!;
+    private MTAdView? _bannerAdView = null!;
 
-    private static AdManager  _instance;
-    public static  AdManager Instance => _instance ??= new AdManager();
+    private static AdManager? _instance;
+    public static  AdManager  Instance => _instance ??= new AdManager();
 
     public static bool AreAdsEnabled => DetermineIfAdsAreEnabled();
 
-    //private static readonly Secrets.FileJsonContentProvider FileJsonContentProvider = new();
+    public string? BannerAdUnitId { get; set; }
 
-    //private readonly Secrets _secrets = new("TimeSince.secrets.keys.json");
+    public string? InterstitialAdUnitId { get; set; }
 
-    public string BannerAdUnitId { get; set; } // => App.AppServiceMethods.GetSecretValue(SecretCollections.Admob, SecretKeys.MainPageBanner);
-
-    public string InterstitialAdUnitId { get; set; } // => App.AppServiceMethods.GetSecretValue(SecretCollections.Admob, SecretKeys.MainPageNewEventInterstitial);
-
-    public string RewardedAdUnitId { get; set; } // => App.AppServiceMethods.GetSecretValue(SecretCollections.Admob, SecretKeys.MainPageRewarded);
+    public string? RewardedAdUnitId { get; set; }
 
     private AdManager()
     {
@@ -32,9 +30,9 @@ public partial class AdManager
 
     public void Start()
     {
-        BannerAdUnitId       = App.AppServiceMethods.GetSecretValue(SecretCollections.Admob, SecretKeys.MainPageBanner);
-        InterstitialAdUnitId = App.AppServiceMethods.GetSecretValue(SecretCollections.Admob, SecretKeys.MainPageNewEventInterstitial);
-        RewardedAdUnitId     = App.AppServiceMethods.GetSecretValue(SecretCollections.Admob, SecretKeys.MainPageRewarded);
+        BannerAdUnitId       = AppIntegrationService.GetSecretValue(SecretCollections.Admob, SecretKeys.MainPageBanner);
+        InterstitialAdUnitId = AppIntegrationService.GetSecretValue(SecretCollections.Admob, SecretKeys.MainPageNewEventInterstitial);
+        RewardedAdUnitId     = AppIntegrationService.GetSecretValue(SecretCollections.Admob, SecretKeys.MainPageRewarded);
 
         InitializeBannerAd();
         InitializeSubscriptions();
@@ -46,7 +44,7 @@ public partial class AdManager
         var removalOfAdAsNotBeenPaidFor = ! PreferencesDataStore.PaidToTurnOffAds;
 
         // Check if the device being used is a physical device
-        var isPhysicalDevice = App.AppServiceMethods.IsPhysicalDevice();
+        var isPhysicalDevice = AppIntegrationService.IsPhysicalDevice();
 
         // Determine if ads should be enabled based on the conditions
         var enableAds = removalOfAdAsNotBeenPaidFor
@@ -86,12 +84,11 @@ public partial class AdManager
         _bannerAdView.AdsFailedToLoad += OnBannerAdFailedToLoad;
     }
 
-    public View GetAdView()
+    public View? GetAdView()
     {
         return AreAdsEnabled
                 ? _bannerAdView
                 : null;
-
     }
 
     private async Task LoadAdAsync(Action     loadFunction
@@ -110,20 +107,19 @@ public partial class AdManager
             {
                 await Task.Delay(1000
                                , cancellationToken.Token);
-                //await Task.Delay(1000);
 
                  cancellationToken.Token.ThrowIfCancellationRequested();
             }
         }
         catch (OperationCanceledException canceledException)
         {
-            App.Logger.LogEvent($"{canceledException.Message} (Ad timed out)", null); //(canceledException.Message, string.Empty, string.Empty, null);
+            App.Logger.LogEvent($"{canceledException.Message} (Ad timed out)", new Dictionary<string, string>());
 
             return;
         }
         catch (Exception exception)
         {
-            App.Logger.LogError(exception.Message, string.Empty, string.Empty, null);
+            App.Logger.LogError(exception.Message, string.Empty, string.Empty);
 
             return;
         }
@@ -169,9 +165,9 @@ public partial class AdManager
     private static void WarnDeveloperAboutAdsOnEmulatedDevice(bool showAdAnyway)
     {
         if (showAdAnyway
-         && ! App.AppServiceMethods.IsPhysicalDevice())
+         && ! AppIntegrationService.IsPhysicalDevice())
         {
-            App.Logger.ToastMessage("Ads may not display properly on an emulated device.");
+            Logger.ToastMessage("Ads may not display properly on an emulated device.");
         }
     }
 

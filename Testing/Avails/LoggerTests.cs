@@ -4,7 +4,7 @@ using TimeSince.MVVM.Models;
 using TimeSince.Services.ServicesIntegration;
 using Xunit.Abstractions;
 
-namespace Tests.Avails
+namespace Testing.Avails
 {
     public class LoggerTests(ITestOutputHelper testOutputHelper)
     {

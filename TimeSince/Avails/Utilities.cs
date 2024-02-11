@@ -4,7 +4,7 @@ namespace TimeSince.Avails;
 
 public static class Utilities
 {
-    public static T GetEnumValueFromDescription<T>(string description) where T : Enum
+    public static T? GetEnumValueFromDescription<T>(string description) where T : Enum
     {
         foreach (var field in typeof(T).GetFields())
         {
@@ -12,18 +12,17 @@ public static class Utilities
             {
                 if (attribute.Description == description)
                 {
-                    return (T)field.GetValue(null);
+                    return (T)field.GetValue(null)!;
                 }
             }
             else if (field.Name == description)
             {
-                return (T)field.GetValue(null);
+                return (T)field.GetValue(null)!;
             }
         }
 
         throw new ArgumentException($"No {typeof(T)} with Description or Name as '{description}' found");
     }
-
 
     public static async Task<T> ForceAsync<T>(Func<Task<T>> func)
     {

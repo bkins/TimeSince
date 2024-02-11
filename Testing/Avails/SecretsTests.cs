@@ -1,9 +1,9 @@
 ﻿using System.Reflection;
-using Tests.Helpers;
+using Testing.Helpers;
 using TimeSince.Avails;
 using TimeSince.Avails.SecretsEnums;
 
-namespace Tests.Avails
+namespace Testing.Avails
 {
     [CollectionDefinition("SecretsCollection")]
     public class SecretsCollection : ICollectionFixture<SecretsFixture>

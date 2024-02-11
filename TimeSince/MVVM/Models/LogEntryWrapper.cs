@@ -34,5 +34,4 @@ public class LogEntryWrapper : BaseViewModel
             OnPropertyChanged();
         }
     }
-
 }

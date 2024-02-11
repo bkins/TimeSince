@@ -5,12 +5,12 @@ namespace TimeSince.Services;
 
 public class InAppPurchasing
 {
-    public async Task<bool> MakePurchase()
+    public static async Task<bool> MakePurchase()
     {
         if(!CrossInAppBilling.IsSupported)
             return false;
 
-        IInAppBilling billing = null;
+        IInAppBilling? billing = null;
 
         try
         {
@@ -51,16 +51,15 @@ public class InAppPurchasing
             if ( ! connected) return false;
 
 #if DEBUG
-            billing.InTestingMode = true;
+            billing.InTestingMode = false;
 #endif
             //make additional billing calls
             //Developer account ID: 4983254722324342692
-            var purchaseResult = await billing.PurchaseAsync(
-                                                  productId //aka SKU: 1234 - see: https://play.google.com/console/u/0/developers/4983254722324342692/app/4974739974752206682/managed-products
-                                                , itemType
-                                                , obfuscatedAccountId
-                                                , obfuscatedProfileId
-                                                , subOfferToken)
+            var purchaseResult = await billing.PurchaseAsync(productId //aka SKU: 1234 - see: https://play.google.com/console/u/0/developers/4983254722324342692/app/4974739974752206682/managed-products
+                                                           , itemType
+                                                           , obfuscatedAccountId
+                                                           , obfuscatedProfileId
+                                                           , subOfferToken)
                                               .ConfigureAwait(false);
 
             return true;
@@ -90,6 +89,7 @@ public class InAppPurchasing
                                                                          , ItemType itemType = ItemType.InAppPurchase)
     {
         var billing       = CrossInAppBilling.Current;
+        // ReSharper disable once CollectionNeverUpdated.Local
         var emptyPurchase = new List<(string Id, bool Success)>();
 
         try

@@ -1,40 +1,42 @@
-﻿namespace TimeSince.Data;
+﻿using TimeSince.Services.ServicesIntegration;
+
+namespace TimeSince.Data;
 
 public static class PreferencesDataStore
 {
-    public static string? PrimaryColorName
+    public static string PrimaryColorName
     {
-        get => Preferences.Get(nameof(PrimaryColorName), null);
+        get => Preferences.Get(nameof(PrimaryColorName), "Unknown Color");
         set => Preferences.Set(nameof(PrimaryColorName), value);
     }
 
-    public static string? SecondaryColorName
+    public static string SecondaryColorName
     {
-        get => Preferences.Get(nameof(SecondaryColorName), null);
+        get => Preferences.Get(nameof(SecondaryColorName), "Unknown Color");
         set => Preferences.Set(nameof(SecondaryColorName), value);
     }
 
-    public static string? TertiaryColorName
+    public static string TertiaryColorName
     {
-        get => Preferences.Get(nameof(TertiaryColorName), null);
+        get => Preferences.Get(nameof(TertiaryColorName), "Unknown Color");
         set => Preferences.Set(nameof(TertiaryColorName), value);
     }
 
-    public static string? DefaultPrimaryColorName
+    public static string DefaultPrimaryColorName
     {
-        get => Preferences.Get(nameof(DefaultPrimaryColorName), null);
+        get => Preferences.Get(nameof(DefaultPrimaryColorName), "Unknown Color");
         set => Preferences.Set(nameof(DefaultPrimaryColorName), value);
     }
 
-    public static string? DefaultSecondaryColorName
+    public static string DefaultSecondaryColorName
     {
-        get => Preferences.Get(nameof(DefaultSecondaryColorName), null);
+        get => Preferences.Get(nameof(DefaultSecondaryColorName), "Unknown Color");
         set => Preferences.Set(nameof(DefaultSecondaryColorName), value);
     }
 
-    public static string? DefaultTertiaryColorName
+    public static string DefaultTertiaryColorName
     {
-        get => Preferences.Get(nameof(DefaultTertiaryColorName), null);
+        get => Preferences.Get(nameof(DefaultTertiaryColorName), "Unknown Color");
         set => Preferences.Set(nameof(DefaultTertiaryColorName), value);
     }
 
@@ -66,6 +68,8 @@ public static class PreferencesDataStore
     {
         get
         {
+            if (AppIntegrationService.IsTesting) return "Testing - No Id available";
+
             var id = Preferences.Get(nameof(ErrorReportingId), null);
 
             if (id != null) return id;
@@ -80,7 +84,6 @@ public static class PreferencesDataStore
 
     public static void ClearColors()
     {
-        //Preferences.Clear();
         PrimaryColorName   = null;
         SecondaryColorName = null;
         TertiaryColorName  = null;

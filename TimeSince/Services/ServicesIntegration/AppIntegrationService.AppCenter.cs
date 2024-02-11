@@ -28,7 +28,7 @@ public partial class AppIntegrationService //AppCenter Service Methods
     {
         if ( ! HasInternetAccess) return;
 
-        await _appCenterService.SetIsAppCenterEnabledAsync(enabled);
+        await AppCenterService.SetIsAppCenterEnabledAsync(enabled);
     }
 
     /// <summary>
@@ -41,15 +41,15 @@ public partial class AppIntegrationService //AppCenter Service Methods
     /// The properties parameter maximum item count = 20.
     /// The properties keys/names can not be null or empty, maximum allowed key length = 125.
     /// The properties values can not be null, maximum allowed value length = 125.</remarks>
-    public void TrackEvent(string name
-                         , IDictionary<string, string> properties = null)
+    public void TrackEvent(string                       name
+                         , IDictionary<string, string>? properties = null)
     {
         if ( ! HasInternetAccess) return;
 
-        _appCenterService.TrackEvent(name, properties);
+        AppCenterService.TrackEvent(name, properties);
     }
 
-    public void TrackError(Exception                    exception
+    public void TrackError(Exception?                    exception
                          , IDictionary<string, string>? properties = null
                          , params ErrorAttachmentLog[]? attachments)
     {

@@ -6,12 +6,13 @@ public partial class AdManager
 {
     private const int TimesToRetryBannerOnFailure = 3;
     private       int _numberOfTimesTried;
-    private void OnBannerAdLoaded(object sender, EventArgs e)
+
+    private void OnBannerAdLoaded(object? sender, EventArgs e)
     {
         // Handle the event when an ad is successfully loaded.
     }
 
-    private void OnBannerAdFailedToLoad(object      sender
+    private void OnBannerAdFailedToLoad(object?      sender
                                       , MTEventArgs e)
     {
         //Maybe use Error_Codes:
@@ -64,79 +65,79 @@ public partial class AdManager
             LogErrors("load", e);
         }
     }
-    private void CurrentOnUserEarnedReward(object      sender
+    private void CurrentOnUserEarnedReward(object?      sender
                                            , MTEventArgs e)
     {
 
     }
 
-    private void CurrentOnRewardedFailedToShow(object      sender
+    private void CurrentOnRewardedFailedToShow(object?      sender
                                                , MTEventArgs e)
     {
         LogErrors("show", e);
     }
 
-    private void CurrentOnRewardedFailedToLoad(object      sender
+    private void CurrentOnRewardedFailedToLoad(object?      sender
                                                , MTEventArgs e)
     {
         LogErrors("load", e);
     }
 
-    private void CurrentOnRewardedOpened(object    sender
+    private void CurrentOnRewardedOpened(object?    sender
                                          , EventArgs e)
     {
 
     }
 
-    private void CurrentOnRewardedLoaded(object    sender
+    private void CurrentOnRewardedLoaded(object?    sender
                                          , EventArgs e)
     {
 
     }
 
-    private void CurrentOnRewardedImpression(object    sender
+    private void CurrentOnRewardedImpression(object?    sender
                                              , EventArgs e)
     {
 
     }
 
-    private void CurrentOnRewardedClosed(object    sender
+    private void CurrentOnRewardedClosed(object?    sender
                                          , EventArgs e)
     {
 
     }
 
-    private void CurrentOnRewardedClicked(object    sender
+    private void CurrentOnRewardedClicked(object?    sender
                                           , EventArgs e)
     {
 
     }
 
-    private void CurrentOnInterstitialOpened(object    sender
+    private void CurrentOnInterstitialOpened(object?    sender
                                              , EventArgs e)
     {
 
     }
 
-    private void CurrentOnInterstitialLoaded(object    sender
+    private void CurrentOnInterstitialLoaded(object?    sender
                                              , EventArgs e)
     {
 
     }
 
-    private void CurrentOnInterstitialImpression(object    sender
+    private void CurrentOnInterstitialImpression(object?    sender
                                                  , EventArgs e)
     {
 
     }
 
-    private void CurrentOnInterstitialClosed(object    sender
+    private void CurrentOnInterstitialClosed(object?    sender
                                              , EventArgs e)
     {
 
     }
 
-    private void CurrentOnInterstitialClicked(object    sender
+    private void CurrentOnInterstitialClicked(object?    sender
                                               , EventArgs e)
     {
 

@@ -8,11 +8,11 @@ using ColorUtilities = TimeSince.Avails.ColorHelpers.ColorUtility;
 
 namespace Tests.Avails;
 
-public class ColorUtility
+public class ColorUtilityTests
 {
     private readonly ITestOutputHelper _testOutputHelper;
 
-    public ColorUtility(ITestOutputHelper testOutputHelper)
+    public ColorUtilityTests(ITestOutputHelper testOutputHelper)
     {
         _testOutputHelper = testOutputHelper;
     }
@@ -20,7 +20,7 @@ public class ColorUtility
     [Fact]
     public void GetNamedColors_ReturnsNonEmptyList()
     {
-        var colorNames = ColorUtilities.GetNamedColors();
+        var colorNames = ColorUtilities.GetListOfNamedColors();
 
         // Assert
         Assert.NotNull(colorNames);
@@ -120,7 +120,7 @@ public class ColorUtility
     public void GetNameFromColor_ReturnsCorrectName(GetColorNameTestCase testCase)
     {
         // Act
-        var actualName = ColorUtilities.GetNameFromColor(testCase.Color, testCase.ColorNames);
+        var actualName = ColorUtilities.GetColorInListOfColors(testCase.Color, testCase.ColorNames);
 
         DebugOutput(testCase, actualName);
 
@@ -429,10 +429,10 @@ public class ColorUtility
 
         _testOutputHelper.WriteLine($"Test case: {backgroundColor}");
         _testOutputHelper.WriteLine($"ExpectedTextColor: {expectedTextColor}");
-        _testOutputHelper.WriteLine($"ExpectedTextMauiColor: {ColorUtilities.GetNameFromColor(expectedTextMauiColor
+        _testOutputHelper.WriteLine($"ExpectedTextMauiColor: {ColorUtilities.GetColorInListOfColors(expectedTextMauiColor
                                                                                             , ColorUtilities.ColorNames
                                                                                                             .ToList())}");
-        _testOutputHelper.WriteLine($"ActualTextColor: {ColorUtilities.GetNameFromColor(actualTextColor
+        _testOutputHelper.WriteLine($"ActualTextColor: {ColorUtilities.GetColorInListOfColors(actualTextColor
                                                                                       , ColorUtilities.ColorNames
                                                                                                       .ToList())}");
     }

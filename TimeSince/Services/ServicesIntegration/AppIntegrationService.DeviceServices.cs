@@ -7,16 +7,21 @@ public partial class AppIntegrationService // Device Service Methods
 
     public async Task<string?> GetDoorKay()
     {
-        return await _deviceServices.GetDoorKey();
+        return await DeviceServices.GetDoorKey();
     }
 
-    public bool IsPhysicalDevice()
+    public static bool IsPhysicalDevice()
     {
-        return _deviceServices.IsPhysicalDevice();
+        return DeviceServices.IsPhysicalDevice();
     }
 
-    public string FullDeviceInfo()
+    public static string FullDeviceInfo()
     {
-        return _deviceServices.FullDeviceInfo();
+        return DeviceServices.FullDeviceInfo();
+    }
+
+    public void ComposeEmail(string body, string toEmailAddress, string subjectPrefix)
+    {
+        DeviceServices.ComposeEmail(body, toEmailAddress, subjectPrefix);
     }
 }

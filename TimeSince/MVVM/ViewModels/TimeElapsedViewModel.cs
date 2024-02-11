@@ -34,9 +34,10 @@ public class TimeElapsedViewModel : BaseViewModel
         set
         {
             if (_currentSortOption == value) return;
-            _currentSortOption = value;
-            OnPropertyChanged();
 
+            _currentSortOption = value;
+
+            OnPropertyChanged();
         }
     }
 
@@ -48,9 +49,10 @@ public class TimeElapsedViewModel : BaseViewModel
         set
         {
             if (_isPrivacyPolicyAccepted == value) return;
-            _isPrivacyPolicyAccepted = value;
-            OnPropertyChanged();
 
+            _isPrivacyPolicyAccepted = value;
+
+            OnPropertyChanged();
         }
     }
 
@@ -88,11 +90,11 @@ public class TimeElapsedViewModel : BaseViewModel
     {
         if (Event.Id == 0)
         {
-            DataAccess.Insert(Event);
+            DataAccess?.Insert(Event);
         }
         else
         {
-            DataAccess.Update(Event);
+            DataAccess?.Update(Event);
             UpdateExistingEvent();
         }
     }
@@ -101,7 +103,7 @@ public class TimeElapsedViewModel : BaseViewModel
     {
         if (Event.Id > 0)
         {
-            DataAccess.Delete(Event);
+            DataAccess?.Delete(Event);
         }
         Events.Remove(Event);
     }
@@ -221,7 +223,7 @@ public class TimeElapsedViewModel : BaseViewModel
         switch (sortBy)
         {
             case SortOptions.None:
-                Events = DataAccess.GetObservableCollection<BeginningEvent>();
+                Events = DataAccess?.GetObservableCollection<BeginningEvent>();
                 break;
 
             case SortOptions.DateTime:
@@ -254,11 +256,12 @@ public class TimeElapsedViewModel : BaseViewModel
 
     private void SortEventsByDateAndTime(bool descending = false)
     {
+        var events = Events ?? [];
 
         var sortedEventsByDateTime = descending
-                                        ? Events.OrderByDescending(beginningEvent => beginningEvent.Date)
+                                        ? events.OrderByDescending(beginningEvent => beginningEvent.Date)
                                                 .ThenByDescending(beginningEvent => beginningEvent.TimeSpan).ToList()
-                                        : Events.OrderBy(beginningEvent => beginningEvent.Date)
+                                        : events.OrderBy(beginningEvent => beginningEvent.Date)
                                                 .ThenBy(beginningEvent => beginningEvent.TimeSpan).ToList();
 
         RebuildEvents(sortedEventsByDateTime);
@@ -266,19 +269,21 @@ public class TimeElapsedViewModel : BaseViewModel
 
     private void SortEventsByTitle(bool descending = false)
     {
+        var events = Events ?? [];
+
         var sortedEventsByTitle = descending
-                                    ? Events.OrderByDescending(beginningEvent => beginningEvent.Title).ToList()
-                                    : Events.OrderBy(beginningEvent => beginningEvent.Title).ToList();
+                                    ? events.OrderByDescending(beginningEvent => beginningEvent.Title).ToList()
+                                    : events.OrderBy(beginningEvent => beginningEvent.Title).ToList();
 
         RebuildEvents(sortedEventsByTitle);
     }
 
     private void RebuildEvents(List<BeginningEvent> sortedEventsByTitle)
     {
-        Events.Clear();
+        Events?.Clear();
         foreach (var beginningEvent in sortedEventsByTitle)
         {
-            Events.Add(beginningEvent);
+            Events?.Add(beginningEvent);
         }
     }
 
@@ -290,7 +295,6 @@ public class TimeElapsedViewModel : BaseViewModel
 
         SortEvents(CurrentSortOption);
     }
-
 }
 
 public enum SortOptions

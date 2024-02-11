@@ -10,11 +10,7 @@ public partial class AppIntegrationService // InAppPurchasing Service Methods
     {
         if( ! HasInternetAccess) return false;
 
-        return await _inAppPurchasing.MakePurchase(productId: "1234"
-                                                 , ItemType.InAppPurchase
-                                                 , obfuscatedAccountId: ""
-                                                 , obfuscatedProfileId: ""
-                                                 , subOfferToken: "");
+        return await _inAppPurchasing.MakePurchase(productId: "1234");
     }
 
     public void PurchaseItem()

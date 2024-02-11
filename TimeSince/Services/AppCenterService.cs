@@ -1,8 +1,9 @@
 ﻿using Microsoft.AppCenter;
 using Microsoft.AppCenter.Analytics;
 using Microsoft.AppCenter.Crashes;
-using TimeSince.Avails;
 using TimeSince.Avails.Attributes;
+using TimeSince.Avails.SecretsEnums;
+using TimeSince.Services.ServicesIntegration;
 
 namespace TimeSince.Services;
 
@@ -21,7 +22,7 @@ public class AppCenterService
         Crashes.GetErrorAttachments         = GetErrorAttachments;
 
 
-        var appCenterSecretKey = App.AppServiceMethods.GetSecretValue(SecretCollections.AppCenter
+        var appCenterSecretKey = AppIntegrationService.GetSecretValue(SecretCollections.AppCenter
                                                                     , SecretKeys.AppSecretKey);
         AppCenter.Start($"android={appCenterSecretKey};"
                       , typeof(Analytics)
@@ -46,8 +47,8 @@ public class AppCenterService
                      , new Dictionary<string, string>
                        { {
                              $"{eventName}.StackTrace"
-                           , report.Result?.StackTrace
-                       } });
+                           , report.Result?.StackTrace ?? string.Empty
+                         } });
 
         });
     }
@@ -163,7 +164,7 @@ public class AppCenterService
     /// Updating the state propagates the value to all services that have been started.
     /// </summary>
     /// <param name="enabled">True to enable; False to disable.</param>
-    public async Task SetIsAppCenterEnabledAsync(bool enabled)
+    public static async Task SetIsAppCenterEnabledAsync(bool enabled)
     {
         await AppCenter.SetEnabledAsync(enabled);
     }
@@ -178,14 +179,14 @@ public class AppCenterService
     /// The properties parameter maximum item count = 20.
     /// The properties keys/names can not be null or empty, maximum allowed key length = 125.
     /// The properties values can not be null, maximum allowed value length = 125.</remarks>
-    public void TrackEvent(string name, IDictionary<string, string> properties = null)
+    public static void TrackEvent(string name, IDictionary<string, string> properties)
     {
         Analytics.TrackEvent(name, properties);
         App.Logger.LogEvent(name, properties);
     }
 
     [UnderConstruction("Might not need, but want to explore this later.")]
-    IEnumerable<ErrorAttachmentLog> GetErrorAttachments(ErrorReport report)
+    private static IEnumerable<ErrorAttachmentLog> GetErrorAttachments(ErrorReport report)
     {
         return new ErrorAttachmentLog[]
                {

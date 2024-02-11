@@ -1,6 +1,6 @@
 using TimeSince.Avails.Extensions;
 
-namespace Tests.Avails.Extensions;
+namespace Testing.Avails.Extensions;
 
 public class StringExtensions
 {

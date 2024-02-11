@@ -6,23 +6,24 @@ namespace TimeSince.MVVM.Views;
 
 public partial class SettingsPage : ContentPage
 {
-    private StackLayout MainStackLayout       { get; set; }
-    private SfPicker    PrimaryColorPicker    { get; set; }
-    private SfPicker    SecondaryColorPicker  { get; set; }
-    private SfPicker    TertiaryColorPicker   { get; set; }
-    private Editor      PrimarySearchEditor   { get; set; }
-    private Editor      SecondarySearchEditor { get; set; }
-    private Editor      TertiarySearchEditor  { get; set; }
-    private Button      PrimaryButton         { get; set; }
-    private Button      SecondaryButton       { get; set; }
-    private Button      TertiaryButton        { get; set; }
-    private Color?      ForegroundColor       { get; set; }
-    private Label       RemoveAdsLabel        { get; set; }
-    private CheckBox    RemoveAdsCheckBox     { get; set; }
-    private Switch      RemoveAdsSwitch       { get; set; }
-    private View        AdView                { get; set; }
-    private Entry       CodeEntry             { get; set; }
-    private bool        ViewLogsButtonAdded   { get; set; }
+    private StackLayout MainStackLayout           { get; set; } = null!;
+    private SfPicker    PrimaryColorPicker        { get; set; } = null!;
+    private SfPicker    SecondaryColorPicker      { get; set; } = null!;
+    private SfPicker    TertiaryColorPicker       { get; set; } = null!;
+    private Editor      PrimarySearchEditor       { get; set; } = null!;
+    private Editor      SecondarySearchEditor     { get; set; } = null!;
+    private Editor      TertiarySearchEditor      { get; set; } = null!;
+    private Button      PrimaryButton             { get; set; } = null!;
+    private Button      SecondaryButton           { get; set; } = null!;
+    private Button      TertiaryButton            { get; set; } = null!;
+    private Color?      ForegroundColor           { get; set; }
+    private Label       RemoveAdsLabel            { get; set; } = null!;
+    private CheckBox    RemoveAdsCheckBox         { get; set; } = null!;
+    private Switch      RemoveAdsSwitch           { get; set; } = null!;
+    private View?       AdView                    { get; set; }
+    private Entry       CodeEntry                 { get; set; } = null!;
+    private bool        ViewLogsButtonAdded       { get; set; }
+    private bool        EnterCodeToolbarItemAdded { get; set; } = false;
 
     private void InitializeComponent()
     {
@@ -70,58 +71,36 @@ public partial class SettingsPage : ContentPage
         var enterCodeToolbarItem = new ToolbarItem
                                    {
                                        Text     = "~"
-                                     // , Order    = ToolbarItemOrder.Primary
-                                     // , Priority = 0 // Set the priority (higher values are displayed first)
                                    };
 
         enterCodeToolbarItem.Clicked += EnterCodeToolbarItem_Clicked;
-        //     (sender, e) =>
-        // {
-        //     var codeEntry = new Entry
-        //                     {
-        //                         Placeholder = "code"
-        //                         , Margin = new Thickness(5, 0, 5, 0);
-        //                     };
-        //     codeEntry.TextChanged += (o, args) =>
-        //     {
-        //         if (codeEntry.Text.Equals("viewLogs", StringComparison.CurrentCultureIgnoreCase))
-        //         {
-        //             BuildViewLogsButton(stackLayout);
-        //         }
-        //     };
-        //     stackLayout.Children.Add(codeEntry);
-        // };
+
         ToolbarItems.Add(enterCodeToolbarItem);
     }
 
-    private void EnterCodeToolbarItem_Clicked(object     sender
+    private void EnterCodeToolbarItem_Clicked(object?     sender
                                              , EventArgs eventArgs)
     {
+        if (EnterCodeToolbarItemAdded) return;
+
         CodeEntry = new Entry
                         {
-                            Placeholder = "code"
+                              Placeholder = "code"
                             , Margin = new Thickness(5, 0, 5, 0)
                         };
         CodeEntry.TextChanged += CodeEntryOnTextChanged;
-        //     (o, args) =>
-        // {
-        //     if (codeEntry.Text.Equals("viewLogs", StringComparison.CurrentCultureIgnoreCase))
-        //     {
-        //         BuildViewLogsButton(MainStackLayout);
-        //     }
-        // };
 
         MainStackLayout.Children.Add(CodeEntry);
+        EnterCodeToolbarItemAdded = true;
     }
 
-    private void CodeEntryOnTextChanged(object               sender
+    private void CodeEntryOnTextChanged(object?               sender
                                       , TextChangedEventArgs e)
     {
         if (CodeEntry.Text.Equals("viewLogs", StringComparison.CurrentCultureIgnoreCase))
         {
             BuildViewLogsButton(MainStackLayout);
         }
-        //Preferences can be accessed using the Door Key secret.
     }
 
     private void AddAdView(IView adPlaceholder)
@@ -129,11 +108,11 @@ public partial class SettingsPage : ContentPage
         if (RemoveAdsViewModel.PaidForAdsToBeRemoved) return;
 
         AdView = App.AppServiceMethods.GetAdView();
-        if (AdView is not null)
-        {
-            MainStackLayout.Children.Remove(adPlaceholder);
-            MainStackLayout.Children.Add(AdView);
-        }
+
+        if (AdView is null) return;
+
+        MainStackLayout.Children.Remove(adPlaceholder);
+        MainStackLayout.Children.Add(AdView);
     }
 
     private void BuildViewLogsButton(Layout stackLayout, bool forceHide = false)
@@ -144,7 +123,7 @@ public partial class SettingsPage : ContentPage
                         {
                             Text            = "View Logs"
                           , BackgroundColor = PrimaryButton.BackgroundColor
-                          , TextColor       = ForegroundColor
+                          , TextColor       = ForegroundColor ?? Colors.Black
                           , Margin          = new Thickness(5, 5, 5, 0)
                         };
 
@@ -164,7 +143,7 @@ public partial class SettingsPage : ContentPage
                                {
                                    Text            = "View Preferences"
                                  , BackgroundColor = PrimaryButton.BackgroundColor
-                                 , TextColor       = ForegroundColor
+                                 , TextColor       = ForegroundColor ?? Colors.Black
                                  , Margin          = new Thickness(5, 5, 5, 0)
                                };
         preferenceButton.Clicked += PreferenceButtonOnClicked;
@@ -181,14 +160,6 @@ public partial class SettingsPage : ContentPage
                            , VerticalOptions       = LayoutOptions.Center
                            , TextColor             = TertiaryButton.BackgroundColor
                          };
-
-        // RemoveAdsCheckBox = new CheckBox
-        //                     {
-        //                         IsChecked         = RemoveAdsViewModel.PaidForAdsToBeRemoved
-        //                       , VerticalOptions   = LayoutOptions.Center
-        //                       , HorizontalOptions = LayoutOptions.Start
-        //                     };
-        // RemoveAdsCheckBox.CheckedChanged += RemoveAdsCheckBoxOnCheckedChanged;
 
         RemoveAdsSwitch = new Switch
                           {
@@ -207,25 +178,12 @@ public partial class SettingsPage : ContentPage
         var secondaryGrid = BuildSecondaryColorGrid();
         var tertiaryGrid  = BuildTertiaryColorGrid();
 
-        //Settings sections labels
-        // var colorSectionLabel = new Label
-        //                         {
-        //                             Text            = "App Colors"
-        //                           , BackgroundColor = Colors.LightGray
-        //                         };
-        //
-        // var adSectionLabel = new Label
-        //                      {
-        //                          Text            = "Ads"
-        //                        , BackgroundColor = Colors.LightGray
-        //                        , Margin = new Thickness(0, 5, 0, 5)
-        //                      };
         var colorSectionLabel = new Label
                                 {
                                     Text            = "App Colors"
                                    , FontAttributes = FontAttributes.Bold
                                    , FontSize       = 16
-                                   , TextColor      = ColorUtility.GetColorFromResources(ResourceColors.Tertiary)
+                                   , TextColor      = ColorUtility.GetColorFromResources(ResourceColors.Tertiary) ?? Colors.Black
                                    , Margin         = new Thickness(0, 10, 0, 5)
                                 };
 
@@ -234,7 +192,7 @@ public partial class SettingsPage : ContentPage
                                  Text            = "Ads"
                                 , FontAttributes = FontAttributes.Bold
                                 , FontSize       = 16
-                                , TextColor      = ColorUtility.GetColorFromResources(ResourceColors.Tertiary)
+                                , TextColor      = ColorUtility.GetColorFromResources(ResourceColors.Tertiary) ?? Colors.Black
                                 , Margin         = new Thickness(0, 10, 0, 5)
                              };
         //BENDO: Use the CommonFrameStyle in the CommonStyles.xaml instead
@@ -269,7 +227,7 @@ public partial class SettingsPage : ContentPage
                                 {
                                     Text            = "Reset Colors"
                                   , BackgroundColor = PrimaryButton.BackgroundColor
-                                  , TextColor       = ForegroundColor
+                                  , TextColor       = ForegroundColor ?? Colors.Black
                                 };
 
         resetColorsButton.Clicked += ResetColorsButtonOnClicked;
@@ -302,15 +260,6 @@ public partial class SettingsPage : ContentPage
 
         mainGrid.Add(colorSectionFrame, 0, 0);
         mainGrid.Add(adSectionFrame, 0, 1);
-
-        // UiUtilities.AddRowDefinitions(mainGrid, GridLength.Auto, 8);
-        // mainGrid.Add(colorSectionLabel, 0, 0);
-        // mainGrid.Add(primaryGrid, 0, 1);
-        // mainGrid.Add(secondaryGrid, 0, 2);
-        // mainGrid.Add(tertiaryGrid, 0, 3);
-        // mainGrid.Add(resetColorsButton, 0, 4);
-        // mainGrid.Add(adSectionLabel, 0, 5);
-        // mainGrid.Add(removeAdsGrid, 0, 6);
 
         return mainGrid;
     }
@@ -384,16 +333,16 @@ public partial class SettingsPage : ContentPage
 
         PrimaryButton           =  CreateButton("Primary", "Button");
         ForegroundColor         =  ColorUtility.ChooseReadableTextColor(PrimaryButton.BackgroundColor);
-        PrimaryButton.TextColor =  ForegroundColor;
+        PrimaryButton.TextColor =  ForegroundColor ?? Colors.Black;
         PrimaryButton.Clicked   += PrimaryButtonOnClicked;
 
-        SecondaryButton         =  CreateButton("Secondary", "Events Background");
-        SecondaryButton.TextColor = ColorUtility.ChooseReadableTextColor(SecondaryButton.BackgroundColor);
-        SecondaryButton.Clicked += SecondaryButtonOnClicked;
+        SecondaryButton           =  CreateButton("Secondary", "Events Background");
+        SecondaryButton.TextColor =  ColorUtility.ChooseReadableTextColor(SecondaryButton.BackgroundColor) ?? Colors.Black;
+        SecondaryButton.Clicked   += SecondaryButtonOnClicked;
 
-        TertiaryButton         =  CreateButton("Tertiary", "Events Text");
-        TertiaryButton.TextColor  = ColorUtility.ChooseReadableTextColor(TertiaryButton.BackgroundColor);
-        TertiaryButton.Clicked += TertiaryButtonOnClicked;
+        TertiaryButton           =  CreateButton("Tertiary", "Events Text");
+        TertiaryButton.TextColor =  ColorUtility.ChooseReadableTextColor(TertiaryButton.BackgroundColor) ?? Colors.Black;
+        TertiaryButton.Clicked   += TertiaryButtonOnClicked;
     }
 
     private void CreateSearchEditors(int columnWidth)
@@ -417,7 +366,7 @@ public partial class SettingsPage : ContentPage
         PrimaryColorPicker.FooterView
                           .TextStyle = new PickerTextStyle
                                        {
-                                           TextColor = ColorUtility.ChooseReadableTextColor(PrimaryColorPicker.BackgroundColor)
+                                           TextColor = ColorUtility.ChooseReadableTextColor(PrimaryColorPicker.BackgroundColor) ?? Colors.Black
                                        };
 
         SecondaryColorPicker                     =  CreatPicker("Secondary", columnWidth);
@@ -427,7 +376,7 @@ public partial class SettingsPage : ContentPage
         SecondaryColorPicker.FooterView
                             .TextStyle = new PickerTextStyle
                                          {
-                                             TextColor = ColorUtility.ChooseReadableTextColor(SecondaryColorPicker.BackgroundColor)
+                                             TextColor = ColorUtility.ChooseReadableTextColor(SecondaryColorPicker.BackgroundColor) ?? Colors.Black
                                          };
 
         TertiaryColorPicker                     =  CreatPicker("Tertiary", columnWidth);
@@ -437,7 +386,7 @@ public partial class SettingsPage : ContentPage
         TertiaryColorPicker.FooterView
                            .TextStyle = new PickerTextStyle
                                         {
-                                            TextColor = ColorUtility.ChooseReadableTextColor(TertiaryColorPicker.BackgroundColor)
+                                            TextColor = ColorUtility.ChooseReadableTextColor(TertiaryColorPicker.BackgroundColor) ?? Colors.Black
                                         };
     }
 
@@ -485,7 +434,7 @@ public partial class SettingsPage : ContentPage
         var colorPickerColumn = new PickerColumn
                                 {
                                     DisplayMemberPath = "Name"
-                                  , ItemsSource       = ColorUtility.ColorNames
+                                  , ItemsSource       = ColorUtility.ColorNames ?? []
                                   , SelectedIndex     = ColorUtility.GetIndexFromColor(picker.BackgroundColor)
                                 };
 

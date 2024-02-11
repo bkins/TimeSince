@@ -15,6 +15,9 @@
         <ToolbarItem x:Name="ClearAllToolbarItem"
                      Text="Clear All"
                      Clicked="ClearToolbarItem_OnClicked" />
+        <ToolbarItem x:Name="TodaysMessages"
+                     Text="T"
+                     Clicked="TodaysMessages_OnClicked"/>
     </ContentPage.ToolbarItems>
 
     <ContentPage.Resources>
@@ -41,7 +44,6 @@
 
                             <Label Text="{Binding LogCount}"
                                    IsVisible="{Binding IsHeader}" />
-<!--IsVisible="{Binding IsHeader, Converter={StaticResource InverseBooleanConverter}}"-->
                             <Frame CornerRadius="10"
                                    Padding="10"
                                    Margin="25, 5, 5, 5"

@@ -1,6 +1,7 @@
 ﻿
 using Plugin.MauiMTAdmob;
 using TimeSince.Avails;
+using TimeSince.Avails.SecretsEnums;
 using TimeSince.Data;
 using MainPage = TimeSince.MVVM.Views.MainPage;
 using TimeSince.Services.ServicesIntegration;
@@ -38,13 +39,13 @@ public partial class App : Application
 
 		Syncfusion.Licensing
 		          .SyncfusionLicenseProvider
-		          .RegisterLicense(AppServiceMethods.GetSecretValue(SecretCollections.SyncFusion
-		                                                          , SecretKeys.SyncFusionLicense));
+		          .RegisterLicense(AppIntegrationService.GetSecretValue(SecretCollections.SyncFusion
+		                                                              , SecretKeys.SyncFusionLicense));
 
-		DoorKey = AppServiceMethods.GetSecretValue(SecretCollections.AppControl
-		                                         , SecretKeys.DoorKey);
-		DoorKeyReadOnly = AppServiceMethods.GetSecretValue(SecretCollections.AppControl
-		                                                 , SecretKeys.DoorKeyReadOnly);
+		DoorKey = AppIntegrationService.GetSecretValue(SecretCollections.AppControl
+		                                             , SecretKeys.DoorKey) ?? string.Empty;
+		DoorKeyReadOnly = AppIntegrationService.GetSecretValue(SecretCollections.AppControl
+		                                                     , SecretKeys.DoorKeyReadOnly) ?? string.Empty;
 
 		InitializeComponent();
 
@@ -76,10 +77,10 @@ public partial class App : Application
 
 	private void LoadAdMobUnitIds()
 	{
-		MainPageBannerId = AppServiceMethods.GetSecretValue(SecretCollections.Admob
-		                                                  , SecretKeys.MainPageBanner);
-		MainPageNewEventInterstitialId = AppServiceMethods.GetSecretValue(SecretCollections.Admob
-		                                                                , SecretKeys.MainPageNewEventInterstitial);
+		MainPageBannerId = AppIntegrationService.GetSecretValue(SecretCollections.Admob
+		                                                      , SecretKeys.MainPageBanner) ?? string.Empty;
+		MainPageNewEventInterstitialId = AppIntegrationService.GetSecretValue(SecretCollections.Admob
+		                                                                    , SecretKeys.MainPageNewEventInterstitial) ?? string.Empty;
 	}
 
 	private static void OnCurrentDomainOnUnhandledException(object                      sender

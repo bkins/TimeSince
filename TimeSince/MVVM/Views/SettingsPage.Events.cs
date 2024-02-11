@@ -8,12 +8,13 @@ namespace TimeSince.MVVM.Views;
 public partial class SettingsPage
 {
 
-    private void PrimaryColorPickerOnSelectionChanged(object                          sender
-                                             , PickerSelectionChangedEventArgs e)
+    private void PrimaryColorPickerOnSelectionChanged(object?                         sender
+                                                    , PickerSelectionChangedEventArgs e)
     {
         //BENDO: Investigate why Primary is handled differently than Secondary and Tertiary.
 
-        if (e.NewValue < 0
+        if (ColorUtility.ColorNames is null
+         || e.NewValue < 0
          || e.NewValue >= ColorUtility.ColorNames.Count) return;
 
         var selectedIndex = e.NewValue;
@@ -22,52 +23,51 @@ public partial class SettingsPage
         PrimaryColorPicker.BackgroundColor = color.Color;
         PrimaryColorPicker.FooterView
                           .TextStyle = new PickerTextStyle
-                                                  {
-                                                      TextColor = ColorUtility.ChooseReadableTextColor(PrimaryColorPicker.BackgroundColor)
-                                                  };
+                                       {
+                                           TextColor = ColorUtility.ChooseReadableTextColor(PrimaryColorPicker.BackgroundColor) ?? Colors.Black
+                                       };
     }
 
-    private void SecondaryColorPickerOnSelectionChanged(object                          sender
+    private void SecondaryColorPickerOnSelectionChanged(object?                         sender
                                                       , PickerSelectionChangedEventArgs e)
     {
-        if (e.NewValue < 0
+        if (ColorUtility.ColorNames is null
+         || e.NewValue < 0
          || e.NewValue >= ColorUtility.ColorNames.Count) return;
 
         var selectedIndex = e.NewValue;
-
-        var    color     = ColorUtility.ColorNames[selectedIndex];
-        var mauiColor = ColorUtility.ConvertSystemColorNameToMauiColor(color.Name, ColorInfo.LavenderMist);
+        var color         = ColorUtility.ColorNames[selectedIndex];
+        var mauiColor     = ColorUtility.ConvertSystemColorNameToMauiColor(color.Name, ColorInfo.LavenderMist);
 
         SecondaryColorPicker.BackgroundColor = mauiColor;
         SecondaryColorPicker.FooterView
                             .TextStyle = new PickerTextStyle
                                          {
-                                             TextColor = ColorUtility.ChooseReadableTextColor(SecondaryColorPicker.BackgroundColor)
+                                             TextColor = ColorUtility.ChooseReadableTextColor(SecondaryColorPicker.BackgroundColor) ?? Colors.Black
                                          };
     }
 
-    private void TertiaryColorPickerOnSelectionChanged(object                          sender
+    private void TertiaryColorPickerOnSelectionChanged(object?                          sender
                                                      , PickerSelectionChangedEventArgs e)
     {
-        if (e.NewValue < 0
+        if (ColorUtility.ColorNames is null
+         || e.NewValue < 0
          || e.NewValue >= ColorUtility.ColorNames.Count) return;
 
         var selectedIndex = e.NewValue;
-
-        var    color     = ColorUtility.ColorNames[selectedIndex];
-        var mauiColor = ColorUtility.ConvertSystemColorNameToMauiColor(color.Name, ColorInfo.MidnightIndigo);
-        var didSetColor = ColorUtility.UpdateColorResource(ResourceColors.Tertiary
-                                                         , mauiColor);
+        var color         = ColorUtility.ColorNames[selectedIndex];
+        var mauiColor     = ColorUtility.ConvertSystemColorNameToMauiColor(color.Name, ColorInfo.MidnightIndigo);
+        var didSetColor   = ColorUtility.UpdateColorResource(ResourceColors.Tertiary, mauiColor);
 
         TertiaryColorPicker.BackgroundColor = mauiColor;
         TertiaryColorPicker.FooterView
                            .TextStyle = new PickerTextStyle
                                         {
-                                            TextColor = ColorUtility.ChooseReadableTextColor(TertiaryColorPicker.BackgroundColor)
+                                            TextColor = ColorUtility.ChooseReadableTextColor(TertiaryColorPicker.BackgroundColor) ?? Colors.Black
                                         };
     }
 
-    private void PrimaryColorPickerOkButtonClicked(object    sender
+    private void PrimaryColorPickerOkButtonClicked(object?    sender
                                                  , EventArgs e)
     {
         var didSetColor = ColorUtility.UpdateColorResource(ResourceColors.Primary
@@ -78,7 +78,7 @@ public partial class SettingsPage
         TogglePrimaryControlsVisibilities();
     }
 
-    private void SecondaryColorPickerOkButtonClicked(object    sender
+    private void SecondaryColorPickerOkButtonClicked(object?   sender
                                                    , EventArgs e)
     {
         var didSetColor = ColorUtility.UpdateColorResource(ResourceColors.Secondary
@@ -89,7 +89,7 @@ public partial class SettingsPage
         ToggleSecondaryControlsVisibilities();
     }
 
-    private void TertiaryColorPickerOkButtonClicked(object    sender
+    private void TertiaryColorPickerOkButtonClicked(object?   sender
                                                   , EventArgs e)
     {
         var didSetColor = ColorUtility.UpdateColorResource(ResourceColors.Tertiary
@@ -100,28 +100,28 @@ public partial class SettingsPage
         ToggleTertiaryControlsVisibilities();
     }
 
-    private void PrimarySearchEditorOnTextChanged(object               sender
+    private void PrimarySearchEditorOnTextChanged(object?              sender
                                                 , TextChangedEventArgs e)
     {
         PrimaryColorPicker.Columns[0]
                           .SelectedIndex = ColorUtility.GetIndexFromPartialName(PrimarySearchEditor.Text);
     }
 
-    private void SecondarySearchEditorOnTextChanged(object               sender
+    private void SecondarySearchEditorOnTextChanged(object?              sender
                                                   , TextChangedEventArgs e)
     {
         SecondaryColorPicker.Columns[0]
                             .SelectedIndex = ColorUtility.GetIndexFromPartialName(SecondarySearchEditor.Text);
     }
 
-    private void TertiarySearchEditorOnTextChanged(object               sender
-                                                                               , TextChangedEventArgs e)
+    private void TertiarySearchEditorOnTextChanged(object?              sender
+                                                 , TextChangedEventArgs e)
     {
         TertiaryColorPicker.Columns[0]
                            .SelectedIndex = ColorUtility.GetIndexFromPartialName(TertiarySearchEditor.Text);
     }
 
-    private void PrimaryButtonOnClicked(object    sender
+    private void PrimaryButtonOnClicked(object?   sender
                                       , EventArgs e)
     {
         TogglePrimaryControlsVisibilities();
@@ -131,59 +131,55 @@ public partial class SettingsPage
     {
         PrimarySearchEditor.IsVisible = ! PrimarySearchEditor.IsVisible;
         PrimaryColorPicker.IsVisible  = ! PrimaryColorPicker.IsVisible;
-
-        PrimaryButton.IsVisible = ! PrimaryButton.IsVisible;
+        PrimaryButton.IsVisible       = ! PrimaryButton.IsVisible;
     }
 
     private void ToggleSecondaryControlsVisibilities()
     {
         SecondarySearchEditor.IsVisible = ! SecondarySearchEditor.IsVisible;
         SecondaryColorPicker.IsVisible  = ! SecondaryColorPicker.IsVisible;
-
-        SecondaryButton.IsVisible = ! SecondaryButton.IsVisible;
+        SecondaryButton.IsVisible       = ! SecondaryButton.IsVisible;
     }
 
     private void ToggleTertiaryControlsVisibilities()
     {
         TertiarySearchEditor.IsVisible = ! TertiarySearchEditor.IsVisible;
         TertiaryColorPicker.IsVisible  = ! TertiaryColorPicker.IsVisible;
-
-        TertiaryButton.IsVisible = ! TertiaryButton.IsVisible;
+        TertiaryButton.IsVisible       = ! TertiaryButton.IsVisible;
     }
-    private void SecondaryButtonOnClicked(object    sender
+    private void SecondaryButtonOnClicked(object?    sender
                                         , EventArgs e)
     {
         ToggleSecondaryControlsVisibilities();
     }
 
-    private void TertiaryButtonOnClicked(object    sender
+    private void TertiaryButtonOnClicked(object?    sender
                                        , EventArgs e)
     {
         TertiarySearchEditor.IsVisible = true;
         TertiaryColorPicker.IsVisible  = true;
-
-        TertiaryButton.IsVisible = false;
+        TertiaryButton.IsVisible       = false;
     }
 
-    private void PrimaryColorPickerCancelButtonClicked(object    sender
+    private void PrimaryColorPickerCancelButtonClicked(object?    sender
                                                      , EventArgs e)
     {
         TogglePrimaryControlsVisibilities();
     }
 
-    private void SecondaryColorPickerCancelButtonClicked(object    sender
+    private void SecondaryColorPickerCancelButtonClicked(object?   sender
                                                        , EventArgs e)
     {
         ToggleSecondaryControlsVisibilities();
     }
 
-    private void TertiaryColorPickerCancelButtonClicked(object    sender
+    private void TertiaryColorPickerCancelButtonClicked(object?   sender
                                                       , EventArgs e)
     {
         ToggleTertiaryControlsVisibilities();
     }
 
-    private void ResetColorsButtonOnClicked(object    sender
+    private void ResetColorsButtonOnClicked(object?   sender
                                           , EventArgs e)
     {
         PreferencesDataStore.ClearColors();
@@ -191,7 +187,7 @@ public partial class SettingsPage
     }
 
     [UnderConstruction("Need to implement way to make a purchase to remove ads")]
-    private async void RemoveAdsSwitchOnToggled(object           sender
+    private async void RemoveAdsSwitchOnToggled(object?          sender
                                               , ToggledEventArgs e)
     {
         await DisplayAlert("Under Construction"
@@ -209,11 +205,13 @@ public partial class SettingsPage
         // 2. Verify purchase was made
         if ( ! couldMakePurchase)
         {
-            await DisplayAlert("Purchase Error"
-                             , "The purchase could not be made. Make sure you are connected to the internet and try again."
-                             , "OK");
-
-            RemoveAdsSwitch.IsToggled = false;
+            MainThread.BeginInvokeOnMainThread( () =>
+            {
+                DisplayAlert("Purchase Error"
+                           , "The purchase could not be made. Make sure you are connected to the internet and try again."
+                           , "OK");
+                RemoveAdsSwitch.IsToggled = false;
+            });
 
             return;
         }
@@ -223,10 +221,10 @@ public partial class SettingsPage
 
         if (AdView is not null)
         {
-            AdView.IsVisible = ! RemoveAdsViewModel.PaidForAdsToBeRemoved;  //RemoveAdsSwitch.IsToggled;
+            AdView.IsVisible = ! RemoveAdsViewModel.PaidForAdsToBeRemoved;
         }
     }
-    private async void PreferenceButtonOnClicked(object    sender
+    private async void PreferenceButtonOnClicked(object?    sender
                                                , EventArgs e)
     {
         RemoveAdsViewModel.CheckLocks();
@@ -239,7 +237,7 @@ public partial class SettingsPage
         }
     }
 
-    private async void OnLogButtonOnClicked(object    o
+    private async void OnLogButtonOnClicked(object?    o
                                           , EventArgs eventArgs)
     {
         await Navigation.PushAsync(new MessageLog())

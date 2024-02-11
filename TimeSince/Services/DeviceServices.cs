@@ -1,5 +1,8 @@
 ﻿using System.Text;
 using TimeSince.Avails;
+using static Microsoft.Maui.Devices.DeviceInfo;
+using static TimeSince.Services.ServicesIntegration.AppIntegrationService;
+using DeviceType = Microsoft.Maui.Devices.DeviceType;
 
 namespace TimeSince.Services;
 
@@ -32,27 +35,54 @@ public class DeviceServices
         return InternetAccessStatus().AccessCode == NetworkAccess.Internet;
     }
 
-    public async Task<string?> GetDoorKey()
+    public static async Task<string?> GetDoorKey()
     {
         return await UiUtilities.GetClipboardValueAsync();
     }
 
-    public bool IsPhysicalDevice()
+    public static bool IsPhysicalDevice()
     {
-        return DeviceInfo.Current.DeviceType == DeviceType.Physical;
+        return Current.DeviceType == DeviceType.Physical;
     }
 
-    public string FullDeviceInfo()
+    public static string FullDeviceInfo()
     {
-        var infoBuilder = new StringBuilder();
-        infoBuilder.AppendLine($"\tModel:         {DeviceInfo.Current.Model}");
-        infoBuilder.AppendLine($"\tIdiom:         {DeviceInfo.Current.Idiom}");
-        infoBuilder.AppendLine($"\tManufacturer:  {DeviceInfo.Current.Manufacturer}");
-        infoBuilder.AppendLine($"\tName:          {DeviceInfo.Current.Name}");
-        infoBuilder.AppendLine($"\tVersionString: {DeviceInfo.Current.VersionString}");
-        infoBuilder.AppendLine($"\tPlatform:      {DeviceInfo.Current.Platform}");
+        var model        = IsTesting ? "Testing - Model"         : Current.Model;
+        var idiom        = IsTesting ? "Testing - Idiom"         : Current.Idiom.ToString();
+        var manufacturer = IsTesting ? "Testing - Manufacturer"  : Current.Manufacturer;
+        var name         = IsTesting ? "Testing - Name"          : Current.Name;
+        var version      = IsTesting ? "Testing - VersionString" : Current.VersionString;
+        var platform     = IsTesting ? "Testing - Platform"      : Current.Platform.ToString();
+
+        var infoBuilder  = new StringBuilder();
+        infoBuilder.AppendLine($"\tModel:         {model}");
+        infoBuilder.AppendLine($"\tIdiom:         {idiom}");
+        infoBuilder.AppendLine($"\tManufacturer:  {manufacturer}");
+        infoBuilder.AppendLine($"\tName:          {name}");
+        infoBuilder.AppendLine($"\tVersionString: {version}");
+        infoBuilder.AppendLine($"\tPlatform:      {platform}");
 
         return infoBuilder.ToString();
     }
 
+    public static async void ComposeEmail(string body, string toEmailAddress, string subjectPrefix)
+    {
+        try
+        {
+            var message = new EmailMessage(subjectPrefix
+                                         , body
+                                         , toEmailAddress);
+
+            await Email.ComposeAsync(message);
+        }
+        catch (FeatureNotSupportedException notSupportedException)
+        {
+            App.Logger.LogError(notSupportedException);
+            Logger.ToastMessage($"{notSupportedException.Message} (Email not supported on this device)" );
+        }
+        catch (Exception ex)
+        {
+            App.Logger.LogError(ex);
+        }
+    }
 }

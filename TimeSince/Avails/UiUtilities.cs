@@ -15,7 +15,7 @@ public static class UiUtilities
               .Add(new TapGestureRecognizer { Command = new Command(command) });
     }
 
-    #region Grid Definitions
+#region Grid Definitions
 
     public static ColumnDefinition NewColumnDefinition(GridLength length)
     {
@@ -57,9 +57,9 @@ public static class UiUtilities
         }
     }
 
-    #endregion
+#endregion
 
-    #region Clipboard Access
+#region Clipboard Access
 
     public static async Task<string?> GetClipboardValueAsync()
     {
@@ -76,7 +76,7 @@ public static class UiUtilities
         await Clipboard.SetTextAsync(text);
     }
 
-    #endregion
+#endregion
 
     [Obsolete("Obsolete in MAUI. Ok to use in Xamarin")]
     public static class FontSizes<T>
@@ -116,5 +116,4 @@ public static class UiUtilities
         };
         timer.Start();
     }
-
 }

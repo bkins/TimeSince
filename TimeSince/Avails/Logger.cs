@@ -14,34 +14,34 @@ public partial class Logger : ILogger
     public bool ShouldLogToConsole   { get; set; } = true;
     public bool ShouldLogToAppCenter { get; set; } = true;
     public bool ShouldLogToToast     { get; set; } = false;
+    public bool ShouldLogToEmail     { get; set; } = false;
 
     public string ExtraDetails { get; set; }
 
     public string FullLogPath { get; } = Path.Combine(Environment.GetFolderPath(Environment.SpecialFolder
                                                                                            .LocalApplicationData)
                                                     , "Logger.txt");
-    public static List<LogLine> LogList { get; set; }
+    public static List<LogLine>? LogList { get; set; }
 
     public StringBuilder LogStringBuilder { get; private set; }
 
-    private bool ForProd { get; set; }
-
-    public Logger(bool forProd = true)
+    public Logger(bool isTesting = false)
     {
-        ForProd = forProd;
+        AppIntegrationService.IsTesting = isTesting;
 
         var extraDetailsBuilder = new StringBuilder();
+
         extraDetailsBuilder.AppendLine("");
-        if(ForProd) extraDetailsBuilder.AppendLine($"UserId: {PreferencesDataStore.ErrorReportingId}");
+        extraDetailsBuilder.AppendLine($"UserId: {PreferencesDataStore.ErrorReportingId}");
         extraDetailsBuilder.AppendLine("Info From Device:");
-        if(ForProd) extraDetailsBuilder.AppendLine(App.AppServiceMethods.FullDeviceInfo());
+        extraDetailsBuilder.AppendLine(AppIntegrationService.FullDeviceInfo());
         extraDetailsBuilder.AppendLine("");
-        extraDetailsBuilder.AppendLine($"App Info:");
-        if(ForProd) extraDetailsBuilder.AppendLine($"\tVersion: {AppIntegrationService.AppInfo.CurrentVersion}");
-        if(ForProd) extraDetailsBuilder.AppendLine($"\tBuild:   {AppIntegrationService.AppInfo.CurrentBuild}");
+        extraDetailsBuilder.AppendLine("App Info:");
+        extraDetailsBuilder.AppendLine($"\tVersion: {AppIntegrationService.AppInfo?.CurrentVersion}");
+        extraDetailsBuilder.AppendLine($"\tBuild:   {AppIntegrationService.AppInfo?.CurrentBuild}");
 
         ExtraDetails = extraDetailsBuilder.ToString();
-       
+
         LogStringBuilder = new StringBuilder(GetFileContents());
         CompleteLog      = LogStringBuilder.ToString();
         LogList          = Deserialize(CompleteLog);
@@ -55,18 +55,18 @@ public partial class Logger : ILogger
     }
 
     public void LogError(Exception exception
-                             , string    extraDetails = "")
+                       , string    extraDetails = "")
     {
         LogError(exception.Message
-               , exception.StackTrace
+               , exception.StackTrace ?? string.Empty
                , extraDetails
                , exception);
     }
 
-    public void LogError(string    message
-                             , string    exceptionDetails
-                             , string    extraDetails
-                             , Exception exception = null)
+    public void LogError(string     message
+                       , string     exceptionDetails
+                       , string     extraDetails
+                       , Exception? exception = null)
     {
         ExtraDetails += extraDetails;
 
@@ -75,25 +75,22 @@ public partial class Logger : ILogger
                               , exceptionDetails
                               , extraDetails);
 
-        if (ShouldLogToConsole)   LogToConsole(line);
-        if (ShouldLogToFile)      LogToFile();
-        if (ShouldLogToAppCenter && ForProd) LogErrorToAppCenter(exception, extraDetails);
-        if (ShouldLogToToast && ForProd)     ToastMessage(line.Message);
-        //if (sendEmail)            await SendEmail().ConfigureAwait(false);
+        if (ShouldLogToConsole)                                        LogToConsole(line);
+        if (ShouldLogToFile)                                           LogToFile();
+        if (ShouldLogToAppCenter && ! AppIntegrationService.IsTesting) LogErrorToAppCenter(exception, extraDetails);
+        if (ShouldLogToToast && ! AppIntegrationService.IsTesting)     ToastMessage(line.Message);
+        if (ShouldLogToEmail && ! AppIntegrationService.IsTesting)     SendEmail();
     }
 
-    public void LogEvent(string                     name
-                       , IDictionary<string,string> properties)
+    public void LogEvent(string                      name
+                       , IDictionary<string, string> properties)
     {
         var extraDetails = new StringBuilder();
 
-        if (properties is not null)
+        foreach (var property in properties)
         {
-            foreach (var property in properties)
-            {
-                extraDetails.AppendLine($"{property.Key}:");
-                extraDetails.AppendLine(property.Value);
-            }
+            extraDetails.AppendLine($"{property.Key}:");
+            extraDetails.AppendLine(property.Value);
         }
 
         ExtraDetails += extraDetails.ToString();
@@ -103,9 +100,10 @@ public partial class Logger : ILogger
                               , string.Empty
                               , ExtraDetails);
 
-        if (ShouldLogToConsole)   LogToConsole(line);
-        if (ShouldLogToFile)      LogToFile();
-        if (ShouldLogToToast && ForProd)     ToastMessage(line.Message);
+        if (ShouldLogToConsole)                                    LogToConsole(line);
+        if (ShouldLogToFile)                                       LogToFile();
+        if (ShouldLogToToast && ! AppIntegrationService.IsTesting) ToastMessage(line.Message);
+        if (ShouldLogToEmail && ! AppIntegrationService.IsTesting) SendEmail();
     }
 
     public void LogTrace(string message)
@@ -118,50 +116,17 @@ public partial class Logger : ILogger
         LogToConsole(line);
         LogToFile();
 
-        if (ShouldLogToToast && ForProd) ToastMessage(line.Message);
+        if (ShouldLogToToast && ! AppIntegrationService.IsTesting) ToastMessage(line.Message);
     }
 
-    public void ToastMessage(string message)
+    public static void ToastMessage(string? message)
     {
         ToastLineMessage(message);
     }
 
-    // public IOrderedEnumerable<LogLine> ToggleLogListOrderByTimeStamp(SearchOptions options)
-    // {
-    //     return Ascending
-    //         ? ToListOrderedByTimeStampDescending(options)
-    //         : ToListOrderedByTimeStampAscending(options);
-    // }
-
-    // public string SearchLog(SearchOptions options)
-    // {
-    //     var resultsList = SearchLogAsList(options).ToList();
-    //
-    //     return ListToString(resultsList);
-    // }
-
-    public void Log<TState>(LogLevel                        logLevel
-                          , EventId                         eventId
-                          , TState                          state
-                          , Exception                       exception
-                          , Func<TState, Exception, string> formatter)
-    {
-        throw new NotImplementedException();
-    }
-
-    public bool IsEnabled(LogLevel logLevel)
-    {
-        throw new NotImplementedException();
-    }
-
-    public IDisposable BeginScope<TState>(TState state) where TState : notnull
-    {
-        throw new NotImplementedException();
-    }
-
     public void Clear(bool softClearLogFile = false)
     {
-        LogList.Clear();
+        LogList?.Clear();
         LogStringBuilder.Clear();
         CompleteLog = string.Empty;
 
@@ -180,42 +145,32 @@ public partial class Logger : ILogger
     public void DeleteLogEntry(LogLine logEntry)
     {
         var comparer = new LogLine.LogLineComparer();
-        if ( ! LogList.Any(entry => comparer.Equals(entry, logEntry))) return;
 
-        var entryToRemove = LogList.First(entry => comparer.Equals(entry, logEntry));
+        if ( LogList != null
+          && ! LogList.Any(entry => comparer.Equals(entry, logEntry))) return;
 
-        LogList.Remove(entryToRemove);
+        if (LogList != null)
+        {
+            var entryToRemove = LogList.First(entry => comparer.Equals(entry, logEntry));
+
+            LogList.Remove(entryToRemove);
+        }
+
         SaveLogToFile();
     }
 
-    public List<LogLine> Deserialize(string json)
+    public List<LogLine>? Deserialize(string json)
     {
         return json.IsValidJson()
                         ? JsonConvert.DeserializeObject<List<LogLine>>(json)
                         : LegacyLogFileToList(json);
     }
 
-    //BENDO: Move to service
-    private async Task SendEmail()
+    private static void SendEmail()
     {
-        try
-        {
-            var emailBody = BuildEmailBody();
-
-            var message = new EmailMessage("TimeSince log entry: "
-                                         , emailBody
-                                         , "BenHop@gmail.com");
-
-            await Email.ComposeAsync(message);
-        }
-        catch (FeatureNotSupportedException notSupportedException)
-        {
-            App.Logger.LogError(notSupportedException);
-        }
-        catch (Exception ex)
-        {
-            App.Logger.LogError(ex);
-        }
+        App.AppServiceMethods.ComposeEmail(BuildEmailBody()
+                                         , "BenHopApps@gmail.com"
+                                         , "TimeSince log entry: ");
     }
 
     private static string BuildEmailBody()
@@ -227,6 +182,25 @@ public partial class Logger : ILogger
         var emailBody = bodyBuilder.ToString();
 
         return emailBody;
+    }
+
+    public void Log<TState>(LogLevel                        logLevel
+                          , EventId                         eventId
+                          , TState                          state
+                          , Exception?                      exception
+                          , Func<TState, Exception, string> formatter)
+    {
+        throw new NotImplementedException();
+    }
+
+    public bool IsEnabled(LogLevel logLevel)
+    {
+        throw new NotImplementedException();
+    }
+
+    public IDisposable BeginScope<TState>(TState state) where TState : notnull
+    {
+        throw new NotImplementedException();
     }
 
 }

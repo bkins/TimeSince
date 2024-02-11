@@ -1,4 +1,5 @@
-﻿using AppInfo = TimeSince.MVVM.Models.AppInfo;
+﻿using TimeSince.Services.ServicesIntegration;
+using AppInfo = TimeSince.MVVM.Models.AppInfo;
 
 namespace TimeSince.Services;
 
@@ -8,8 +9,10 @@ public class AppInfoService
 
     public AppInfoService()
     {
-        Info = new AppInfo(VersionTracking.CurrentVersion
-                         , GetBuildName(VersionTracking.CurrentBuild));
+        var currentVersion = AppIntegrationService.IsTesting ? "0" : VersionTracking.CurrentVersion;
+        var currentBuild   = GetBuildName(AppIntegrationService.IsTesting ? "0" : VersionTracking.CurrentBuild);
+
+        Info = new AppInfo(currentVersion, currentBuild);
     }
 
     public static string GetMode()

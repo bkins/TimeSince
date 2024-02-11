@@ -1,18 +1,20 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-		  package="com.hopkins.timesince">
+	xmlns:tools="http://schemas.android.com/tools"
+	package="com.hopkins.timesince">
 
 	<application android:label="TimeSince"
 			     android:icon="@drawable/twotone_timelapse_white_48">
-
-<!--		<meta-data android:name="com.google.firebase.messaging.default_notification_icon"-->
-<!--			       android:resource="@drawable/clock" />-->
 
 		<meta-data android:name="com.google.android.gms.ads.APPLICATION_ID"
 			       android:value="ca-app-pub-1259969651432104~6327254179" />
 
 		<meta-data android:name="com.android.vending.LICENSE"
 			       android:value="MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEAjHSK2CR0BXO22Whrq8VDpOP/WuWD6vIaR7ATU0nKG7qpwOAiDgPOXdMIU8TtbIsc4j43Y/BdI3sup+yJfQ8htwdhgsJTHCeBYt5j+6xqRLRxFGYXyHtew6k5KKRQsPKx9W1e+RIIMS8DXkeLjVUp1WnDmWoMvrw2BuFpuYDu55fhYnwehjLKAiEhk6AdGVtIho6kVr9sIDG+ShXpVHovUOh4c8VJwP2Bw3czhDf0qSDgDaHv0O2XJfpxq5DsOmr9GG+I5bIQqujyIG/domGbnjp0Q8RVdodVHA7KOIB97yYSyU2iQ4f191kt4i0RtiAgDvtACZN9I3VCiFygjyRWzQIDAQAB" />
+
+		<meta-data android:name="com.google.android.play.billingclient.version"
+			tools:replace="android:value"
+			android:value="7.1.0" />
 
 	</application>
 

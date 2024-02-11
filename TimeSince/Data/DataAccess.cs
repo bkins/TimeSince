@@ -3,14 +3,9 @@ using TimeSince.MVVM.Models;
 
 namespace TimeSince.Data;
 
-public class DataAccess
+public class DataAccess(AbstractDataStore dataStore)
 {
-    private AbstractDataStore DataStore { get; set; }
-
-    public DataAccess(AbstractDataStore dataStore)
-    {
-        DataStore = dataStore;
-    }
+    private AbstractDataStore DataStore { get; set; } = dataStore;
 
     public void Insert(BeginningEvent beginningEvent)
     {
@@ -22,7 +17,7 @@ public class DataAccess
         DataStore.UpdateEvent(beginningEvent);
     }
 
-    public BeginningEvent GetBeginningEvent(int id)
+    public BeginningEvent? GetBeginningEvent(int id)
     {
         return DataStore.GetBeginningEvent(id);
     }

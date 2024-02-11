@@ -6,7 +6,7 @@ namespace TimeSince.MVVM.BaseClasses;
 
 public class BaseViewModel : INotifyPropertyChanged
 {
-    protected DataAccess DataAccess { get; set; }
+    protected DataAccess? DataAccess { get; set; }
 
     public event PropertyChangedEventHandler? PropertyChanged;
 

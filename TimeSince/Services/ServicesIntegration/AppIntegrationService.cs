@@ -18,6 +18,8 @@ public partial class AppIntegrationService
     private static AppIntegrationService? _instance;
     public static  AppIntegrationService  Instance => _instance ??= new AppIntegrationService();
 
+    public static bool IsTesting { get; set; }
+
     private AppIntegrationService()
     {
         _secretsService   = SecretsService.Instance;

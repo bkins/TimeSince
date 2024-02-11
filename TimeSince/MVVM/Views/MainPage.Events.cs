@@ -6,6 +6,7 @@ using TimeSince.Avails.Extensions;
 using TimeSince.Data;
 using TimeSince.MVVM.Models;
 using TimeSince.MVVM.ViewModels;
+using TimeSince.Services.ServicesIntegration;
 
 namespace TimeSince.MVVM.Views;
 
@@ -14,9 +15,9 @@ public partial class MainPage //Events
     private void AddEventButton_OnClicked(object    sender
                                         , EventArgs e)
     {
-        if ( ! App.AppServiceMethods.IsPhysicalDevice())
+        if ( ! AppIntegrationService.IsPhysicalDevice())
         {
-            App.Logger.ToastMessage("Not a physical device.  These types of ads don't work that well here.");
+            Logger.ToastMessage("Not a physical device.  These types of ads don't work that well here.");
         }
         else
         {
@@ -29,7 +30,7 @@ public partial class MainPage //Events
         PreferencesDataStore.AwesomePersonScore += 10;
     }
 
-    private void EventsListView_OnItemTapped(object              sender
+    private void EventsListView_OnItemTapped(object?              sender
                                            , ItemTappedEventArgs e)
     {
         if (e.Item is BeginningEvent selectedEvent)
@@ -90,20 +91,16 @@ public partial class MainPage //Events
                                     , EventArgs e)
     {
         SortPicker.IsVisible = ! SortPicker.IsVisible;
-        //TimeElapsedViewModel.ToggleSort();
     }
 
-    private void OnPageAppearing(object    sender
+    private void OnPageAppearing(object?    sender
                                , EventArgs e)
     {
         ColorUtility.SetResourceColors();
-        //SortPicker.TextColor          = ColorUtility.ChooseReadableTextColor(SortPicker.BackgroundColor);
-        EventsListView.SeparatorColor = Color.FromArgb(ColorInfo.BlackAsHex); //ColorUtility.ChooseReadableTextColor(EventsListView.BackgroundColor);
+        EventsListView.SeparatorColor = Color.FromArgb(ColorInfo.BlackAsHex);
 
         SetButtonsTextColor();
     }
-
-
 
     private void ElapsedTimeLabel_Tapped(object          sender
                                        , TappedEventArgs e)
@@ -111,7 +108,7 @@ public partial class MainPage //Events
         TimeElapsedViewModel.IsLongTimeElapsedDisplayed = ! TimeElapsedViewModel.IsLongTimeElapsedDisplayed;
     }
 
-    private void Events_OnCollectionChanged(object                           sender
+    private void Events_OnCollectionChanged(object?                           sender
                                            , NotifyCollectionChangedEventArgs e)
     {
         if (e.Action != NotifyCollectionChangedAction.Add
@@ -134,58 +131,15 @@ public partial class MainPage //Events
         }
     }
 
-    void OnSortPickerSelectedIndexChanged(object sender, EventArgs e)
+    private void OnSortPickerSelectedIndexChanged(object sender, EventArgs e)
     {
         var picker              = (Picker)sender;
         var selectedDescription = (string)picker.SelectedItem;
 
-        if (selectedDescription.HasValue())
-        {
-            TimeElapsedViewModel.SortEvents(Utilities.GetEnumValueFromDescription<SortOptions>(selectedDescription));
-            ScrollToFirstItemInListView();
-        }
-    }
+        if (! selectedDescription.HasValue()) return;
 
-    private void AddBanner_OnAdsClicked(object    sender
-                                      , EventArgs e)
-    {
-        var s = "Ad clicked";
-    }
-
-    private void AddBanner_OnAdsClosed(object    sender
-                                     , EventArgs e)
-    {
-        var s = "Ad closed";
-    }
-
-    private void AddBanner_OnAdsImpression(object    sender
-                                         , EventArgs e)
-    {
-        var s = "Ad Impression";
-    }
-
-    private void AddBanner_OnAdsLeftApplication(object    sender
-                                              , EventArgs e)
-    {
-        var s = "Ad Impression";
-    }
-
-    private void AddBanner_OnAdsFailedToLoad(object      sender
-                                           , MTEventArgs e)
-    {
-        var s = "Ad FailedToLoad";
-    }
-
-    private void AddBanner_OnAdsLoaded(object    sender
-                                     , EventArgs e)
-    {
-        var s = "Ad Loaded";
-    }
-
-    private void AddBanner_OnAdsOpened(object    sender
-                                     , EventArgs e)
-    {
-        var s = "Ad AdsOpened";
+        TimeElapsedViewModel.SortEvents(Utilities.GetEnumValueFromDescription<SortOptions>(selectedDescription));
+        ScrollToFirstItemInListView();
     }
 
     private void PrivacyPolicyButton_OnClicked(object    sender

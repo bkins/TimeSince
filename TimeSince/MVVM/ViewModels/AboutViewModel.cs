@@ -10,7 +10,6 @@ public class AboutViewModel : BaseViewModel
     public string? CurrentBuild   { get; set; }
     public string  CurrentMode    { get; set; }
 
-
     private string _currentAwesomeScore;
     public string CurrentAwesomeScore
     {

@@ -14,5 +14,4 @@ public partial class SettingsPage : ContentPage
 
         BindingContext = this;
     }
-
 }

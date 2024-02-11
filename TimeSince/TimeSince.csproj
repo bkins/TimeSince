@@ -1,9 +1,12 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
-		<TargetFrameworks>net8.0;net8.0-android;</TargetFrameworks>
-		<OutputType Condition="'$(TargetFramework)' != 'net8.0'">Exe</OutputType>
-
+<!--		<TargetFrameworks>net8.0-android;net8.0</TargetFrameworks>-->
+		<TargetFrameworks>net8.0-android;net8.0</TargetFrameworks>
+<!--		<OutputType Condition="'$(TargetFramework)' == 'net8.0-android'">Apk</OutputType>-->
+<!--		<OutputType Condition="'$(TargetFramework)' == 'net8.0'">Exe</OutputType>-->
+		<OutputType>Exe</OutputType>
+		
 		<RootNamespace>TimeSince</RootNamespace>
 		<UseMaui>true</UseMaui>
 		<SingleProject>true</SingleProject>

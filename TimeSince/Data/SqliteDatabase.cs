@@ -8,7 +8,7 @@ namespace TimeSince.Data;
 
 public class SqliteDatabase : AbstractDataStore
 {
-    private readonly SQLiteConnection _database;
+    private readonly SQLiteConnection? _database;
 
     public SqliteDatabase(string dbPath)
     {
@@ -30,7 +30,7 @@ public class SqliteDatabase : AbstractDataStore
 
         try
         {
-            rowsAffected = _database.Update(beginningEvent);
+            rowsAffected = _database!.Update(beginningEvent);
         }
         catch (Exception e)
         {
@@ -45,7 +45,7 @@ public class SqliteDatabase : AbstractDataStore
 
         try
         {
-            rowsAffected = _database.Insert(beginningEvent);
+            rowsAffected = _database!.Insert(beginningEvent);
 
         }
         catch (Exception e)
@@ -62,7 +62,7 @@ public class SqliteDatabase : AbstractDataStore
 
         try
         {
-            rowsAffected = _database.Delete(beginningEvent);
+            rowsAffected = _database!.Delete(beginningEvent);
         }
         catch (Exception e)
         {
@@ -81,11 +81,11 @@ public class SqliteDatabase : AbstractDataStore
         }
     }
 
-    public override BeginningEvent GetBeginningEvent(int? id = null)
+    public override BeginningEvent? GetBeginningEvent(int? id = null)
     {
         if (id is null) throw new NullReferenceException("Id cannot be null.");
 
-        return _database.Get<BeginningEvent>(id);
+        return _database?.Get<BeginningEvent>(id);
     }
 
     public override ObservableCollection<BeginningEvent> GetBeginningEvents()

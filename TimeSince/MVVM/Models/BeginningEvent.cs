@@ -1,5 +1,4 @@
 ﻿using System.ComponentModel;
-using System.Runtime.CompilerServices;
 using SQLite;
 using TimeSince.Avails.ColorHelpers;
 using TimeSince.Avails.Extensions;
@@ -63,6 +62,4 @@ public class BeginningEvent : BaseModel, INotifyPropertyChanged
     {
         Time = timeSpan.ToShortForm();
     }
-
-
 }

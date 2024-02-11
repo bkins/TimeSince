@@ -26,11 +26,10 @@ public partial class AboutPage
     private async void ShowInterstitialRewardAdButton_OnClicked(object    sender
                                                               , EventArgs e)
     {
-
         await App.AppServiceMethods.ShowInterstitialRewardAdAsync(10, true);
     }
 
-    private async void ShowRewardAdButton_OnClicked(object    sender
+    private async void ShowRewardAdButton_OnClicked(object?    sender
                                                   , EventArgs e)
     {
         var originalButtonText = ShowRewardAdButton.Text;
@@ -49,38 +48,22 @@ public partial class AboutPage
         AboutViewModel.ResetAwesomeScore();
     }
 
-    private void PrivacyPolicyButton_OnClicked(object    sender
-                                             , EventArgs e)
+    private static void PrivacyPolicyButton_OnClicked(object?    sender
+                                                    , EventArgs e)
     {
         Launcher.OpenAsync(new Uri("https://benhop2.wixsite.com/bensapps/privacypolicy"));
     }
 
-    private async void TapGestureRecognizer_OnTapped(object          sender
-                                                   , TappedEventArgs e)
+    private void TapGestureRecognizer_OnTapped(object?          sender
+                                             , TappedEventArgs e)
     {
-        try
-        {
-            var emailBody = BuildEmailBody();
-
-            var message = new EmailMessage("TimeSince question/comment: "
-                                         , emailBody
-                                         , EmailLabel.Text);
-
-            await Email.ComposeAsync(message);
-        }
-        catch (FeatureNotSupportedException notSupportedException)
-        {
-            App.Logger.LogError(notSupportedException);
-        }
-        catch (Exception ex)
-        {
-            App.Logger.LogError(ex);
-        }
+        App.AppServiceMethods.ComposeEmail(BuildEmailBody()
+                                           , EmailLabel.Text
+                                           , "TimeSince question/comment: ");
     }
 
     private static string BuildEmailBody()
     {
-
         var bodyBuilder = new StringBuilder();
         bodyBuilder.AppendLine("");
         bodyBuilder.AppendLine("");

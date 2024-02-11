@@ -1,4 +1,5 @@
-﻿using Newtonsoft.Json;
+﻿using System.Text;
+using Newtonsoft.Json;
 using TimeSince.Avails.Extensions;
 using TimeSince.MVVM.Models;
 using CommunityToolkit.Maui.Alerts;
@@ -14,7 +15,7 @@ public partial class Logger
         set { }
     }
 
-    private void LogErrorToAppCenter(Exception exception
+    private void LogErrorToAppCenter(Exception? exception
                                    , string    extraDetails = "")
     {
         Dictionary<string, string>? properties = null;
@@ -42,7 +43,6 @@ public partial class Logger
 
     private static void LogToConsole(LogLine line)
     {
-
         Console.WriteLine(line);
     }
 
@@ -50,6 +50,8 @@ public partial class Logger
     {
         var currentlyLogged   = GetFileContents();
         var currentLoggedList = JsonConvert.DeserializeObject<List<LogLine>>(currentlyLogged) ?? new List<LogLine>();
+
+        if (LogList == null) return;
 
         currentLoggedList.AddRange(LogList);
 
@@ -62,6 +64,8 @@ public partial class Logger
         using var streamWriter = new StreamWriter(File.Create(FullLogPath));
         streamWriter.Write(string.Empty);
     }
+
+
 
     private static LogLine AddToLogList(string   message
                                       , Category category
@@ -79,25 +83,23 @@ public partial class Logger
                      , ExtraDetails = $"{exceptionDetails}{extraDetails}"
                    };
 
-        LogList.Add(line);
+        LogList?.Add(line);
 
         return line;
     }
 
-    private static string Serialize(List<LogLine> list) => JsonConvert.SerializeObject(list);
+    private static string Serialize(List<LogLine>? list) => JsonConvert.SerializeObject(list);
 
     private string GetFileContents()
     {
-        var fileContents = File.Exists(FullLogPath)
-                                  ? File.ReadAllText(FullLogPath)
-                                  : string.Empty;
-
-        return fileContents;
+        return File.Exists(FullLogPath)
+                        ? File.ReadAllText(FullLogPath)
+                        : string.Empty;
     }
 
-    private List<LogLine> LegacyLogFileToList(string fileContents)
+    private List<LogLine>? LegacyLogFileToList(string fileContents)
     {
-        var fileLines = new List<string>(fileContents.Split(new[] { Environment.NewLine }
+        var fileLines = new List<string>(fileContents.Split([Environment.NewLine]
                                                           , StringSplitOptions.RemoveEmptyEntries));
         var logLines = (
             from line in fileLines
@@ -120,7 +122,7 @@ public partial class Logger
         return logLines;
     }
 
-    private Category GetEnum(string enumName)
+    private static Category GetEnum(string enumName)
     {
         return enumName switch
                {
@@ -135,12 +137,16 @@ public partial class Logger
     private void SaveLogToFile()
     {
         var serializedLog = Serialize(LogList);
+
+        // using var stream = File.OpenWrite(FullLogPath);
+        // var       data   = Encoding.UTF8.GetBytes(serializedLog);
+        // stream.Write(data, 0, data.Length);
+
         File.WriteAllText(FullLogPath, serializedLog);
     }
-
-    private static void ToastLineMessage(string            text
-                                       , ToastDuration     duration = ToastDuration.Short
-                                       , double            fontSize = 14)
+    private static void ToastLineMessage(string?        text
+                                       , ToastDuration duration = ToastDuration.Short
+                                       , double        fontSize = 14)
     {
         var toast = Toast.Make(text
                              , duration
