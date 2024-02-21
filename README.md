@@ -1,6 +1,7 @@
 ﻿## Purpose
 
-- To track and display events and the Time Since they occurred. Though, the real intent was to have a simple application that I can use to learn and test out features. 
+- To track and display events and the Time Since they occurred.
+- Though, the real intent was to have a simple application that I can use to learn and test out features. 
 
 ### Needed to run code:
 
