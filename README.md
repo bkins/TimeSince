@@ -1,6 +1,6 @@
 ﻿## Purpose
 
-- To track and display events and the Time Since they occurred
+- To track and display events and the Time Since they occurred. Though, the real intent was to have a simple application that I can use to learn and test out features. 
 
 ### Needed to run code:
 
@@ -83,6 +83,12 @@
     - If I decide to use "Goal" instead of an End date, then come up with a way to highlight completed events
   - Get Widget working
     - User should be able to select which event(s) will display in widget.
+  - Backup and Restore Database
+    - Use case:
+      1) Install app on new phone.
+      2) Backup database on existing phone
+      3) Copy backup to new phone
+      4) Restore database from backup on new phone 
   
 - Low Priority
 
